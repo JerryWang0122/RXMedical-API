@@ -32,6 +32,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 /* --------------------------- header ----------------------------- */
@@ -51,10 +52,12 @@ main {
   background-image: url("../img/bg.jpeg");
   background-size: cover;
   background-repeat: no-repeat;
+  padding-bottom: 100px;
   flex: 1;
 }
 
-main .user-login {
+main .user-login,
+main .user-register {
   padding: min(calc(20px + 5vh), 100px) 20px 0;
 }
 
@@ -71,23 +74,40 @@ main form {
 
 @media (min-width: 768px) {
 
+  main form {
+    max-width: min(50vw, 500px);
+  }
+
   main .user-login {
     padding-top: 140px;
   }
 
-  main form {
-    max-width: min(50vw, 500px);
+  main .user-register {
+    padding-top: 80px;
   }
+
 }
 
 main p {
   font-weight: 300;
   font-size: 20px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+main .user-register label:not(:first-of-type) {
+  margin-top: 17px;
+}
+
+main .register-notice:hover {
+  cursor: pointer;
 }
 
 main div a {
   text-decoration: none;
+}
+
+.invalid {
+  border-color: red;
 }
 
 /* ---------------------------- footer ----------------------------- */
@@ -101,4 +121,10 @@ footer {
   position: absolute;
   left: 0;
   bottom: 0;
+}
+
+/* --------------------------- Modal ---------------------------- */
+.notice-highlight {
+  color:red;
+  font-weight: bold;
 }
