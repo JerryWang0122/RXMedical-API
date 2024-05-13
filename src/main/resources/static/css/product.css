@@ -42,7 +42,7 @@ body {
 }
 
 /* -------------------------------------- header -------------------------------- */
-.navbar {
+header .navbar {
   background-color: var(--c-main-1-10);
   color: var(--c-main-4-10);
 }
@@ -52,7 +52,7 @@ header h1 {
   color: var(--c-main-4-10);
 }
 
-#navbarMenu .nav-link,
+header #navbarMenu .nav-link,
 #logout {
   color: #fff;
   font-size: 20px;
@@ -110,7 +110,7 @@ main {
   border-radius: 15px;
 
   font-size: 18px;
-  padding: 2rem 1.5rem 5rem;
+  padding: 2rem 1.5rem 1rem;
   position: relative;
 }
 
@@ -123,12 +123,9 @@ main {
 }
 
 /* ----- search-category ---- */
-#advancedSearchBtn {
-  position: absolute;
-  right: .75rem;
-  bottom: 1rem;
-  background-color: var(--c-main-3-10);
+.search-category .navbar-toggler {
   color: #fff;
+  background-color: var(--c-main-3-10);
   padding: 8px 6px;
 }
 
@@ -149,7 +146,7 @@ main {
 
 @media (min-width: 768px) {
   .search-area {
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
   }
 
 

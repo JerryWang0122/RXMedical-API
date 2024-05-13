@@ -39,7 +39,7 @@
                     </button>
 
                     <nav class="collapse navbar-collapse" id="navbarMenu">
-                        
+
                         <ul class="navbar-nav ms-auto me-lg-5 mb-2 mb-lg-0 text-center">
                             <li class="nav-item">
                                 <!-- TODO -->
@@ -59,29 +59,30 @@
                                 </form>
                             </li>
                         </ul>
-                            
+
                     </nav>
                     <!-- 購物車 -->
                     <div class="shop-cart">
                         <a class="d-flex justify-content-center align-items-center" href="./user/cart">
-                            
+
                             <i class="bi bi-cart">
                                 <span>14</span>
                             </i>
                         </a>
                     </div>
-                    
+
                 </div>
             </div>
 
         </header>
 
         <main>
-            
+
             <!-- 搜索欄 -->
             <section class="mt-5 px-2">
+
                 <div class="search-area container-xl ">
-                    
+
                     <!-- 搜索功能 -->
                     <div class="search-box row">
                         <p class="mb-2 col-12">搜尋商品</p>
@@ -89,8 +90,9 @@
                         <form class="col-12">
                             <div class="row">
                                 <label class="position-relative col-12 col-md-4 pe-0">
-                                    <input class="form-control" type="search" placeholder="請輸入商品關鍵字" aria-label="Search">
-    
+                                    <input class="form-control" type="search" placeholder="請輸入商品關鍵字"
+                                        aria-label="Search">
+
                                     <i class="bi bi-search "></i>
                                 </label>
                             </div>
@@ -98,35 +100,65 @@
 
                     </div>
 
-                    <!-- 進階搜索按鈕 -->
-                    <button type="button" class="btn d-md-none mt-3 text-white" id="advancedSearchBtn" >
-                        <i class="bi bi-funnel me-2"></i>進階篩選
-                    </button>
 
-                    <!-- 分類欄 -->
-                    <div class="search-category mt-4 d-none d-md-block" id="categoryContent">
-                        <!-- 搜尋分類 -->
-                        <p class="mb-2">商品類別</p>
-                        
-                        <div class="categories d-flex flex-wrap">
-                            <label class="cate-item">
-                                <input type="checkbox" id="cate-all" class="form-check-input me-2" name="cate-all" value="all" checked>全部
-                            </label>
-                        
-                            <label class="cate-item">
-                                <input type="checkbox" id="cate-1" class="form-check-input me-2" name="cate-1" value="文具">文具
-                            </label>
-                        
-                            <label class="cate-item">
-                                <input type="checkbox" id="cate-2" class="form-check-input me-2" name="cate-2" value="紗布">紗布
-                            </label>
-                        
-                            <label class="cate-item">
-                                <input type="checkbox" id="cate-3" class="form-check-input me-2" name="cate-3" value="中醫-針灸">中醫-針灸
-                            </label>
-                        
+
+                    <!-- Test---------------offcanvas -->
+                    <!-- 搜尋分類 -->
+                    <div class="search-category row pt-3">
+
+                        <p class="mb-0 d-none d-md-block">商品類別</p>
+
+                        <div class="navbar navbar-light navbar-expand-md pe-0">
+                            <a class="navbar-brand" style="margin-right: 0;" href="#"></a>
+
+                            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasSearchCategory" aria-controls="offcanvasSearchCategory">
+
+                                <span >
+                                    <i class="bi bi-funnel me-2"></i>進階篩選
+                                </span>
+
+                            </button>
+
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSearchCategory"
+                                aria-labelledby="offcanvasSearchCategoryLabel">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title fs-2" id="offcanvasSearchCategoryLabel">進階篩選</h5>
+                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <div class="categories d-flex flex-wrap">
+
+                                        <p class="mb-2 d-md-none">商品類別</p>
+                                        <hr>
+                                        <label class="cate-item">
+                                            <input type="checkbox" id="cate-all" class="form-check-input me-2"
+                                                name="cate-all" value="all" checked>全部
+                                        </label>
+
+                                        <label class="cate-item">
+                                            <input type="checkbox" id="cate-1" class="form-check-input me-2"
+                                                name="cate-1" value="文具">文具
+                                        </label>
+
+                                        <label class="cate-item">
+                                            <input type="checkbox" id="cate-2" class="form-check-input me-2"
+                                                name="cate-2" value="紗布">紗布
+                                        </label>
+
+                                        <label class="cate-item">
+                                            <input type="checkbox" id="cate-3" class="form-check-input me-2"
+                                                name="cate-3" value="中醫-針灸">中醫-針灸
+                                        </label>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
+
 
                 </div>
 

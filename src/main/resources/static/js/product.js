@@ -1,4 +1,3 @@
-
 // 当用户点击除了“全部”之外的分类复选框时
 $('.categories input[type="checkbox"]').not('#cate-all').on('change', function () {
   // 如果点击的不是“全部”复选框
@@ -29,3 +28,4 @@ $('.categories input[type="checkbox"]').not('#cate-all').on('change', function (
   }
 });
 
+// TODO: 點擊搜尋或種類時，產品結果調整
