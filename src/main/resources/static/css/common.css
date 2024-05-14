@@ -60,10 +60,47 @@ header h1 {
   color: var(--c-main-4-10);
 }
 
+/* ------ nav選項 ------- */
 header #navbarMenu .nav-link,
 #logout {
   color: #fff;
   font-size: 20px;
+
+  position: relative;
+}
+
+nav .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  border-radius: 100px;
+  background-color: rgba(255, 255, 255, .66);
+  transform: scaleX(0);
+  transform-origin: 50% 100%;
+  transition: 0.5s ease-out;
+}
+
+.navbar-light .navbar-nav .nav-link:focus,
+.navbar-light .navbar-nav .nav-link:hover::after {
+  transform: scaleX(1);
+  transition-timing-function: cubic-bezier(0.5, 1.6, 0.4, 0.7);
+}
+
+.navbar-light .navbar-nav .nav-link.active::after,
+.navbar-light .navbar-nav .show>.nav-link {
+  transform: scaleX(1);
+  background-color: #fff;
+}
+
+/* 作用 */
+.navbar-light .navbar-nav .nav-link.active,
+.navbar-light .navbar-nav .show>.nav-link {
+  background-color: var(--c-main-3-10);
+  border-radius: 10px;
+  color: var(--c-main-4-10);
 }
 
 /* 購物車 -------------------- */
