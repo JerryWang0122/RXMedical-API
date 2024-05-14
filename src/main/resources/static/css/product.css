@@ -4,14 +4,18 @@
 :root {
 
   --c-main-1-10: #007b87;
+  --c-main-1-05: rgba(0, 124, 135, 0.5);
 
   --c-main-2-10: #B0e298;
   --c-main-2-02: rgba(175, 226, 152, 0.2);
 
   --c-main-3-10: #005e75;
   --c-main-3-05: rgba(0, 94, 117, 0.5);
+
   --c-main-4-10: #f9f9f9;
+
   --c-main-5-10: #e072a4;
+  --c-main-5-07: rgba(224, 114, 163, 0.7);
 
   --c-background: #f5f5f5;
 
@@ -103,9 +107,17 @@ header #navbarMenu .nav-link,
 /* ---------------------------------------- main --------------------------------- */
 main {
   font-family: var(--f-family-1);
+  margin-bottom: 60px;
 }
 
-/* -------------------------------------- section -------------------------------- */
+main h2 {
+  text-align: center;
+  color: var(--c-main-3-10);
+  margin-top: 1.5rem;
+  font-size: 38px;
+}
+
+/* -------------------------------------- section 1 -------------------------------- */
 
 /* ----- search-area ---- */
 .search-area {
@@ -188,11 +200,94 @@ main {
   box-shadow: 0 0 0 0.25rem var(--c-main-2-10);
 }
 
+/* -------------------------------------- section 2 -------------------------------- */
+/* -----  pagination  ----- */
+
+.pagination .page-item .page-link {
+  border-radius: 100px;
+  color: var(--c-main-3-10);
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
+
+  display: flex;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination .active .page-link {
+  color: var(--c-main-4-10) ;
+  background-color: var(--c-main-3-10);
+}
+
+.pagination .page-item {
+  position: relative;
+  margin-right: 10px;
+}
+
+.pagination .disabled .bi {
+  color: var(--c-main-4-10);
+}
+
+.pagination .page-item .page-link:focus {
+  box-shadow: none;
+}
+
+.pagination .page-item .page-link::before {
+  content: '';
+  z-index: -1;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: 0;
+  top: 0;
+  border-radius: 100%;
+  background-color: var(--c-main-3-05);
+  transform: scale(0);
+  transition: all .5s cubic-bezier(0.65, 0, 0.35, 1);
+
+}
+
+.pagination .page-item .page-link:hover::before {
+  transform: scale(1);
+}
+
+.pagination .page-item .page-link:hover {
+  color: var(--c-main-4-10);
+}
+
+@media (min-width: 768px) {
+  .pagination .page-item .page-link {
+    font-size: 20px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .pagination .page-item .page-link::before {
+    width: 60px;
+    height: 60px;
+  }
+}
+
 /* ----- product-area ----- */
+.product-area .product-item .product-img {
+  width: 100%;
+  height: 20vh;
+    img {
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+    }
+}
+
 .product-area .product-item {
   transition: .5s;
 }
-.product-area .product-item:hover {
+.product-area .product-item:hover,
+.product-area .product-item:focus {
   box-shadow: 0 0 10px var(--c-main-3-05);
 }
 .product-area .product-item a {
@@ -206,6 +301,36 @@ main {
 
 .product-area .product-item h5 {
   font-weight: normal;
+  font-size: 16px;
+}
+
+.product-area .product-quantity {
+  position: absolute;
+  bottom: 5px;
+  right: 0;
+  background-color: var(--c-main-5-07);
+  color: #333333;
+  padding: 0px 3px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .product-area .product-item .product-img {
+    width: 100%;
+    height: 30vh;
+  }
+
+  .product-area .product-quantity {
+    bottom: 13px;
+    right: 0;
+    padding: 5px 10px;
+    font-size: 16px;
+  }
+
+  .product-area .product-item h5 {
+    font-size: 20px;
+  }
 }
 /* ---------------------------------------- footer ------------------------------- */
 footer {

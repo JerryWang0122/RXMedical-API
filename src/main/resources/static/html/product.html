@@ -78,6 +78,10 @@
 
         <main>
 
+            <h2>
+                衛材申請
+            </h2>
+
             <!-- 搜索欄 -->
             <section class="mt-3 mt-md-4 px-2">
 
@@ -166,14 +170,45 @@
 
             <!-- 商品區 -->
             <section class="mt-3 mt-md-4">
+
+                
+
                 <div class="product-area container-xl">
-                    <div class="row">
+
+                    <!-- 分頁 -->
+                    <div class="row" aria-label="Page navigation">
+                        <div class="offset-1 col-10 offset-md-3 col-md-6">
+                            <ul class="pagination pagination-lg justify-content-center noto-sans">
+                                <li class="page-item">
+                                    <a class="page-link" id="previousPagination" href="#" aria-label="Previous"><i class="bi bi-caret-left"></i></a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                <li class="page-item"><a class="page-link" href="#">6</a></li>
+                                <li class="page-item disabled">
+                                    <a class="page-link" id="nextPagination" href="#" aria-label="Next"><i class="bi bi-caret-right"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row mt-2">
 
                         <!-- 個別商品 -->
                         <div class="col-6 col-md-4 col-lg-3 mb-3">
                             <div class="card text-center product-item px-4">
                                 <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-1.png" class="card-img-top" alt="">
+                                        <div class="product-quantity noto-sans">
+                                            存貨量 999
+                                        </div>
+                                    </div>
                                     <div class="card-body">
                                         <h5 class="card-text">石膏鞋</h5>
                                     </div>
@@ -184,27 +219,12 @@
                         <div class="col-6 col-md-4 col-lg-3 mb-3">
                             <div class="card text-center product-item px-4">
                                 <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-3.png" class="card-img-top" alt="">
+                                        <div class="product-quantity">
+                                            存貨量 999
+                                        </div>
                                     </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
                                     <div class="card-body">
                                         <h5 class="card-text">石膏鞋</h5>
                                     </div>
@@ -215,85 +235,116 @@
                         <div class="col-6 col-md-4 col-lg-3 mb-3">
                             <div class="card text-center product-item px-4">
                                 <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-5.png" class="card-img-top" alt="">
+                                        <div class="product-quantity">
+                                            存貨量 999
+                                        </div>
+                                    </div>
                                     <div class="card-body">
                                         <h5 class="card-text">石膏鞋</h5>
                                     </div>
                                 </a>
                             </div>
                         </div>
+
+                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                            <div class="card text-center product-item px-4">
+                                <a href="./index.html">
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-7.png" class="card-img-top" alt="">
+                                        <div class="product-quantity">
+                                            存貨量 999
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-text">石膏鞋</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                            <div class="card text-center product-item px-4">
+                                <a href="./index.html">
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-9.png" class="card-img-top" alt="">
+                                        <div class="product-quantity">
+                                            存貨量 999
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-text">石膏鞋</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                            <div class="card text-center product-item px-4">
+                                <a href="./index.html">
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-11.png" class="card-img-top" alt="">
+                                        <div class="product-quantity">
+                                            存貨量 999
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-text">石膏鞋</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                            <div class="card text-center product-item px-4">
+                                <a href="./index.html">
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-13.png" class="card-img-top" alt="">
+                                        <div class="product-quantity">
+                                            存貨量 999
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-text">石膏鞋</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                            <div class="card text-center product-item px-4">
+                                <a href="./index.html">
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-15.png" class="card-img-top" alt="">
+                                        <div class="product-quantity">
+                                            存貨量 999
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-text">石膏鞋</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                            <div class="card text-center product-item px-4">
+                                <a href="./index.html">
+                                    <div class="product-img position-relative">
+                                        <img src="../img/products/product-17.png" class="card-img-top" alt="">
+                                        <div class="product-quantity">
+                                            存貨量 999
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-text">石膏鞋</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
                         
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
-                            <div class="card text-center product-item px-4">
-                                <a href="./index.html">
-                                    <img src="../img/products/product-1.png" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-text">石膏鞋</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
 
                         
                     </div>
