@@ -144,7 +144,7 @@ nav .nav-link::after {
 /* ---------------------------------------- main --------------------------------- */
 main {
   font-family: var(--f-family-1);
-  margin-bottom: 60px;
+  margin-bottom: 70px;
 }
 
 main h2 {
