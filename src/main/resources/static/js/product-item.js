@@ -49,7 +49,7 @@ $(document).ready(function () {
       
     } else {
       Swal.fire({
-        title: "加入失敗",
+        title: "庫存不足，加入失敗",
         icon: "error"
       })
     }
