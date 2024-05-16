@@ -9,6 +9,9 @@
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- sweetalert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
     <!-- custom css -->
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/product-item.css">
@@ -130,7 +133,7 @@
                     
                     <!-- TODO: 需要把商品資訊用input:hidden藏起來 -->
     
-                    <button class="btn col-11 fs-5 mt-3 btn-to-cart mx-auto" type="submit">
+                    <button id="jAddToCartBtn" class="btn col-11 fs-5 mt-3 btn-to-cart mx-auto" type="submit">
                       <i class="bi bi-cart-plus me-2"></i>放入購物車
                     </button>
                   </form>
@@ -156,6 +159,7 @@
       Design / Maintain By Jerry Wang
     </footer>
 
+    <!-- bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jquery -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
