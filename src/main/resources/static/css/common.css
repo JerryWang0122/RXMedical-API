@@ -16,6 +16,7 @@
 
   --c-main-5-10: #e072a4;
   --c-main-5-07: rgba(224, 114, 163, 0.7);
+  --c-main-5-03: rgba(224, 114, 163, 0.3);
 
   --c-background: #f5f5f5;
 
@@ -148,11 +149,11 @@ main {
   margin-bottom: 70px;
 }
 
-main h2 {
+.content-title {
   text-align: center;
   color: var(--c-main-3-10);
   margin-top: 1.5rem;
-  font-size: 38px;
+  font-size: min(calc(20px + 2vw), 40px);
 }
 
 /* ---------------------------------------- footer ------------------------------- */
