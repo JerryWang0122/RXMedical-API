@@ -20,7 +20,7 @@
 
 } */
 
-main section form {
+#userInfoForm {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
@@ -28,34 +28,30 @@ main section form {
   margin-bottom: 30px;
 }
 
-main section form label {
+#userInfoForm label {
   margin-bottom: 10px;
 }
 
-main section form .bi {
+#userInfoForm .bi {
   margin-right: 5px;
 }
 
-main section form .btn {
+#userInfoForm .btn {
   color: var(--c-main-1-10);
   border: 1px solid var(--c-main-1-10);
 }
 
-main section form .btn:hover {
+#userInfoForm .btn:hover {
   background-color: var(--c-main-1-10);
   color: var(--c-main-4-10);
 }
 
-main section form small {
+#userInfoForm small {
   color: var(--c-main-5-10);
 }
 
-.form-control:focus {
+#userInfoForm .form-control:focus {
   border-color: forestgreen;
   box-shadow: none;
   box-shadow: 0 0 0 0.25rem var(--c-main-2-02);
-}
-
-.shop-cart {
-  display: none;
 }
