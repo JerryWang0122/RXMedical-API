@@ -133,6 +133,7 @@ nav .nav-link::after {
   color: var(--c-main-1-10);
   text-align: center;
   border-radius: 100px;
+  min-width: 30px;
 }
 
 @media (min-width: 768px) {
