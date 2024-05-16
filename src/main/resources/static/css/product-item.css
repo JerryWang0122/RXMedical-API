@@ -47,12 +47,19 @@ main h2 {
   }
 }
 
-main form .btn {
+main form .btn-to-cart {
   color: var(--c-main-5-10);
   border: 1px solid var(--c-main-5-10);
 }
 
-main form .btn:hover {
+main form .btn-to-cart:hover {
   background-color: var(--c-main-5-10);
   color: var(--c-main-4-10);
+}
+
+.shop-cart {
+  bottom: initial;
+  right: initial;
+  left: 3vw;
+  top: 105px;
 }
