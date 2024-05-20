@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.rxmedical</groupId>
-    <artifactId>RXMedical</artifactId>
+    <artifactId>RXMedical-API</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>RXMedical</name>
     <description>RXMedical</description>
