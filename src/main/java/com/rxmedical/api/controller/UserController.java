@@ -4,6 +4,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rxmedical.api.model.dto.UserInfoDto;
+import com.rxmedical.api.model.dto.UserLoginDto;
+
 @RestController
 @RequestMapping("/user/api")
 public class UserController {
@@ -14,7 +17,7 @@ public class UserController {
 	}
 		
 	// 判斷使用者登入
-	public void getLogin() {
+	public void getUserInfo(UserLoginDto userLoginDto) {
 		// TODO: 請實作
 	}
 	
@@ -24,17 +27,17 @@ public class UserController {
 	}
 	
 	// 註冊資料寫入DB
-	public void addUserInfo() {
+	public void addUserInfo(UserInfoDto userInfoDto) {
 		// TODO: 請實作
 	}
 	
 	// 取得個人資訊
-	public void getUserInfo() {
+	public void getUserInfo(UserInfoDto userInfoDto) {
 		// TODO: 請實作
 	}
 	
 	// 修改個人資料
-	public void editUserInfo() {
+	public void editUserInfo(UserInfoDto userInfoDto) {
 		// TODO: 請實作
 	}
 }
