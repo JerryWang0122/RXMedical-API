@@ -11,6 +11,7 @@ import com.rxmedical.api.model.dto.UserInfoDto;
 import com.rxmedical.api.model.dto.UserLoginDto;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/user")
 public class UserController {
 
@@ -56,8 +57,14 @@ public class UserController {
 	}
 	
 	// 取得個人資訊
-	public void getUserInfo(UserInfoDto userInfoDto) {
-		// TODO: 請實作
+	@PostMapping("/profile")
+	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(@RequestBody Integer userId) {
+		System.out.println(userId);
+		UserInfoDto info = userService.getUserInfo(userId);
+		if (info == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊不存在", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", info));
 	}
 	
 	// 修改個人資料
