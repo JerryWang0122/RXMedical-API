@@ -1,8 +1,10 @@
 package com.rxmedical.api.controller;
 
+import com.rxmedical.api.model.dto.UserRegisterDto;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.rxmedical.api.model.dto.UserInfoDto;
@@ -22,7 +24,7 @@ public class UserController {
 		
 	// 判斷使用者登入
 	@PostMapping("/login")
-	public ApiResponse<UserInfoDto> postUserLogin(@RequestBody UserLoginDto userLoginDto) {
+	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto) {
 		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto);
 		ApiResponse<UserInfoDto> response = new ApiResponse<>();
 		if (userInfoDto == null) {
@@ -33,7 +35,7 @@ public class UserController {
 			response.setMessage("使用者存在");
 			response.setData(userInfoDto);
 		}
-		return response;
+		return ResponseEntity.ok(response);
 	}
 	
 	// 登出
@@ -42,8 +44,15 @@ public class UserController {
 	}
 	
 	// 註冊資料寫入DB
-	public void addUserInfo(UserInfoDto userInfoDto) {
-		// TODO: 請實作
+	@PostMapping("/register")
+	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto) {
+
+		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto);
+		if (!registerSuccess) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "註冊失敗", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "註冊成功", null));
+
 	}
 	
 	// 取得個人資訊
