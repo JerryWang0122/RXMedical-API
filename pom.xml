@@ -8,7 +8,7 @@
         <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.rxmedical</groupId>
+    <groupId>com.rxmedical</groupId>
     <artifactId>RXMedical-API</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>RXMedical</name>
