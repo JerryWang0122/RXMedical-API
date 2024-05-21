@@ -19,7 +19,7 @@ public class UserController {
 	}
 	
 	// 登出
-	public void getLoguot() {
+	public void getLogout() {
 		// TODO: 請實作
 	}
 	
