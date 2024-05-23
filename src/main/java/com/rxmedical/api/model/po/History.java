@@ -2,6 +2,10 @@ package com.rxmedical.api.model.po;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  *
  * @param id
@@ -14,7 +18,17 @@ import java.util.Date;
  * @param createDate
  * @param updateDate
  */
-public record History(Integer id, Integer quantity, Integer price, String flow,
-                      Integer recordId, Integer productId, Integer userId,
-                      Date createDate, Date updateDate) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class History {
+	private Integer id;
+	private Integer quantity;
+	private Integer price;
+	private String flow;
+	private Integer recordId;
+	private Integer productId;
+	private Integer userId;
+	private Date createDate;
+	private Date updateDate;
 }

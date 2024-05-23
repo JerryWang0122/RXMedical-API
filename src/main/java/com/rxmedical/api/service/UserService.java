@@ -11,15 +11,15 @@ public class UserService {
     // 檢測使用者登入資料
     public UserInfoDto checkUserLogin(UserLoginDto userLoginDto) {
         System.out.println(userLoginDto);
-        if (userLoginDto.getEmail() == null || userLoginDto.getPassword() == null) {
+        if (userLoginDto.email() == null || userLoginDto.password() == null) {
             return null;
         }
 
         // TODO: 用DAO抓使用者資料
-        if (userLoginDto.getEmail().equals("school832@gmail.com") && userLoginDto.getPassword().equals("123")) {
+        if (userLoginDto.email().equals("school832@gmail.com") && userLoginDto.password().equals("123")) {
             return new UserInfoDto(1, "73174", "王俊傑", "秘書室", "替代役", "school832@gmail.com", "staff");
         }
-        if (userLoginDto.getEmail().equals("b06502168@ntu.edu.tw") && userLoginDto.getPassword().equals("123")) {
+        if (userLoginDto.email().equals("b06502168@ntu.edu.tw") && userLoginDto.password().equals("123")) {
             return new UserInfoDto(2, "12345", "Test", "TestDept", "TestTitle", "b06502168@ntu.edu.tw", "register");
         }
         return null;
@@ -30,12 +30,12 @@ public class UserService {
     public Boolean registerUserInfo(UserRegisterDto userRegisterDto) {
         // TODO: 用DAO寫入使用者資料
         System.out.printf("寫入使用者資料%n%s%n%s%n%s%n%s%n%s%n%s",
-                          userRegisterDto.getEmpId(),
-                          userRegisterDto.getName(),
-                          userRegisterDto.getDept(),
-                          userRegisterDto.getTitle(),
-                          userRegisterDto.getEmail(),
-                          userRegisterDto.getPassword());
+                          userRegisterDto.empId(),
+                          userRegisterDto.name(),
+                          userRegisterDto.dept(),
+                          userRegisterDto.title(),
+                          userRegisterDto.email(),
+                          userRegisterDto.password());
         return true;
     }
 
