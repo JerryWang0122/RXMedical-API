@@ -2,30 +2,47 @@ package com.rxmedical.api.model.po;
 
 import java.util.Date;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  *
- * @param id            PK
- * @param recordId      公文號
- * @param status        衛材單狀態
- * @param demanderId    申請人
- * @param transporterId 運送人
- * @param createDate
- * @param updateDate
+ * id            PK
+ * recordId      公文號
+ * status        衛材單狀態
+ * demanderId    申請人
+ * transporterId 運送人
+ * createDate
+ * updateDate
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "record")
 public class Record {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
+	@Column
 	private String recordId;
+
+	@Column
 	private String status;
+
+	@Column
 	private Integer demanderId;
+
+	@Column
 	private Integer transporterId;
+
+	@Column
 	private Date createDate;
+
+	@Column
 	private Date updateDate;
 }

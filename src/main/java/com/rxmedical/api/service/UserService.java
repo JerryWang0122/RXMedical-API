@@ -3,14 +3,19 @@ package com.rxmedical.api.service;
 import com.rxmedical.api.model.dto.UserInfoDto;
 import com.rxmedical.api.model.dto.UserLoginDto;
 import com.rxmedical.api.model.dto.UserRegisterDto;
+import com.rxmedical.api.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    @Autowired
+    private UserRepository userRepository;
 
     // 檢測使用者登入資料
     public UserInfoDto checkUserLogin(UserLoginDto userLoginDto) {
-        System.out.println(userLoginDto);
+        userRepository.findAll().forEach(System.out::println);
+//        System.out.println(userLoginDto);
         if (userLoginDto.email() == null || userLoginDto.password() == null) {
             return null;
         }
