@@ -30,6 +30,12 @@ public class Product {
 	private Integer id;
 
     @Column
+    private String productId;
+
+    @Column
+    private String storage;
+
+    @Column
 	private String name;
 
     @Column
