@@ -42,7 +42,7 @@ public class Product {
 	private Integer stock;
 
     @Column
-	private String desc;
+	private String description;
 
     @Column
 	private String picture;
