@@ -39,14 +39,14 @@ public class History {
 	@Column
 	private String flow;
 
-	@Column
-	private Integer recordId;
+	@ManyToOne
+	private Record record;
 
-	@Column
-	private Integer productId;
+	@ManyToOne
+	private Product product;
 
-	@Column
-	private Integer userId;
+	@ManyToOne
+	private User user;
 
 	@Column
 	private Date createDate;

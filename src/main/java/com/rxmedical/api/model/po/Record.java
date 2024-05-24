@@ -34,11 +34,11 @@ public class Record {
 	@Column
 	private String status;
 
-	@Column
-	private Integer demanderId;
+	@ManyToOne
+	private User demander;
 
-	@Column
-	private Integer transporterId;
+	@ManyToOne
+	private User transporter;
 
 	@Column
 	private Date createDate;

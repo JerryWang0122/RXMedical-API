@@ -12,7 +12,7 @@ import com.rxmedical.api.model.dto.UserLoginDto;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
 
 	@Autowired
@@ -24,7 +24,7 @@ public class UserController {
 	}
 		
 	// 判斷使用者登入
-	@PostMapping("/login")
+	@PostMapping("/user/login")
 	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto) {
 		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto);
 		ApiResponse<UserInfoDto> response = new ApiResponse<>();
@@ -45,7 +45,7 @@ public class UserController {
 	}
 	
 	// 註冊資料寫入DB
-	@PostMapping("/register")
+	@PostMapping("/user/register")
 	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto) {
 
 		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto);
@@ -57,7 +57,7 @@ public class UserController {
 	}
 	
 	// 取得個人資訊
-	@PostMapping("/profile")
+	@PostMapping("/user/profile")
 	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(@RequestBody Integer userId) {
 		System.out.println(userId);
 		UserInfoDto info = userService.getUserInfo(userId);
