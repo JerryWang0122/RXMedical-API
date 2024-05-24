@@ -25,6 +25,9 @@ public class User {
 	private String name;
 
 	@Column
+	private String salt;
+
+	@Column
 	private String password;
 
 	@Column
