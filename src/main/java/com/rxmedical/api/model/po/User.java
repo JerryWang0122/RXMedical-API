@@ -39,17 +39,17 @@ public class User {
 	@Column
 	private String email;    // 信箱
 
+	/**
+	 *     authLevel 權限分五級
+	 * 		1. off : 關閉權限
+	 * 		2. register: 完成註冊
+	 *   ---- (以上無法登入使用) ----
+	 * 		3. staff: 一般員工
+	 * 		4. admin: 管理人員
+	 * 		5.  root: 最高管理者
+	 */
 	@Column
 	private String authLevel;  // 權限
-	/*
-		authLevel 權限分五級
-		1. off : 關閉權限
-		2. register: 完成註冊
-  -------- 以上無法登入使用 --------
-		3. staff: 一般員工
-		4. admin: 管理人員
-		5.  root: 最高管理者
-	 */
 
 	@Column
 	private Date createDate;  // 建立日期

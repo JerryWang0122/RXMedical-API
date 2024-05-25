@@ -22,16 +22,17 @@ public class Record {
 	@Column
 	private String code;	// 文件公文號
 
-	@Column
-	private String status;		// 訂單狀態
-	/*
-		待確認(unchecked:) 訂單剛送出但尚未被接受
-		待撿貨(picking): 訂單接受，但尚未收集完成
-		待出貨(waiting): 收集完成，等待指定配送
-		運送中(transporting): admin開始配送
-		已完成(finish): 配送完成
-		取消(rejected): 取消
+	/**
+	 *  [status] 訂單狀態 -> 有六種
+	 *  待確認(unchecked:) 訂單剛送出但尚未被接受
+	 *  待撿貨(picking): 訂單接受，但尚未收集完成
+	 *  待出貨(waiting): 收集完成，等待指定配送
+	 *  運送中(transporting): admin開始配送
+	 *  已完成(finish): 配送完成
+	 *  取消(rejected): 取消
 	 */
+	@Column
+	private String status;	    // 訂單狀態
 
 	@ManyToOne
 	private User demander;		// User 類 -> 申請人
