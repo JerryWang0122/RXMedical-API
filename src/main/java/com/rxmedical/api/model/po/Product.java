@@ -7,16 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- *
+/**<pre>
+ * Product     商品
+ * ========================
  * id
- * name
- * stock      庫存量
- * desc       商品描述
- * picture    圖片儲存位置
- * category   商品種類
- * createDate
- * updateDate
+ * name        商品名稱
+ * stock       庫存量
+ * desc        商品描述
+ * picture     圖片儲存位置
+ * category    商品種類
+ * createDate  建立日期
+ * updateDate  更新日期
+ * </pre>
  */
 @Data
 @AllArgsConstructor
