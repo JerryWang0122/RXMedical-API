@@ -46,7 +46,7 @@ public class History {
 	private Product product;
 
 	@ManyToOne
-	private User user;
+	private User grabber;
 
 	@Column
 	private Date createDate;
