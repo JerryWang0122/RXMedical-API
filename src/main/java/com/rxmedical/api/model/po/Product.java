@@ -7,19 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**<pre>
- * Product     商品
- * ========================
- * id
- * name        商品名稱
- * stock       庫存量
- * desc        商品描述
- * picture     圖片儲存位置
- * category    商品種類
- * createDate  建立日期
- * updateDate  更新日期
- * </pre>
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,29 +19,29 @@ public class Product {
 	private Integer id;
 
     @Column
-    private String productId;
+    private String code;    // 產品識別號
 
     @Column
-    private String storage;
+    private String name;    // 產品名稱
 
     @Column
-	private String name;
+	private Integer stock;  // 庫存量
 
     @Column
-	private Integer stock;
+	private String description;     // 產品描述
 
     @Column
-	private String description;
+    private String storage;     // 儲存位置
 
     @Column
-	private String picture;
+	private String picture;     // 圖片儲存位置
 
     @Column
-	private String category;
+	private String category;     // 商品種類
 
     @Column
-	private Date createDate;
+	private Date createDate;     // 建立日期
 
     @Column
-	private Date updateDate;
+	private Date updateDate;     // 更新日期
 }

@@ -7,20 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**<pre>
- * history     歷史紀錄
- * ================================
- * id
- * quantity    該次進、銷變化量
- * price       該次進貨金額（銷統一為 0）
- * flow        進、銷
- * recordId    對應哪一筆衛材單
- * productId   對應哪一項衛材
- * userId      誰去取貨或進貨
- * createDate  建立日期
- * updateDate  更新日期
- * </pre>
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,26 +19,26 @@ public class History {
 	private Integer id;
 
 	@Column
-	private Integer quantity;
+	private Integer quantity;	// 該次進、銷變化量
 
 	@Column
-	private Integer price;
+	private Integer price;		// 該次進、銷貨金額（銷統一為 0）
 
 	@Column
-	private String flow;
+	private String flow;	// 進、銷
 
 	@ManyToOne
-	private Record record;
+	private Record record;		// Record 類 -> 對應哪一筆衛材單
 
 	@ManyToOne
-	private Product product;
+	private Product product;	// Product 類 -> 對應哪一項衛材
 
 	@ManyToOne
-	private User grabber;
+	private User user;		// User 類 -> 誰去取貨或進貨
 
 	@Column
-	private Date createDate;
+	private Date createDate;	// 建立日期
 
 	@Column
-	private Date updateDate;
+	private Date updateDate;	// 更新日期
 }

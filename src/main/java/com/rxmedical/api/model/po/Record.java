@@ -7,17 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Record         交易紀錄
- * ========================
- * id
- * recordId       公文號
- * status         衛材單狀態
- * demanderId     申請人
- * transporterId  運送人
- * createDate     建立日期
- * updateDate     更新日期
- */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,20 +20,28 @@ public class Record {
 	private Integer id;
 
 	@Column
-	private String recordId;
+	private String code;	// 文件公文號
 
 	@Column
-	private String status;
+	private String status;		// 訂單狀態
+	/*
+		待確認(unchecked:) 訂單剛送出但尚未被接受
+		待撿貨(picking): 訂單接受，但尚未收集完成
+		待出貨(waiting): 收集完成，等待指定配送
+		運送中(transporting): admin開始配送
+		已完成(finish): 配送完成
+		取消(rejected): 取消
+	 */
 
 	@ManyToOne
-	private User demander;
+	private User demander;		// User 類 -> 申請人
 
 	@ManyToOne
-	private User transporter;
+	private User transporter;	// User 類 -> 運送人
 
 	@Column
-	private Date createDate;
+	private Date createDate;	// 建立日期
 
 	@Column
-	private Date updateDate;
+	private Date updateDate;	// 更新日期
 }
