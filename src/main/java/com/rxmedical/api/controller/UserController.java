@@ -26,7 +26,9 @@ public class UserController {
 	// 判斷使用者登入
 	@PostMapping("/user/login")
 	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto) {
+		
 		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto);
+		
 		ApiResponse<UserInfoDto> response = new ApiResponse<>();
 		if (userInfoDto == null) {
 			response.setState(false);
@@ -44,16 +46,16 @@ public class UserController {
 		// TODO: 請實作
 	}
 	
-	// 註冊資料寫入DB
+	// 註冊
 	@PostMapping("/user/register")
 	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto) {
 
 		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto);
+		
 		if (!registerSuccess) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "註冊失敗", null));
 		}
 		return ResponseEntity.ok(new ApiResponse<>(true, "註冊成功", null));
-
 	}
 	
 	// 取得個人資訊
