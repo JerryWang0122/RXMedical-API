@@ -9,6 +9,6 @@ package com.rxmedical.api.model.dto;
 // 職稱
 // 信箱
 // 權限級別
-public record UserInfoDto(Integer id, String empId, String name, String dept, String title, String email, String authLevel) {
+public record UserInfoDto(Integer id, String empCode, String name, String dept, String title, String email, String authLevel) {
 
 }

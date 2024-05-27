@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import com.rxmedical.api.model.dto.UserInfoDto;
 import com.rxmedical.api.model.dto.UserLoginDto;
 
+import java.security.NoSuchAlgorithmException;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/users")
@@ -25,7 +27,7 @@ public class UserController {
 		
 	// 判斷使用者登入
 	@PostMapping("/user/login")
-	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto) {
+	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto) throws NoSuchAlgorithmException {
 		
 		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto);
 		
@@ -48,7 +50,7 @@ public class UserController {
 	
 	// 註冊
 	@PostMapping("/user/register")
-	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto) {
+	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto) throws NoSuchAlgorithmException {
 
 		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto);
 		

@@ -7,6 +7,6 @@ package com.rxmedical.api.model.dto;
 // 職稱
 // 信箱
 // 密碼
-public record UserRegisterDto(String empId, String name, String dept, String title, String email, String password) {
+public record UserRegisterDto(String empCode, String name, String dept, String title, String email, String password) {
 
 }
