@@ -69,7 +69,6 @@ public class UserController {
 	}
 	
 	// 修改個人資料
-
 	@PutMapping("/user/profile")
 	public ResponseEntity<ApiResponse<UserInfoDto>> editUserInfo(@RequestBody UserEditInfoDto userEditInfoDto) {
 		UserInfoDto updateInfo = userService.updateUserInfo(userEditInfoDto);
@@ -80,6 +79,7 @@ public class UserController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", updateInfo));
 	}
 
+	// 後台查詢所有使用者
 	@PostMapping("/admin/member")
 	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList(@RequestBody Integer userId) {
 		List<MemberInfoDto> memberList = userService.getMemberList(userId);
@@ -87,5 +87,15 @@ public class UserController {
 			return ResponseEntity.ok(new ApiResponse<>(false, "權限不足", null));
 		}
 		return ResponseEntity.ok(new ApiResponse<>(true, "員工權限資訊", memberList));
+	}
+
+	// root 使用者調整會員權限
+	@PutMapping("/root/member")
+	public ResponseEntity<ApiResponse<Boolean>> changeMemberAuthLevel(@RequestBody ChangeMemberAuthDto memberAuthDto) {
+		Boolean success = userService.updateMemberAuthLevel(memberAuthDto);
+		if (success) {
+			return ResponseEntity.ok(new ApiResponse<>(true, "權限更新成功", true));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(false, "權限更新失敗", false));
 	}
 }

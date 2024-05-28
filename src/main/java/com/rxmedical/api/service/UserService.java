@@ -158,4 +158,35 @@ public class UserService {
 		}
 		return null;
 	}
+
+	/**
+	 * [後台 root - 調整] 調整會員權限
+	 * @param memberAuthDto	欲調整的資訊，誰被調整成什麼等級
+	 * @return Boolean 是否調整成功
+	 */
+	public Boolean updateMemberAuthLevel(ChangeMemberAuthDto memberAuthDto) {
+		// 不能修改root權限
+		if (memberAuthDto.memberId().equals(1)) {
+			return false;
+		}
+		// 不能將任何人調成root權限，或是主動調成註冊狀態
+		if (memberAuthDto.authLevel().equals("root") || memberAuthDto.authLevel().equals("register")) {
+			return false;
+		}
+
+		// 更新資料
+		Optional<User> optionalUser = userRepository.findById(memberAuthDto.memberId());
+		if (optionalUser.isPresent()) {
+			User u = optionalUser.get();
+			if (u.getAuthLevel().equals("register")) {
+				// TODO
+				System.out.println("寄一封通知信");
+			}
+			u.setAuthLevel(memberAuthDto.authLevel());
+			userRepository.save(u);
+			return true;
+		}
+		return false;
+	}
+
 }
