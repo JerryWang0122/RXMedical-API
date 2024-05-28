@@ -20,7 +20,13 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    // 檢測使用者登入資料
+	/**
+	 * [檢測] 檢驗使用者登入資料
+	 *
+	 * @param userLoginDto 使用者登入資料
+	 * @return UserInfoDto 使用者資料
+	 * @throws NoSuchAlgorithmException
+	 */
 	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto) throws NoSuchAlgorithmException {
 
 		if (userLoginDto.email() == null || userLoginDto.password() == null) {
@@ -55,8 +61,8 @@ public class UserService {
     /**
      * [增加] 使用者資料
      * 
-     * @param userRegisterDto
-     * @return
+     * @param userRegisterDto 註冊人註冊資料
+     * @return Boolean 註冊是否成功
      */
     public Boolean registerUserInfo(UserRegisterDto userRegisterDto) throws NoSuchAlgorithmException {
     	
@@ -88,7 +94,11 @@ public class UserService {
         return result;
     }
 
-    // 取得使用者個人帳戶資料
+	/**
+	 * [搜索] 取得使用者個人帳戶資料
+	 * @param userId 使用者id
+	 * @return UserInfoDto 個人帳戶資料
+	 */
     public UserInfoDto getUserInfo(Integer userId) {
 		Optional<User> optionalUser = userRepository.findById(userId);
 		if (optionalUser.isPresent()) {
@@ -100,7 +110,11 @@ public class UserService {
 		return null;
     }
 
-	// 更新使用者個人帳戶資料
+	/**
+	 * [更新] 更新使用者個人帳戶資料
+	 * @param userEditInfoDto 使用者更新後的個人資訊
+	 * @return UserInfoDto 更新後的個人資訊
+	 */
 	public UserInfoDto updateUserInfo(UserEditInfoDto userEditInfoDto) {
 
 		// root 的資料不可被更改
@@ -124,7 +138,11 @@ public class UserService {
 		return null;
 	}
 
-	// 後台查詢所有使用者的資料
+	/**
+	 * [後台 - 查詢] 後台查詢所有使用者的資料
+	 * @param userId 查詢者的id，要先做權限驗證
+	 * @return List<MemberInfoDto> 會員資訊
+	 */
 	public List<MemberInfoDto> getMemberList(Integer userId) {
 		// userId 查詢者的ID，先做權限驗證
 		Optional<User> optionalUser = userRepository.findById(userId);
