@@ -1,5 +1,6 @@
 package com.rxmedical.api.controller;
 
+import com.rxmedical.api.model.dto.UserEditInfoDto;
 import com.rxmedical.api.model.dto.UserRegisterDto;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.UserService;
@@ -63,7 +64,6 @@ public class UserController {
 	// 取得個人資訊
 	@PostMapping("/user/profile")
 	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(@RequestBody Integer userId) {
-		System.out.println(userId);
 		UserInfoDto info = userService.getUserInfo(userId);
 		if (info == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊不存在", null));
@@ -72,7 +72,14 @@ public class UserController {
 	}
 	
 	// 修改個人資料
-	public void editUserInfo(UserInfoDto userInfoDto) {
-		// TODO: 請實作
+
+	@PutMapping("/user/profile")
+	public ResponseEntity<ApiResponse<UserInfoDto>> editUserInfo(@RequestBody UserEditInfoDto userEditInfoDto) {
+		UserInfoDto updateInfo = userService.updateUserInfo(userEditInfoDto);
+
+		if (updateInfo == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊更新失敗", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", updateInfo));
 	}
 }

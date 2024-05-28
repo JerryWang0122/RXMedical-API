@@ -3,9 +3,9 @@ package com.rxmedical.api.service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Date;
 import java.util.Optional;
 
+import com.rxmedical.api.model.dto.UserEditInfoDto;
 import com.rxmedical.api.util.KeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -92,13 +92,37 @@ public class UserService {
 
     // 取得使用者個人帳戶資料
     public UserInfoDto getUserInfo(Integer userId) {
-        // 用DAO抓使用者資料
-        if (userId == 1) {
-            return new UserInfoDto(1, "73174", "王俊傑", "秘書室", "替代役", "school832@gmail.com", "staff");
-        }
-        if (userId == 2) {
-            return new UserInfoDto(2, "12345", "Test", "TestDept", "TestTitle", "b06502168@ntu.edu.tw", "register");
-        }
-        return null;
+		Optional<User> optionalUser = userRepository.findById(userId);
+		if (optionalUser.isPresent()) {
+			User u = optionalUser.get();
+			return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
+								   u.getDept(), u.getTitle(), u.getEmail(),
+								   u.getAuthLevel());
+		}
+		return null;
     }
+
+	// 更新使用者個人帳戶資料
+	public UserInfoDto updateUserInfo(UserEditInfoDto userEditInfoDto) {
+
+		// root 的資料不可被更改
+		if (userEditInfoDto == null || userEditInfoDto.id().equals(0)) {
+			return null;
+		}
+
+		// 更新資料
+		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.id());
+		if (optionalUser.isPresent()) {
+			User u = optionalUser.get();
+			u.setName(userEditInfoDto.name());
+			u.setDept(userEditInfoDto.dept());
+			u.setTitle(userEditInfoDto.title());
+			u.setEmail(userEditInfoDto.email());
+			userRepository.save(u);
+			return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
+								   u.getDept(), u.getTitle(), u.getEmail(),
+								   u.getAuthLevel());
+		}
+		return null;
+	}
 }
