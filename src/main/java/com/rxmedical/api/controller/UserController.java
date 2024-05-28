@@ -1,17 +1,14 @@
 package com.rxmedical.api.controller;
 
-import com.rxmedical.api.model.dto.UserEditInfoDto;
-import com.rxmedical.api.model.dto.UserRegisterDto;
+import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.rxmedical.api.model.dto.UserInfoDto;
-import com.rxmedical.api.model.dto.UserLoginDto;
-
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -81,5 +78,14 @@ public class UserController {
 			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊更新失敗", null));
 		}
 		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", updateInfo));
+	}
+
+	@PostMapping("/admin/member")
+	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList(@RequestBody Integer userId) {
+		List<MemberInfoDto> memberList = userService.getMemberList(userId);
+		if (memberList == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "權限不足", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "員工權限資訊", memberList));
 	}
 }

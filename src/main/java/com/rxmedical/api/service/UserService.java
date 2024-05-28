@@ -3,17 +3,15 @@ package com.rxmedical.api.service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 
-import com.rxmedical.api.model.dto.UserEditInfoDto;
+import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.util.KeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import com.rxmedical.api.model.dto.UserInfoDto;
-import com.rxmedical.api.model.dto.UserLoginDto;
-import com.rxmedical.api.model.dto.UserRegisterDto;
 import com.rxmedical.api.model.po.User;
 import com.rxmedical.api.repository.UserRepository;
 
@@ -122,6 +120,23 @@ public class UserService {
 			return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
 								   u.getDept(), u.getTitle(), u.getEmail(),
 								   u.getAuthLevel());
+		}
+		return null;
+	}
+
+	// 後台查詢所有使用者的資料
+	public List<MemberInfoDto> getMemberList(Integer userId) {
+		// userId 查詢者的ID，先做權限驗證
+		Optional<User> optionalUser = userRepository.findById(userId);
+		if (optionalUser.isPresent()) {
+			User u = optionalUser.get();
+			// 如果是 admin 或 root，可以查詢所有使用者的資料
+			if (u.getAuthLevel().equals("admin") || u.getAuthLevel().equals("root")) {
+				return userRepository.findAll().stream()
+						.map(user -> new MemberInfoDto(user.getId(), user.getEmpCode(), user.getName(),
+									user.getDept(), user.getTitle(), user.getAuthLevel(), user.getCreateDate()))
+						.toList();
+			}
 		}
 		return null;
 	}
