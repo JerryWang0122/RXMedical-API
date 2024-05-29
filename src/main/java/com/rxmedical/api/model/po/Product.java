@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +21,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-    @Column
+    @Column(unique = true)
     private String code;    // 產品識別號
 
     @Column
@@ -40,8 +43,10 @@ public class Product {
 	private String category;     // 商品種類
 
     @Column
+    @CreationTimestamp(source = SourceType.DB)
 	private Date createDate;     // 建立日期
 
     @Column
+    @UpdateTimestamp(source = SourceType.DB)
 	private Date updateDate;     // 更新日期
 }

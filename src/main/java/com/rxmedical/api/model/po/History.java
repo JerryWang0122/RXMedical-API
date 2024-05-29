@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +28,7 @@ public class History {
 	private Integer price;		// 該次進、銷貨金額（銷統一為 0）
 
 	@Column
-	private String flow;	// 進、銷
+	private String flow;	// 進、銷、毀
 
 	@ManyToOne
 	private Record record;		// Record 類 -> 對應哪一筆衛材單
@@ -37,8 +40,10 @@ public class History {
 	private User user;		// User 類 -> 誰去取貨或進貨
 
 	@Column
+	@CreationTimestamp(source = SourceType.DB)
 	private Date createDate;	// 建立日期
 
 	@Column
+	@UpdateTimestamp(source = SourceType.DB)
 	private Date updateDate;	// 更新日期
 }
