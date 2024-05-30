@@ -1,6 +1,7 @@
 package com.rxmedical.api.service;
 
 import com.rxmedical.api.model.dto.MaterialFileUploadDto;
+import com.rxmedical.api.model.dto.ShowMaterialDto;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Product;
 import com.rxmedical.api.model.po.User;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +31,20 @@ public class ProductService {
     // 上傳圖片的儲存位置
     final private String FILE_PATH = "/Users/jerrywang/Intellij-WorkSpace/RXMedical-Web/img/products/";
 
+    public List<ShowMaterialDto> getMaterialList(Integer userId) {
+        //TODO: 應該需要檢查權限
+        System.out.println(userId);
+        return productRepository.findAll().stream()
+                .map(p -> new ShowMaterialDto(p.getId(), p.getCode(), p.getName(), p.getStock(),
+                                                p.getStorage(), p.getCategory()))
+                .toList();
+    }
+
+    /**
+     * [新增] 註冊產品資訊
+     * @param infoDto 產品資訊及第一筆進貨資料
+     * @return Boolean 是否成功
+     */
     @Transactional
     public Boolean registerProduct(MaterialFileUploadDto infoDto) {
         System.out.println(infoDto);

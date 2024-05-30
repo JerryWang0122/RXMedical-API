@@ -1,12 +1,15 @@
 package com.rxmedical.api.controller;
 
 import com.rxmedical.api.model.dto.MaterialFileUploadDto;
+import com.rxmedical.api.model.dto.ShowMaterialDto;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -19,6 +22,12 @@ public class ProductController {
 	@GetMapping("/test")
 	public String getTest() {
 		return "Product API 連接成功";
+	}
+
+	@PostMapping("/admin/material")
+	public ResponseEntity<ApiResponse<List<ShowMaterialDto>>> getMaterialList(@RequestBody Integer userId) {
+		List<ShowMaterialDto> materialList = productService.getMaterialList(userId);
+		return ResponseEntity.ok(new ApiResponse<>(true, "產品資訊", materialList));
 	}
 
 	@PostMapping("/admin/material/create")
@@ -36,9 +45,5 @@ public class ProductController {
 		}
 		return ResponseEntity.ok(new ApiResponse<>(false, "新增產品失敗", null));
 	}
-	//
-	//
-	//
-	//
-	//
+
 }
