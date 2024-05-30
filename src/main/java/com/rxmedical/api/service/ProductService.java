@@ -31,9 +31,7 @@ public class ProductService {
     // 上傳圖片的儲存位置
     final private String FILE_PATH = "/Users/jerrywang/Intellij-WorkSpace/RXMedical-Web/img/products/";
 
-    public List<ShowMaterialDto> getMaterialList(Integer userId) {
-        //TODO: 應該需要檢查權限
-        System.out.println(userId);
+    public List<ShowMaterialDto> getMaterialList() {
         return productRepository.findAll().stream()
                 .map(p -> new ShowMaterialDto(p.getId(), p.getCode(), p.getName(), p.getStock(),
                                                 p.getStorage(), p.getCategory()))
@@ -47,7 +45,6 @@ public class ProductService {
      */
     @Transactional
     public Boolean registerProduct(MaterialFileUploadDto infoDto) {
-        System.out.println(infoDto);
 
         // 沒有權限
         User user = checkAuth(infoDto.userId());

@@ -26,11 +26,19 @@ public class BackendAuthCheckAOP {
     // 設定切點
     // ---------------- User ----------------------
     @Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.getMemberList(..))")
-    public void getMemberList(){};
+    public void getMemberList(){}
+    // ---------------- Product -------------------
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.materialInfoUpload(..))")
+    public void materialInfoUpload(){}
+
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.getMaterialList(..))")
+    public void getMaterialList(){}
 
 
+    // ---------------- 開切 -------------------------
     // 環繞通知(不包括getTest、登入、註冊)
-    @Around(value = "getMemberList() ")
+    @Around(value = "getMemberList() || " +
+            "getMaterialList() || materialInfoUpload()")
     public Object aroundCheckAuth(ProceedingJoinPoint joinPoint) {
 
         Object result = null;
@@ -67,6 +75,7 @@ public class BackendAuthCheckAOP {
     }
 
 
+    // 只有root能修改使用者權限
     @Around(value = "execution(* com.rxmedical.api.controller.UserController.changeMemberAuthLevel(..))")
     public Object changeMemberAuthLevel(ProceedingJoinPoint joinPoint) {
 
