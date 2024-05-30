@@ -4,6 +4,7 @@ import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,8 +61,8 @@ public class UserController {
 	
 	// 取得個人資訊
 	@PostMapping("/user/profile")
-	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(@RequestBody Integer userId) {
-		UserInfoDto info = userService.getUserInfo(userId);
+	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(@RequestBody CurrUserDto currUserDto) {
+		UserInfoDto info = userService.getUserInfo(currUserDto.userId());
 		if (info == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊不存在", null));
 		}
@@ -71,21 +72,23 @@ public class UserController {
 	// 修改個人資料
 	@PutMapping("/user/profile")
 	public ResponseEntity<ApiResponse<UserInfoDto>> editUserInfo(@RequestBody UserEditInfoDto userEditInfoDto) {
-		UserInfoDto updateInfo = userService.updateUserInfo(userEditInfoDto);
+		try {
+			UserInfoDto updateInfo = userService.updateUserInfo(userEditInfoDto);
 
-		if (updateInfo == null) {
-			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊更新失敗", null));
+			if (updateInfo == null) {
+				return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊更新失敗", null));
+			}
+			return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", updateInfo));
+
+		} catch (DataIntegrityViolationException e) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "信箱(帳號)重複", null));
 		}
-		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", updateInfo));
 	}
 
 	// 後台查詢所有使用者
 	@PostMapping("/admin/member")
-	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList(@RequestBody Integer userId) {
-		List<MemberInfoDto> memberList = userService.getMemberList(userId);
-		if (memberList == null) {
-			return ResponseEntity.ok(new ApiResponse<>(false, "權限不足", null));
-		}
+	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList(@RequestBody CurrUserDto currUserDto) {
+		List<MemberInfoDto> memberList = userService.getMemberList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "員工權限資訊", memberList));
 	}
 

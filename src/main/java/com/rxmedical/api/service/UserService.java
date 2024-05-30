@@ -118,12 +118,12 @@ public class UserService {
 	public UserInfoDto updateUserInfo(UserEditInfoDto userEditInfoDto) {
 
 		// root 的資料不可被更改
-		if (userEditInfoDto == null || userEditInfoDto.id().equals(0)) {
+		if (userEditInfoDto == null || userEditInfoDto.userId().equals(0)) {
 			return null;
 		}
 
 		// 更新資料
-		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.id());
+		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.userId());
 		if (optionalUser.isPresent()) {
 			User u = optionalUser.get();
 			u.setName(userEditInfoDto.name());
@@ -140,23 +140,13 @@ public class UserService {
 
 	/**
 	 * [後台 - 查詢] 後台查詢所有使用者的資料
-	 * @param userId 查詢者的id，要先做權限驗證
 	 * @return List<MemberInfoDto> 會員資訊
 	 */
-	public List<MemberInfoDto> getMemberList(Integer userId) {
-		// userId 查詢者的ID，先做權限驗證
-		Optional<User> optionalUser = userRepository.findById(userId);
-		if (optionalUser.isPresent()) {
-			User u = optionalUser.get();
-			// 如果是 admin 或 root，可以查詢所有使用者的資料
-			if (u.getAuthLevel().equals("admin") || u.getAuthLevel().equals("root")) {
-				return userRepository.findAll().stream()
-						.map(user -> new MemberInfoDto(user.getId(), user.getEmpCode(), user.getName(),
-									user.getDept(), user.getTitle(), user.getAuthLevel(), user.getCreateDate()))
-						.toList();
-			}
-		}
-		return null;
+	public List<MemberInfoDto> getMemberList() {
+		return userRepository.findAll().stream()
+				.map(user -> new MemberInfoDto(user.getId(), user.getEmpCode(), user.getName(),
+						user.getDept(), user.getTitle(), user.getAuthLevel(), user.getCreateDate()))
+				.toList();
 	}
 
 	/**
