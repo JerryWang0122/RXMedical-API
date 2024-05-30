@@ -2,6 +2,7 @@ package com.rxmedical.api.service;
 
 import com.rxmedical.api.model.dto.MaterialFileUploadDto;
 import com.rxmedical.api.model.dto.MaterialInfoDto;
+import com.rxmedical.api.model.dto.MaterialUpdateInfoDto;
 import com.rxmedical.api.model.dto.ShowMaterialDto;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Product;
@@ -56,6 +57,34 @@ public class ProductService {
                     p.getPicture());
         }
         return null;
+    }
+
+    /**
+     * [更新] 更新後台產品的資料
+     * @param infoDto 產品要更新的資訊
+     * @return
+     */
+    public Boolean updateMaterialInfo(MaterialUpdateInfoDto infoDto) {
+        Optional<Product> optionalProduct = productRepository.findById(infoDto.productId());
+        if (optionalProduct.isPresent()) {
+            Product p = optionalProduct.get();
+            p.setName(infoDto.name());
+            p.setCategory(infoDto.category());
+            p.setStorage(infoDto.storage());
+            p.setDescription(infoDto.description());
+
+            if (infoDto.updatePicture() != null) {
+                String imgPath = uploadPicture(infoDto.updatePicture());
+                if (imgPath == null) {
+                    return false;
+                }
+                p.setPicture(imgPath);
+            }
+
+            productRepository.save(p);
+            return true;
+        }
+        return false;
     }
 
     /**

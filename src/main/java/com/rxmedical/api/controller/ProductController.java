@@ -68,11 +68,11 @@ public class ProductController {
 				  @RequestParam Integer productId, @RequestParam String name, @RequestParam String category,
 				  @RequestParam String storage, @RequestParam String description, @RequestParam MultipartFile picture) {
 
-//		MaterialInfoDto materialInfoDto = new MaterialInfoDto(productId, name, category, storage, description, picture);
-//		Boolean success = productService.updateMaterialInfo(materialInfoDto);
-//		if (success) {
-//			return ResponseEntity.ok(new ApiResponse<>(true, "商品更新成功", null));
-//		}
+		MaterialUpdateInfoDto updateInfoDto = new MaterialUpdateInfoDto(productId, name, category, storage, description, picture);
+		Boolean success = productService.updateMaterialInfo(updateInfoDto);
+		if (success) {
+			return ResponseEntity.ok(new ApiResponse<>(true, "商品更新成功", null));
+		}
 		return ResponseEntity.ok(new ApiResponse<>(false, "商品更新失敗", null));
 	}
 }
