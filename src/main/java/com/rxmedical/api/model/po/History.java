@@ -25,10 +25,10 @@ public class History {
 	private Integer quantity;	// 該次進、銷變化量
 
 	@Column
-	private Integer price;		// 該次進、銷貨金額（銷統一為 0）
+	private Integer price;		// 該次進、銷貨金額（售統一為 0）
 
 	@Column
-	private String flow;	// 進、銷、毀
+	private String flow;	// 進、銷、售
 
 	@ManyToOne
 	private Record record;		// Record 類 -> 對應哪一筆衛材單

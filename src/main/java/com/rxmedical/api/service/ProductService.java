@@ -1,6 +1,7 @@
 package com.rxmedical.api.service;
 
 import com.rxmedical.api.model.dto.MaterialFileUploadDto;
+import com.rxmedical.api.model.dto.MaterialInfoDto;
 import com.rxmedical.api.model.dto.ShowMaterialDto;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Product;
@@ -31,11 +32,30 @@ public class ProductService {
     // 上傳圖片的儲存位置
     final private String FILE_PATH = "/Users/jerrywang/Intellij-WorkSpace/RXMedical-Web/img/products/";
 
+    /**
+     * [搜索] 取得所有產品資訊
+     * @return List 商品列表
+     */
     public List<ShowMaterialDto> getMaterialList() {
         return productRepository.findAll().stream()
                 .map(p -> new ShowMaterialDto(p.getId(), p.getCode(), p.getName(), p.getStock(),
                                                 p.getStorage(), p.getCategory()))
                 .toList();
+    }
+
+    /**
+     * [搜索] 取得單一產品的詳細資訊
+     * @return MaterialInfoDto 單一商品詳細資料
+     */
+    public MaterialInfoDto getMaterialInfo(Integer id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product p = optionalProduct.get();
+            return new MaterialInfoDto(p.getId(), p.getCode(), p.getName(),
+                    p.getCategory(), p.getStorage(), p.getDescription(),
+                    p.getPicture());
+        }
+        return null;
     }
 
     /**
