@@ -95,13 +95,9 @@ public class ProductService {
     @Transactional
     public Boolean registerProduct(MaterialFileUploadDto infoDto) {
 
-        // 沒有權限
-        User user = checkAuth(infoDto.userId());
-        if (user == null) {
-            return false;
-        }
+        // 因為經過aop，所以直接get
+        User user = userRepository.findById(infoDto.userId()).get();
 
-        System.out.println(infoDto);
         // 上傳檔案並取得檔案路徑
         String imgPath = uploadPicture(infoDto.picture());
         // 上傳的檔案有問題
@@ -159,19 +155,4 @@ public class ProductService {
 
     }
 
-    /**
-     * [工具] 確認使用者權限
-     * @param userId
-     * @return User 操作人資訊，null時代表不符資格
-     */
-    private User checkAuth(Integer userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            if ("admin".equals(user.getAuthLevel()) || "root".equals(user.getAuthLevel())) {
-                return user;
-            }
-        }
-        return null;
-    }
 }

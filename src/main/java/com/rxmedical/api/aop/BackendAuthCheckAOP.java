@@ -43,12 +43,15 @@ public class BackendAuthCheckAOP {
     @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.callMaterial(..))")
     public void callMaterial(){}
 
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.destroyMaterial(..))")
+    public void destroyMaterial(){}
+
 
     // ---------------- 開切 -------------------------
     // 環繞通知(不包括getTest、登入、註冊)
     @Around(value = "getMemberList() || " +
             "getMaterialList() || materialInfoUpload() || getMaterialInfo() || materialInfoUpdate() ||" +
-            "callMaterial()")
+            "callMaterial() || destroyMaterial()")
     public Object aroundCheckAuth(ProceedingJoinPoint joinPoint) {
 
         Object result = null;
