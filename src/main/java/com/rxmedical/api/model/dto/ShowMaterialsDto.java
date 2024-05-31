@@ -9,5 +9,5 @@ package com.rxmedical.api.model.dto;
  * @param storage 儲存位置
  * @param category 產品類別
  */
-public record ShowMaterialDto(Integer id, String code, String name, Integer stock, String storage, String category) {
+public record ShowMaterialsDto(Integer id, String code, String name, Integer stock, String storage, String category) {
 }

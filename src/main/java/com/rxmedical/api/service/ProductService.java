@@ -3,7 +3,7 @@ package com.rxmedical.api.service;
 import com.rxmedical.api.model.dto.MaterialFileUploadDto;
 import com.rxmedical.api.model.dto.MaterialInfoDto;
 import com.rxmedical.api.model.dto.MaterialUpdateInfoDto;
-import com.rxmedical.api.model.dto.ShowMaterialDto;
+import com.rxmedical.api.model.dto.ShowMaterialsDto;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Product;
 import com.rxmedical.api.model.po.User;
@@ -37,9 +37,9 @@ public class ProductService {
      * [搜索] 取得所有產品資訊
      * @return List 商品列表
      */
-    public List<ShowMaterialDto> getMaterialList() {
+    public List<ShowMaterialsDto> getMaterialList() {
         return productRepository.findAll().stream()
-                .map(p -> new ShowMaterialDto(p.getId(), p.getCode(), p.getName(), p.getStock(),
+                .map(p -> new ShowMaterialsDto(p.getId(), p.getCode(), p.getName(), p.getStock(),
                                                 p.getStorage(), p.getCategory()))
                 .toList();
     }

@@ -4,7 +4,6 @@ import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,9 +25,9 @@ public class ProductController {
 
 	// 後台查詢所有產品
 	@PostMapping("/admin/material")
-	public ResponseEntity<ApiResponse<List<ShowMaterialDto>>> getMaterialList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<ShowMaterialsDto>>> getMaterialList(@RequestBody CurrUserDto currUserDto) {
 		
-		List<ShowMaterialDto> materialList = productService.getMaterialList();
+		List<ShowMaterialsDto> materialList = productService.getMaterialList();
 		
 		return ResponseEntity.ok(new ApiResponse<>(true, "產品資訊", materialList));
 	}

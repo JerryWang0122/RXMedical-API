@@ -59,8 +59,8 @@ public class SaleService {
     }
 
     /**
-     * [後台 - 衛材進銷] 銷貨
-     * @param destroyDto 銷貨資料
+     * [後台 - 衛材進銷] 銷毀貨品
+     * @param destroyDto 銷毀貨物資料
      * @return Integer 最新庫存，null表示找不到貨，-[number]表示庫存不足 -> number 表示目前庫存量
      */
     @Transactional
