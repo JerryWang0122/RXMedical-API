@@ -18,49 +18,46 @@ import java.util.Optional;
 @Aspect
 public class CheckUserLoginAOP {
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    // 設定切點
-    // ---------------- User ----------------------
-    @Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.getUserInfo(..))")
-    public void getUserInfo(){}
+	// 設定切點
+	// ---------------- User ----------------------
+	@Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.getUserInfo(..))")
+	public void getUserInfo() {}
 
-    @Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.editUserInfo(..))")
-    public void editUserInfo(){}
+	@Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.editUserInfo(..))")
+	public void editUserInfo() {}
 
+	// 環繞通知(不包括getTest、登入、註冊)
+	@Around(value = "getUserInfo() || editUserInfo()")
+	public Object aroundCheckLogin(ProceedingJoinPoint joinPoint) {
 
+		Object result = null;
+		Optional<User> optionalUser;
 
-    // 環繞通知(不包括getTest、登入、註冊)
-    @Around(value = "getUserInfo() || editUserInfo()")
-    public Object aroundCheckLogin(ProceedingJoinPoint joinPoint) {
+		try {
+			System.out.println("測試前置");
+			// 前置：檢查用戶登入狀態
+			Object[] args = joinPoint.getArgs();
+			if (args.length > 1) { // 非DTO，而是用多個參數傳入的，則 currUserId 為第一個參數
+				optionalUser = userRepository.findById((Integer) args[0]);
+			} else { 
+				// DTO 裡面應該包含 currUserId
+				// 使用反射取得 currUserId
+				Integer currUserId = (Integer) args[0].getClass().getDeclaredMethod("userId").invoke(args[0]);
+				optionalUser = userRepository.findById(currUserId);
+			}
 
-        Object result = null;
-        Optional<User> optionalUser;
-
-        try {
-            System.out.println("測試前置");
-            // 前置：檢查用戶登入狀態
-            Object[] args = joinPoint.getArgs();
-            if (args.length > 1) { // 非DTO，而是用多個參數傳入的，則 currUserId 為第一個參數
-                optionalUser = userRepository.findById((Integer) args[0]);
-            } else { // DTO 裡面應該包含 currUserId
-                // 使用反射取得 currUserId
-                Integer currUserId = (Integer) args[0].getClass().getDeclaredMethod("userId").invoke(args[0]);
-                optionalUser = userRepository.findById(currUserId);
-            }
-
-            if (optionalUser.isPresent()){
-                result = joinPoint.proceed();
-            } else {
-                result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
-            }
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-            result = ResponseEntity.ok(new ApiResponse<>(false, "伺服器發生錯誤", null));
-        }
-        return result;
-    }
-
+			if (optionalUser.isPresent()) {
+				result = joinPoint.proceed();
+			} else {
+				result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+			result = ResponseEntity.ok(new ApiResponse<>(false, "伺服器發生錯誤", null));
+		}
+		return result;
+	}
 }

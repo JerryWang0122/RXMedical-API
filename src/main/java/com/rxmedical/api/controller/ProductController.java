@@ -27,36 +27,37 @@ public class ProductController {
 	// 後台查詢所有產品
 	@PostMapping("/admin/material")
 	public ResponseEntity<ApiResponse<List<ShowMaterialDto>>> getMaterialList(@RequestBody CurrUserDto currUserDto) {
+		
 		List<ShowMaterialDto> materialList = productService.getMaterialList();
+		
 		return ResponseEntity.ok(new ApiResponse<>(true, "產品資訊", materialList));
 	}
 
 	// 後台新增商品
 	@PostMapping("/admin/material/create")
-	public ResponseEntity<ApiResponse<Object>> materialInfoUpload(@RequestParam Integer userId,
-				  @RequestParam String code, @RequestParam String name, @RequestParam String category,
-				  @RequestParam String storage, @RequestParam String description, @RequestParam Integer quantity,
-				  @RequestParam Integer price, @RequestParam MultipartFile picture) {
+	public ResponseEntity<ApiResponse<Object>> materialInfoUpload(
+			@RequestParam Integer userId, @RequestParam String code, @RequestParam String name, 
+			@RequestParam String category, @RequestParam String storage, @RequestParam String description, 
+			@RequestParam Integer quantity, @RequestParam Integer price, @RequestParam MultipartFile picture) {
 
-		MaterialFileUploadDto materialInfoDto = new MaterialFileUploadDto(code, name, category, storage,
-														description, quantity, price, userId, picture);
-
-		try {
-			Boolean success = productService.registerProduct(materialInfoDto);
-			if (success) {
-				return ResponseEntity.ok(new ApiResponse<>(true, "新增產品成功", null));
-			}
-		} catch (DataIntegrityViolationException e) {
-			e.printStackTrace();
-			return ResponseEntity.ok(new ApiResponse<>(false, "產品編號重複", null));
+		// Param 轉換成 DTO
+		MaterialFileUploadDto materialInfoDto = new MaterialFileUploadDto(code, name, category, storage, description, quantity, price, userId, picture);
+		
+		Boolean success = productService.registerProduct(materialInfoDto);
+		if(!success) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "新增產品失敗", null));
 		}
-		return ResponseEntity.ok(new ApiResponse<>(false, "新增產品失敗", null));
+		return ResponseEntity.ok(new ApiResponse<>(true, "新增產品成功", null));
+		// DataIntegrityViolationException 問題 (先不要處理這個 Error)
+		// return ResponseEntity.ok(new ApiResponse<>(false, "產品編號重複", null));
 	}
 
 	// 後台查找單一商品資料
 	@PostMapping("/admin/material/edit")
 	public ResponseEntity<ApiResponse<MaterialInfoDto>> getMaterialInfo(@RequestBody GetMaterialInfoDto searchDto) {
+		
 		MaterialInfoDto materialInfo = productService.getMaterialInfo(searchDto.materialId());
+		
 		if (materialInfo == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "產品資訊不存在", null));
 		}
@@ -64,11 +65,13 @@ public class ProductController {
 	}
 
 	@PutMapping("/admin/material/edit")
-	public ResponseEntity<ApiResponse<Object>> materialInfoUpdate(@RequestParam Integer userId,
-				  @RequestParam Integer productId, @RequestParam String name, @RequestParam String category,
-				  @RequestParam String storage, @RequestParam String description, @RequestParam MultipartFile picture) {
+	public ResponseEntity<ApiResponse<Object>> materialInfoUpdate(
+			@RequestParam Integer userId, @RequestParam Integer productId, @RequestParam String name, 
+			@RequestParam String category, @RequestParam String storage, @RequestParam String description, 
+			@RequestParam MultipartFile picture) {
 
 		MaterialUpdateInfoDto updateInfoDto = new MaterialUpdateInfoDto(productId, name, category, storage, description, picture);
+		
 		Boolean success = productService.updateMaterialInfo(updateInfoDto);
 		if (success) {
 			return ResponseEntity.ok(new ApiResponse<>(true, "商品更新成功", null));

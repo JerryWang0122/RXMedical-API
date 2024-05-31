@@ -1,19 +1,18 @@
 package com.rxmedical.api.aop;
 
-import com.rxmedical.api.model.po.User;
-import com.rxmedical.api.model.response.ApiResponse;
-import com.rxmedical.api.repository.UserRepository;
-import org.aspectj.lang.JoinPoint;
+import java.util.Optional;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import com.rxmedical.api.model.po.User;
+import com.rxmedical.api.model.response.ApiResponse;
+import com.rxmedical.api.repository.UserRepository;
 
 // 檢查使用者是否有後台權限
 @Component
@@ -39,8 +38,6 @@ public class BackendAuthCheckAOP {
 
     @Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.materialInfoUpdate(..))")
     public void materialInfoUpdate(){}
-
-
 
     // ---------------- 開切 -------------------------
     // 環繞通知(不包括getTest、登入、註冊)
@@ -73,14 +70,12 @@ public class BackendAuthCheckAOP {
             } else {
                 result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
             }
-
         } catch (Throwable e) {
             e.printStackTrace();
             result = ResponseEntity.ok(new ApiResponse<>(false, "伺服器發生錯誤", null));
         }
         return result;
     }
-
 
     // 只有root能修改使用者權限
     @Around(value = "execution(* com.rxmedical.api.controller.UserController.changeMemberAuthLevel(..))")
@@ -118,5 +113,4 @@ public class BackendAuthCheckAOP {
         }
         return result;
     }
-
 }

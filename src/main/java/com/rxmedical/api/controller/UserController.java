@@ -39,6 +39,7 @@ public class UserController {
 			response.setMessage("使用者存在");
 			response.setData(userInfoDto);
 		}
+		
 		return ResponseEntity.ok(response);
 	}
 	
@@ -62,7 +63,9 @@ public class UserController {
 	// 取得個人資訊
 	@PostMapping("/user/profile")
 	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(@RequestBody CurrUserDto currUserDto) {
+		
 		UserInfoDto info = userService.getUserInfo(currUserDto.userId());
+		
 		if (info == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊不存在", null));
 		}
@@ -72,30 +75,32 @@ public class UserController {
 	// 修改個人資料
 	@PutMapping("/user/profile")
 	public ResponseEntity<ApiResponse<UserInfoDto>> editUserInfo(@RequestBody UserEditInfoDto userEditInfoDto) {
-		try {
-			UserInfoDto updateInfo = userService.updateUserInfo(userEditInfoDto);
-
-			if (updateInfo == null) {
-				return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊更新失敗", null));
-			}
-			return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", updateInfo));
-
-		} catch (DataIntegrityViolationException e) {
-			return ResponseEntity.ok(new ApiResponse<>(false, "信箱(帳號)重複", null));
+		
+		UserInfoDto updateInfo = userService.updateUserInfo(userEditInfoDto);
+		
+		if (updateInfo == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊更新失敗", null));
 		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", updateInfo));
+		// DataIntegrityViolationException 問題 (先不要處理這個 Error)
+		// return ResponseEntity.ok(new ApiResponse<>(false, "信箱(帳號)重複", null));
 	}
 
 	// 後台查詢所有使用者
 	@PostMapping("/admin/member")
 	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList(@RequestBody CurrUserDto currUserDto) {
+		
 		List<MemberInfoDto> memberList = userService.getMemberList();
+		
 		return ResponseEntity.ok(new ApiResponse<>(true, "員工權限資訊", memberList));
 	}
 
 	// root 使用者調整會員權限
 	@PutMapping("/root/member")
 	public ResponseEntity<ApiResponse<Boolean>> changeMemberAuthLevel(@RequestBody ChangeMemberAuthDto memberAuthDto) {
+		
 		Boolean success = userService.updateMemberAuthLevel(memberAuthDto);
+		
 		if (success) {
 			return ResponseEntity.ok(new ApiResponse<>(true, "權限更新成功", true));
 		}
