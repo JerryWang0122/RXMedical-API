@@ -26,7 +26,16 @@ public class ProductController {
 	// 前台查詢所有產品
 	@PostMapping("/product")
 	public ResponseEntity<ApiResponse<List<ShowProductsDto>>> getProductList(@RequestBody CurrUserDto currUserDto) {
-		return ResponseEntity.ok(new ApiResponse<>(true, "產品資訊", productService.getProductList()));
+		return ResponseEntity.ok(new ApiResponse<>(true, "產品資訊列表", productService.getProductList()));
+	}
+
+	@PostMapping("/product/item")
+	public ResponseEntity<ApiResponse<ProductItemInfoDto>> getProductItemInfo(@RequestBody GetMaterialInfoDto getInfoDto) {
+		ProductItemInfoDto info = productService.getProductItemInfo(getInfoDto.materialId());
+		if (info == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "產品資訊不存在", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "產品資訊", info));
 	}
 
 	// 後台查詢所有產品

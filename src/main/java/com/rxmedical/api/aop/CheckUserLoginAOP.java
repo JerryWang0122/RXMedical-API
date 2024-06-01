@@ -29,12 +29,17 @@ public class CheckUserLoginAOP {
 	@Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.editUserInfo(..))")
 	public void editUserInfo() {}
 
+	// ---------------- Product -------------------
 	@Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.getProductList(..))")
 	public void getProductList() {}
 
+	@Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.getProductItemInfo(..))")
+	public void getProductItemInfo() {}
+
+
 
 	@Around(value = "getUserInfo() || editUserInfo() ||" +
-				"getProductList()")
+				"getProductList() || getProductItemInfo()")
 	public Object aroundCheckLogin(ProceedingJoinPoint joinPoint) {
 
 		Object result = null;

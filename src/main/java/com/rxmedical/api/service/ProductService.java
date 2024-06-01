@@ -32,6 +32,11 @@ public class ProductService {
     // 上傳圖片的儲存位置
     final private String FILE_PATH = "/Users/jerrywang/Intellij-WorkSpace/RXMedical-Web/img/products/";
 
+
+    /**
+     * [搜索-前台] 取得所有產品資訊
+     * @return List 商品列表
+     */
     public List<ShowProductsDto> getProductList() {
         return productRepository.findAll().stream()
                 .map(p -> new ShowProductsDto(p.getId(), p.getName(), p.getStock(), p.getCategory(), p.getPicture()))
@@ -39,7 +44,22 @@ public class ProductService {
     }
 
     /**
-     * [搜索] 取得所有產品資訊
+     * [搜索-前台] 前台取得單一商品的資訊
+     * @param productId 商品id
+     * @return ProductItemInfoDto 商品資料
+     */
+    public ProductItemInfoDto getProductItemInfo(Integer productId) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isPresent()) {
+            Product p = optionalProduct.get();
+            return new ProductItemInfoDto(p.getId(), p.getName(), p.getCategory(), p.getStock(),
+                        p.getDescription(), p.getPicture());
+        }
+        return null;
+    }
+
+    /**
+     * [搜索-後台] 取得所有產品資訊
      * @return List 商品列表
      */
     public List<ShowMaterialsDto> getMaterialList() {
