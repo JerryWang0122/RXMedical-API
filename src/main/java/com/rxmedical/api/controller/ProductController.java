@@ -23,6 +23,12 @@ public class ProductController {
 		return "Product API 連接成功";
 	}
 
+	// 前台查詢所有產品
+	@PostMapping("/product")
+	public ResponseEntity<ApiResponse<List<ShowProductsDto>>> getProductList(@RequestBody CurrUserDto currUserDto) {
+		return ResponseEntity.ok(new ApiResponse<>(true, "產品資訊", productService.getProductList()));
+	}
+
 	// 後台查詢所有產品
 	@PostMapping("/admin/material")
 	public ResponseEntity<ApiResponse<List<ShowMaterialsDto>>> getMaterialList(@RequestBody CurrUserDto currUserDto) {

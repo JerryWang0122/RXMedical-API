@@ -1,9 +1,6 @@
 package com.rxmedical.api.service;
 
-import com.rxmedical.api.model.dto.MaterialFileUploadDto;
-import com.rxmedical.api.model.dto.MaterialInfoDto;
-import com.rxmedical.api.model.dto.MaterialUpdateInfoDto;
-import com.rxmedical.api.model.dto.ShowMaterialsDto;
+import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Product;
 import com.rxmedical.api.model.po.User;
@@ -20,6 +17,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class ProductService {
 
@@ -32,6 +31,12 @@ public class ProductService {
 
     // 上傳圖片的儲存位置
     final private String FILE_PATH = "/Users/jerrywang/Intellij-WorkSpace/RXMedical-Web/img/products/";
+
+    public List<ShowProductsDto> getProductList() {
+        return productRepository.findAll().stream()
+                .map(p -> new ShowProductsDto(p.getId(), p.getName(), p.getStock(), p.getCategory(), p.getPicture()))
+                .toList();
+    }
 
     /**
      * [搜索] 取得所有產品資訊
@@ -62,7 +67,7 @@ public class ProductService {
     /**
      * [更新] 更新後台產品的資料
      * @param infoDto 產品要更新的資訊
-     * @return
+     * @return Boolean 是否成功
      */
     public Boolean updateMaterialInfo(MaterialUpdateInfoDto infoDto) {
         Optional<Product> optionalProduct = productRepository.findById(infoDto.productId());

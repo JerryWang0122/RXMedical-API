@@ -14,6 +14,7 @@ public class SaleController {
 
 	@Autowired
 	private SaleService saleService;
+
 	@GetMapping("/test")
 	public String getTest() {
 		return "Sales API 連接成功";

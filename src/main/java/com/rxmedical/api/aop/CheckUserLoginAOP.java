@@ -29,8 +29,12 @@ public class CheckUserLoginAOP {
 	@Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.editUserInfo(..))")
 	public void editUserInfo() {}
 
-	// 環繞通知(不包括getTest、登入、註冊)
-	@Around(value = "getUserInfo() || editUserInfo()")
+	@Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.getProductList(..))")
+	public void getProductList() {}
+
+
+	@Around(value = "getUserInfo() || editUserInfo() ||" +
+				"getProductList()")
 	public Object aroundCheckLogin(ProceedingJoinPoint joinPoint) {
 
 		Object result = null;
@@ -49,8 +53,14 @@ public class CheckUserLoginAOP {
 				optionalUser = userRepository.findById(currUserId);
 			}
 
-			if (optionalUser.isPresent()) {
-				result = joinPoint.proceed();
+			if (optionalUser.isPresent()){
+				User u = optionalUser.get();
+				if (u.getAuthLevel().equals("staff") || u.getAuthLevel().equals("admin") ||
+						u.getAuthLevel().equals("root")){
+					result = joinPoint.proceed();
+				} else {
+					result = ResponseEntity.ok(new ApiResponse<>(false, "權限有誤", null));
+				}
 			} else {
 				result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
 			}
