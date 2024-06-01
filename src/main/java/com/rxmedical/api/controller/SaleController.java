@@ -1,11 +1,14 @@
 package com.rxmedical.api.controller;
 
+import com.rxmedical.api.model.dto.ApplyRecordDto;
 import com.rxmedical.api.model.dto.SaleMaterialDto;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -18,6 +21,22 @@ public class SaleController {
 	@GetMapping("/test")
 	public String getTest() {
 		return "Sales API 連接成功";
+	}
+
+	// 前台使用者，申請，產生訂單
+	@PostMapping("/order_generate")
+	public ResponseEntity<ApiResponse<String>> orderGenerate(@RequestBody ApplyRecordDto recordDto) {
+		String errorMessage = saleService.checkOrder(recordDto);
+		if (errorMessage == null) {
+			return ResponseEntity.ok(new ApiResponse<>(true, "訂單申請成功", null));
+		}
+		switch (errorMessage) {
+			case "貨號不存在":
+			case "沒有申請項目":
+				return ResponseEntity.ok(new ApiResponse<>(false, "訂單錯誤", null));
+			default:
+				return ResponseEntity.ok(new ApiResponse<>(false, "庫存不足，請修改或刪除", errorMessage));
+		}
 	}
 
 	// 後台使用者，進貨

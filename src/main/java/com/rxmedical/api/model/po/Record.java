@@ -22,7 +22,7 @@ public class Record {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column
+	@Column(unique = true)
 	private String code;	// 文件公文號
 
 	/**

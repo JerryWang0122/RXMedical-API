@@ -36,10 +36,15 @@ public class CheckUserLoginAOP {
 	@Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.getProductItemInfo(..))")
 	public void getProductItemInfo() {}
 
+	// ---------------- Sale ----------------------
+	@Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.orderGenerate(..))")
+	public void orderGenerate() {}
+
 
 
 	@Around(value = "getUserInfo() || editUserInfo() ||" +
-				"getProductList() || getProductItemInfo()")
+				"getProductList() || getProductItemInfo() ||" +
+				"orderGenerate()")
 	public Object aroundCheckLogin(ProceedingJoinPoint joinPoint) {
 
 		Object result = null;

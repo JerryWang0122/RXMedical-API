@@ -1,17 +1,26 @@
 package com.rxmedical.api.service;
 
+import com.rxmedical.api.model.dto.ApplyItemDto;
+import com.rxmedical.api.model.dto.ApplyRecordDto;
 import com.rxmedical.api.model.dto.SaleMaterialDto;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Product;
+import com.rxmedical.api.model.po.Record;
 import com.rxmedical.api.model.po.User;
 import com.rxmedical.api.repository.HistoryRepository;
 import com.rxmedical.api.repository.ProductRepository;
+import com.rxmedical.api.repository.RecordRepository;
 import com.rxmedical.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class SaleService {
@@ -24,6 +33,72 @@ public class SaleService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RecordRepository recordRepository;
+
+    /**
+     * [前台] 產生衛材申請單
+     * @param recordDto 申請資訊[申請人及申請項目]
+     * @return String -> 檢查狀況，若為null則代表通過，生成訂單
+     */
+    @Transactional
+    public synchronized String checkOrder(ApplyRecordDto recordDto) {
+        if (recordDto.applyItems().isEmpty()) {
+            return "沒有申請項目";
+        }
+
+        // 錯誤清單
+        List<String> errorList = new ArrayList<>();
+
+        // 先檢查有沒有不存在的貨號
+        for (ApplyItemDto item : recordDto.applyItems()) {
+            Optional<Product> optionalProduct = productRepository.findById(item.productId());
+            if (optionalProduct.isEmpty()) {
+                return "貨號不存在";
+            } else {
+                Product p = optionalProduct.get();
+                // 如果貨不夠
+                if (p.getStock() < item.applyQty()) {
+                    errorList.add("[" + p.getName() + "]庫存: " + p.getStock());
+                }
+            }
+        }
+        // 如果errorList裡面有東西，回傳
+        if (!errorList.isEmpty()) {
+            return String.join("<br>", errorList);
+        }
+        //---------------- 檢查完成，生成訂單 ---------------
+        // 已經通過aop檢查了，直接拿
+        User demander = userRepository.findById(recordDto.userId()).get();
+
+        Record record = new Record();
+        record.setCode(generateCode());
+        record.setStatus("unchecked");
+        record.setDemander(demander);
+
+        Record r = recordRepository.save(record);
+
+        recordDto.applyItems().stream().forEach(item -> {
+            // 因為上面檢查過了，直接拿
+            Product p = productRepository.findById(item.productId()).get();
+            // 更新庫存
+            p.setStock(p.getStock() - item.applyQty());
+            productRepository.save(p);
+
+            // 產生歷史紀錄
+            History history = new History();
+            history.setQuantity(item.applyQty());
+            history.setPrice(0);
+            history.setFlow("售");
+            history.setProduct(p);
+            history.setRecord(r);
+            historyRepository.save(history);
+        });
+
+        return null;
+
+    }
 
     /**
      * [後台 - 衛材進銷] 進貨
@@ -93,5 +168,43 @@ public class SaleService {
         p.setStock(p.getStock() - destroyDto.quantity());
         productRepository.save(p);
         return p.getStock();
+    }
+
+
+    /**
+     * [工具] 產生訂單編號
+     * 產生的code：格式為當天日期加四位的大寫英文和數字的組合亂數 [YYYYMMDDXXXX]
+     * @return String 訂單編號
+     */
+    private String generateCode() {
+        // 获取当前日期并格式化为YYYYMMDD
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String date = sdf.format(new Date());
+        String code = date + generateRandomCode(4);
+
+        // 判断是否已经存在该订单
+        while (recordRepository.existsByCode(code)) {
+            code = date + generateRandomCode(4);
+        }
+
+        // 返回日期和乱数组合的字符串
+        return code;
+    }
+
+    /**
+     * [工具] 輔助generateCode()方法，生成四位的大寫英文和数字的组合乱数
+     * @param length 產成數字的位數
+     * @return String 4位的大寫英文和數字的組合
+     */
+    private String generateRandomCode(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            sb.append(characters.charAt(random.nextInt(characters.length())));
+        }
+
+        return sb.toString();
     }
 }
