@@ -118,6 +118,26 @@ public class SaleService {
     }
 
     /**
+     * [後台] 取得所有待撿貨訂單概況
+     * @return List 待撿貨訂單列表
+     */
+    public synchronized List<OrderListDto> getPickingOrderList() {
+        List<Record> records = recordRepository.findByStatus("picking");
+        return records.stream()
+                .map(r -> new OrderListDto(
+                        r.getId(),
+                        r.getCode(),
+                        historyRepository.countByRecord(r),
+                        new OrderDemanderDto(
+                                r.getDemander().getDept(),
+                                r.getDemander().getTitle(),
+                                r.getDemander().getName()
+                        ),
+                        null))
+                .toList();
+    }
+
+    /**
      * [後台] 取得所有取消訂單概況
      * @return List 取消訂單列表
      */
