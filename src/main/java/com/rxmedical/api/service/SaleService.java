@@ -55,6 +55,28 @@ public class SaleService {
     }
 
     /**
+     * [後台] 將訂單狀態從待撿貨往待出貨推送
+     * @param recordId 操作訂單ID
+     * @return 正常: null, 不正常: [errorMsg]
+     */
+    public synchronized String pushToWaiting(Integer recordId) {
+        Optional<Record> optionalRecord = recordRepository.findById(recordId);
+        if (optionalRecord.isEmpty()) {
+            return "找不到訂單";
+        }
+        Record record = optionalRecord.get();
+        if (!record.getStatus().equals("picking")) {
+            return "訂單狀態已轉移";
+        }
+        if (historyRepository.countByRecordAndUserIsNull(record) != 0) {
+            return "還有商品尚未撿貨";
+        }
+        record.setStatus("waiting");
+        recordRepository.save(record);
+        return null;
+    }
+
+    /**
      * [後台] 將訂單狀態從待確認往取消推送
      * @param recordId 操作訂單ID
      * @return 正常: null, 不正常: [errorMsg]
@@ -127,6 +149,11 @@ public class SaleService {
                 .toList();
     }
 
+    /**
+     * [後台] 將待撿貨的清單項目，依照需求撿貨
+     * @param pickingDto 哪項商品被誰撿起
+     * @return String errMsg
+     */
     public synchronized String pickUpItem(PickingHistoryDto pickingDto) {
         Optional<History> optionalHistory = historyRepository.findById(pickingDto.historyId());
         if (optionalHistory.isEmpty()) {

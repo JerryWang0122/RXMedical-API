@@ -70,13 +70,17 @@ public class BackendAuthCheckAOP {
     @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.pickUpItem(..))")
     public void pickUpItem(){}
 
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.pushToWaiting(..))")
+    public void pushToWaiting(){}
+
+
     // ---------------- 開切 -------------------------
     // 環繞通知(不包括getTest、登入、註冊)
     @Around(value = "getMemberList() || " +
             "getMaterialList() || materialInfoUpload() || getMaterialInfo() || materialInfoUpdate() ||" +
             "callMaterial() || destroyMaterial() || getOrderDetails() || getUncheckedOrderList() || pushToPicking() ||" +
             "pushToRejected() || getRejectedOrderList() || getPickingOrderList() || getHistoryProductList() ||" +
-            "pickUpItem()")
+            "pickUpItem() || pushToWaiting()")
     public Object aroundCheckAuth(ProceedingJoinPoint joinPoint) {
 
         Object result = null;
