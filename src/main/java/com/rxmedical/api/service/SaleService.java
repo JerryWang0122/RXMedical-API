@@ -1,8 +1,6 @@
 package com.rxmedical.api.service;
 
-import com.rxmedical.api.model.dto.ApplyItemDto;
-import com.rxmedical.api.model.dto.ApplyRecordDto;
-import com.rxmedical.api.model.dto.SaleMaterialDto;
+import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Product;
 import com.rxmedical.api.model.po.Record;
@@ -36,6 +34,13 @@ public class SaleService {
 
     @Autowired
     private RecordRepository recordRepository;
+
+    public synchronized List<OrderListDto> getUncheckedOrderList() {
+        List<Record> records = recordRepository.findByStatus("unchecked");
+        return records.stream().map(r -> new OrderListDto(r.getId(), r.getCode(), historyRepository.countByRecord(r),
+                        new OrderDemanderDto(r.getDemander().getDept(), r.getDemander().getTitle(), r.getDemander().getName())))
+                        .toList();
+    }
 
     /**
      * [前台] 產生衛材申請單
@@ -176,7 +181,7 @@ public class SaleService {
      * 產生的code：格式為當天日期加四位的大寫英文和數字的組合亂數 [YYYYMMDDXXXX]
      * @return String 訂單編號
      */
-    private String generateCode() {
+    private synchronized String generateCode() {
         // 获取当前日期并格式化为YYYYMMDD
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String date = sdf.format(new Date());
@@ -196,7 +201,7 @@ public class SaleService {
      * @param length 產成數字的位數
      * @return String 4位的大寫英文和數字的組合
      */
-    private String generateRandomCode(int length) {
+    private synchronized String generateRandomCode(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
         StringBuilder sb = new StringBuilder(length);

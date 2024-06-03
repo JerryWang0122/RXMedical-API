@@ -1,6 +1,8 @@
 package com.rxmedical.api.controller;
 
 import com.rxmedical.api.model.dto.ApplyRecordDto;
+import com.rxmedical.api.model.dto.CurrUserDto;
+import com.rxmedical.api.model.dto.OrderListDto;
 import com.rxmedical.api.model.dto.SaleMaterialDto;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.SaleService;
@@ -21,6 +23,12 @@ public class SaleController {
 	@GetMapping("/test")
 	public String getTest() {
 		return "Sales API 連接成功";
+	}
+
+	@PostMapping("/admin/order_list/unchecked")
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getUncheckedOrderList(@RequestBody CurrUserDto currUserDto) {
+		List<OrderListDto> orderList = saleService.getUncheckedOrderList();
+		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
 	// 前台使用者，申請，產生訂單
