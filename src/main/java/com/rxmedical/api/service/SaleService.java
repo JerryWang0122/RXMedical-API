@@ -103,9 +103,38 @@ public class SaleService {
      */
     public synchronized List<OrderListDto> getUncheckedOrderList() {
         List<Record> records = recordRepository.findByStatus("unchecked");
-        return records.stream().map(r -> new OrderListDto(r.getId(), r.getCode(), historyRepository.countByRecord(r),
-                        new OrderDemanderDto(r.getDemander().getDept(), r.getDemander().getTitle(), r.getDemander().getName())))
-                        .toList();
+        return records.stream()
+                      .map(r -> new OrderListDto(
+                                        r.getId(),
+                                        r.getCode(),
+                                        historyRepository.countByRecord(r),
+                                        new OrderDemanderDto(
+                                                r.getDemander().getDept(),
+                                                r.getDemander().getTitle(),
+                                                r.getDemander().getName()
+                                        ),
+                                        null))
+                      .toList();
+    }
+
+    /**
+     * [後台] 取得所有取消訂單概況
+     * @return List 取消訂單列表
+     */
+    public synchronized List<OrderListDto> getRejectedOrderList() {
+        List<Record> records = recordRepository.findByStatus("rejected");
+        return records.stream()
+                .map(r -> new OrderListDto(
+                            r.getId(),
+                            r.getCode(),
+                            historyRepository.countByRecord(r),
+                            new OrderDemanderDto(
+                                    r.getDemander().getDept(),
+                                    r.getDemander().getTitle(),
+                                    r.getDemander().getName()
+                            ),
+                            null))
+                .toList();
     }
 
     /**

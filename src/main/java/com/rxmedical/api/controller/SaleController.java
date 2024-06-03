@@ -40,6 +40,15 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
+	// 後台使用者，取得所有取消訂單清單
+	@PostMapping("/admin/order_list/rejected")
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getRejectedOrderList(@RequestBody CurrUserDto currUserDto) {
+		List<OrderListDto> orderList = saleService.getRejectedOrderList();
+		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
+	}
+
+
+
 	// ---------------------------- 對status做操作 ---------------------
 	// 後台把"待確認"訂單狀態往"待撿貨"狀態送
 	@PutMapping("/admin/order_list/unchecked")

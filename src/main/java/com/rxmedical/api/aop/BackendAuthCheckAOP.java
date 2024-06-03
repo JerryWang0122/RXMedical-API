@@ -52,6 +52,9 @@ public class BackendAuthCheckAOP {
     @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.getUncheckedOrderList(..))")
     public void getUncheckedOrderList(){}
 
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.getRejectedOrderList(..))")
+    public void getRejectedOrderList(){}
+
     @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.pushToPicking(..))")
     public void pushToPicking(){}
 
@@ -64,7 +67,7 @@ public class BackendAuthCheckAOP {
     @Around(value = "getMemberList() || " +
             "getMaterialList() || materialInfoUpload() || getMaterialInfo() || materialInfoUpdate() ||" +
             "callMaterial() || destroyMaterial() || getOrderDetails() || getUncheckedOrderList() || pushToPicking() ||" +
-            "pushToRejected()")
+            "pushToRejected() || getRejectedOrderList()")
     public Object aroundCheckAuth(ProceedingJoinPoint joinPoint) {
 
         Object result = null;
