@@ -35,6 +35,30 @@ public class SaleService {
     @Autowired
     private RecordRepository recordRepository;
 
+    /**
+     * [後台] 將訂單狀態從待確認往待撿貨推送
+     * @param recordId 操作訂單ID
+     * @return 正常: null, 不正常: [errorMsg]
+     */
+    public synchronized String pushToPicking(Integer recordId) {
+        Optional<Record> optionalRecord = recordRepository.findById(recordId);
+        if (optionalRecord.isEmpty()) {
+            return "找不到訂單";
+        }
+        Record record = optionalRecord.get();
+        if (!record.getStatus().equals("unchecked")) {
+            return "訂單狀態已轉移";
+        }
+        record.setStatus("picking");
+        recordRepository.save(record);
+        return null;
+    }
+
+    /**
+     * [後台] 取得訂單明細
+     * @param recordId 訂單ID
+     * @return (null 代表沒這個訂單)，List為明細資料
+     */
     public synchronized List<OrderDetailDto> getOrderDetails(Integer recordId) {
         Optional<Record> optionalRecord = recordRepository.findById(recordId);
         if (optionalRecord.isEmpty()){ // 因為有檢查過，所以訂單內不可能為空，回傳null代表沒有這一個訂單編號

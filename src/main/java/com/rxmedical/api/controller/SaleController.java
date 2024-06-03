@@ -24,7 +24,7 @@ public class SaleController {
 
 	// 後台使用者，取得訂單明細
 	@PostMapping("/admin/order_list/detail")
-	public ResponseEntity<ApiResponse<List<OrderDetailDto>>> getOrderDetails(@RequestBody GetOrderDetailDto orderDto) {
+	public ResponseEntity<ApiResponse<List<OrderDetailDto>>> getOrderDetails(@RequestBody RecordDto orderDto) {
 		List<OrderDetailDto> orderDetails = saleService.getOrderDetails(orderDto.recordId());
 		if (orderDetails == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "訂單資訊不存在", null));
@@ -32,6 +32,7 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單明細", orderDetails));
 	}
 
+	// ---------------------------- [status] 的訂單清單 --------------------------------
 	// 後台使用者，取得所有未確認訂單清單
 	@PostMapping("/admin/order_list/unchecked")
 	public ResponseEntity<ApiResponse<List<OrderListDto>>> getUncheckedOrderList(@RequestBody CurrUserDto currUserDto) {
@@ -39,6 +40,18 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
+	// ---------------------------- 對status做操作 ---------------------
+	// 後台把"待確認"訂單狀態往"待撿貨"狀態送
+	@PutMapping("/admin/order_list/unchecked")
+	public ResponseEntity<ApiResponse<String>> pushToPicking(@RequestBody RecordDto recordDto) {
+		String errorMsg = saleService.pushToPicking(recordDto.recordId());
+		if (errorMsg == null) {
+			return ResponseEntity.ok(new ApiResponse<>(true, "訂單狀態更改成功", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(false, errorMsg, null));
+	}
+
+	// ---------------------------- 產生訂單 --------------------------
 	// 前台使用者，申請，產生訂單
 	@PostMapping("/order_generate")
 	public ResponseEntity<ApiResponse<String>> orderGenerate(@RequestBody ApplyRecordDto recordDto) {
@@ -55,6 +68,7 @@ public class SaleController {
 		}
 	}
 
+	//------------------------------- 進銷 ----------------------------------------
 	// 後台使用者，進貨
 	@PostMapping("/admin/call")
 	public ResponseEntity<ApiResponse<Integer>> callMaterial(@RequestBody SaleMaterialDto saleDto) {
