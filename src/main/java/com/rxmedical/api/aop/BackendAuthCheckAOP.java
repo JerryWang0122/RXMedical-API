@@ -59,6 +59,9 @@ public class BackendAuthCheckAOP {
     @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.getPickingOrderList(..))")
     public void getPickingOrderList(){}
 
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.getWaitingOrderList(..))")
+    public void getWaitingOrderList(){}
+
     @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.getRejectedOrderList(..))")
     public void getRejectedOrderList(){}
 
@@ -77,6 +80,10 @@ public class BackendAuthCheckAOP {
     @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.pushToWaiting(..))")
     public void pushToWaiting(){}
 
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.pushToTransporting(..))")
+    public void pushToTransporting(){}
+
+
 
     // ---------------- 開切 -------------------------
     // 環繞通知(不包括getTest、登入、註冊)
@@ -84,7 +91,7 @@ public class BackendAuthCheckAOP {
             "getMaterialList() || materialInfoUpload() || getMaterialInfo() || materialInfoUpdate() ||" +
             "callMaterial() || destroyMaterial() || getOrderDetails() || getUncheckedOrderList() || pushToPicking() ||" +
             "pushToRejected() || getRejectedOrderList() || getPickingOrderList() || getHistoryProductList() ||" +
-            "pickUpItem() || pushToWaiting()")
+            "pickUpItem() || pushToWaiting() || getWaitingOrderList() || pushToTransporting()")
     public Object aroundCheckAuth(ProceedingJoinPoint joinPoint) {
 
         Object result = null;

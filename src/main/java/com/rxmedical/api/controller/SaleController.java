@@ -66,6 +66,13 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
+	// 後台使用者，取得所有待出貨訂單清單
+	@PostMapping("/admin/order_list/waiting")
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getWaitingOrderList(@RequestBody CurrUserDto currUserDto) {
+		List<OrderListDto> orderList = saleService.getWaitingOrderList();
+		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
+	}
+
 	// 後台使用者，取得所有取消訂單清單
 	@PostMapping("/admin/order_list/rejected")
 	public ResponseEntity<ApiResponse<List<OrderListDto>>> getRejectedOrderList(@RequestBody CurrUserDto currUserDto) {
@@ -106,6 +113,15 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(false, errorMsg, null));
 	}
 
+	// 後台把"待出貨"訂單狀態往"運送中"狀態送
+	@PutMapping("/admin/order_list/waiting")
+	public ResponseEntity<ApiResponse<String>> pushToTransporting(@RequestBody PushToTransportingDto pushToTransportingDto) {
+		String errorMsg = saleService.pushToTransporting(pushToTransportingDto);
+		if (errorMsg == null) {
+			return ResponseEntity.ok(new ApiResponse<>(true, "訂單狀態更改成功", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(false, errorMsg, null));
+	}
 
 	// ---------------------------- 產生訂單 --------------------------
 	// 前台使用者，申請，產生訂單

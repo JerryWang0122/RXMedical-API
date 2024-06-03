@@ -77,6 +77,46 @@ public class SaleService {
     }
 
     /**
+     * [後台] 將訂單狀態從待出貨往運送中推送
+     * @param dto 操作訂單ID
+     * @return 正常: null, 不正常: [errorMsg]
+     */
+    @Transactional
+    public synchronized String pushToTransporting(PushToTransportingDto dto) {
+
+        // 檢查訂單
+        Optional<Record> optionalRecord = recordRepository.findById(dto.recordId());
+        if (optionalRecord.isEmpty()) {
+            return "找不到訂單";
+        }
+        Record record = optionalRecord.get();
+        if (!record.getStatus().equals("waiting")) {
+            return "訂單狀態已轉移";
+        }
+        
+        // 檢查運送人員資訊
+        if (dto.transporterId() == null) {
+            return "請指派運送人員";
+        }
+        Optional<User> optionalUser = userRepository.findById(dto.transporterId());
+        if (optionalUser.isEmpty()) {
+            return "無此操作人員";
+        }
+        User transporter = optionalUser.get();
+        if (!transporter.getAuthLevel().equals("admin")) {
+            return "非管理員無法指定操作";
+        }
+
+
+
+        // 更新狀態
+        record.setStatus("transporting");
+        record.setTransporter(transporter);
+        recordRepository.save(record);
+        return null;
+    }
+
+    /**
      * [後台] 將訂單狀態從待確認往取消推送
      * @param recordId 操作訂單ID
      * @return 正常: null, 不正常: [errorMsg]
@@ -200,6 +240,26 @@ public class SaleService {
      */
     public synchronized List<OrderListDto> getPickingOrderList() {
         List<Record> records = recordRepository.findByStatus("picking");
+        return records.stream()
+                .map(r -> new OrderListDto(
+                        r.getId(),
+                        r.getCode(),
+                        historyRepository.countByRecord(r),
+                        new OrderDemanderDto(
+                                r.getDemander().getDept(),
+                                r.getDemander().getTitle(),
+                                r.getDemander().getName()
+                        ),
+                        null))
+                .toList();
+    }
+
+    /**
+     * [後台] 取得所有待出貨訂單概況
+     * @return List 待出貨訂單列表
+     */
+    public synchronized List<OrderListDto> getWaitingOrderList() {
+        List<Record> records = recordRepository.findByStatus("waiting");
         return records.stream()
                 .map(r -> new OrderListDto(
                         r.getId(),
