@@ -3,10 +3,10 @@ package com.rxmedical.api.util;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class SendEmailUtil {
 
-    @Bean
+//    @Bean
     public void sendEmail() {
         System.out.println("發送郵件");
     }

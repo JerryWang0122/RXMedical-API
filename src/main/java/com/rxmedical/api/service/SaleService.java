@@ -97,6 +97,31 @@ public class SaleService {
                 .toList();
     }
 
+    public synchronized List<HistoryProductDto> getHistoryProductList(Integer recordId) {
+        Optional<Record> optionalRecord = recordRepository.findById(recordId);
+        if (optionalRecord.isEmpty()) {
+            return null;
+        }
+        Record record = optionalRecord.get();
+        if (!record.getStatus().equals("picking")) {
+            return null;
+        }
+        List<History> recordDetails = historyRepository.findByRecord(record);
+        return recordDetails.stream()
+                .map(history -> new HistoryProductDto(
+                                        history.getId(),
+                                        history.getQuantity(),
+                                        new ProductDetailDto(
+                                                history.getProduct().getCode(),
+                                                history.getProduct().getName(),
+                                                history.getProduct().getStorage(),
+                                                history.getProduct().getPicture()
+                                        ),
+                                        history.getUser() == null ? null : history.getUser().getName()
+                ))
+                .toList();
+    }
+
     /**
      * [後台] 取得所有未確認訂單概況
      * @return List 未確認訂單列表

@@ -24,12 +24,22 @@ public class SaleController {
 
 	// 後台使用者，取得訂單明細
 	@PostMapping("/admin/order_list/detail")
-	public ResponseEntity<ApiResponse<List<OrderDetailDto>>> getOrderDetails(@RequestBody RecordDto orderDto) {
-		List<OrderDetailDto> orderDetails = saleService.getOrderDetails(orderDto.recordId());
+	public ResponseEntity<ApiResponse<List<OrderDetailDto>>> getOrderDetails(@RequestBody RecordDto recordDto) {
+		List<OrderDetailDto> orderDetails = saleService.getOrderDetails(recordDto.recordId());
 		if (orderDetails == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "訂單資訊不存在", null));
 		}
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單明細", orderDetails));
+	}
+
+	// 後台使用者，取得"待撿貨"訂單明細
+	@PostMapping("/admin/order_list/picking/detail")
+	public ResponseEntity<ApiResponse<List<HistoryProductDto>>> getHistoryProductList(@RequestBody RecordDto recordDto) {
+		List<HistoryProductDto> historyProductList = saleService.getHistoryProductList(recordDto.recordId());
+		if (historyProductList == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "訂單錯誤", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "訂單明細", historyProductList));
 	}
 
 	// ---------------------------- [status] 的訂單清單 --------------------------------
