@@ -159,6 +159,10 @@ public class UserService {
 		if (memberAuthDto.memberId().equals(1)) {
 			return false;
 		}
+		// 修改權限不可為空
+		if (memberAuthDto.authLevel() == null) {
+			return false;
+		}
 		// 不能將任何人調成root權限，或是主動調成註冊狀態
 		if (memberAuthDto.authLevel().equals("root") || memberAuthDto.authLevel().equals("register")) {
 			return false;
@@ -177,6 +181,12 @@ public class UserService {
 			return true;
 		}
 		return false;
+	}
+
+	public List<TransporterDto> getTransporterList() {
+		return userRepository.findByAuthLevel("admin").stream()
+				.map(user -> new TransporterDto(user.getId(), user.getEmpCode(), user.getName()))
+				.toList();
 	}
 
 }

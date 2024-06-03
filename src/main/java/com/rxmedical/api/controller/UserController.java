@@ -106,4 +106,11 @@ public class UserController {
 		}
 		return ResponseEntity.ok(new ApiResponse<>(false, "權限更新失敗", false));
 	}
+
+	// 取得運送人員清單
+	@PostMapping("/admin/transporter")
+	public ResponseEntity<ApiResponse<List<TransporterDto>>> getTransporterList(@RequestBody CurrUserDto currUserDto) {
+		List<TransporterDto> transporterList = userService.getTransporterList();
+		return ResponseEntity.ok(new ApiResponse<>(true, "運送人員資訊", transporterList));
+	}
 }

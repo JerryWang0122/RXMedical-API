@@ -26,6 +26,10 @@ public class BackendAuthCheckAOP {
     // ---------------- User ----------------------
     @Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.getMemberList(..))")
     public void getMemberList(){}
+
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.getTransporterList(..))")
+    public void getTransporterList(){}
+
     // ---------------- Product -------------------
     @Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.materialInfoUpload(..))")
     public void materialInfoUpload(){}
@@ -76,7 +80,7 @@ public class BackendAuthCheckAOP {
 
     // ---------------- 開切 -------------------------
     // 環繞通知(不包括getTest、登入、註冊)
-    @Around(value = "getMemberList() || " +
+    @Around(value = "getMemberList() || getTransporterList() ||" +
             "getMaterialList() || materialInfoUpload() || getMaterialInfo() || materialInfoUpdate() ||" +
             "callMaterial() || destroyMaterial() || getOrderDetails() || getUncheckedOrderList() || pushToPicking() ||" +
             "pushToRejected() || getRejectedOrderList() || getPickingOrderList() || getHistoryProductList() ||" +
