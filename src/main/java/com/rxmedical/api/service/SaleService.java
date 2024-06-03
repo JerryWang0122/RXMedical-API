@@ -35,6 +35,21 @@ public class SaleService {
     @Autowired
     private RecordRepository recordRepository;
 
+    public synchronized List<OrderDetailDto> getOrderDetails(Integer recordId) {
+        Optional<Record> optionalRecord = recordRepository.findById(recordId);
+        if (optionalRecord.isEmpty()){ // 因為有檢查過，所以訂單內不可能為空，回傳null代表沒有這一個訂單編號
+            return null;
+        }
+        List<History> recordDetails = historyRepository.findByRecord(optionalRecord.get());
+        return recordDetails.stream()
+                .map(history -> new OrderDetailDto(history.getProduct().getName(), history.getQuantity(), null))
+                .toList();
+    }
+
+    /**
+     * [後台] 取得所有未確認訂單概況
+     * @return List 未確認訂單列表
+     */
     public synchronized List<OrderListDto> getUncheckedOrderList() {
         List<Record> records = recordRepository.findByStatus("unchecked");
         return records.stream().map(r -> new OrderListDto(r.getId(), r.getCode(), historyRepository.countByRecord(r),

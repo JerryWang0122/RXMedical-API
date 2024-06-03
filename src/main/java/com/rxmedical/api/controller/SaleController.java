@@ -1,9 +1,6 @@
 package com.rxmedical.api.controller;
 
-import com.rxmedical.api.model.dto.ApplyRecordDto;
-import com.rxmedical.api.model.dto.CurrUserDto;
-import com.rxmedical.api.model.dto.OrderListDto;
-import com.rxmedical.api.model.dto.SaleMaterialDto;
+import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +22,17 @@ public class SaleController {
 		return "Sales API 連接成功";
 	}
 
+	// 後台使用者，取得訂單明細
+	@PostMapping("/admin/order_list/detail")
+	public ResponseEntity<ApiResponse<List<OrderDetailDto>>> getOrderDetails(@RequestBody GetOrderDetailDto orderDto) {
+		List<OrderDetailDto> orderDetails = saleService.getOrderDetails(orderDto.recordId());
+		if (orderDetails == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "訂單資訊不存在", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "訂單明細", orderDetails));
+	}
+
+	// 後台使用者，取得所有未確認訂單清單
 	@PostMapping("/admin/order_list/unchecked")
 	public ResponseEntity<ApiResponse<List<OrderListDto>>> getUncheckedOrderList(@RequestBody CurrUserDto currUserDto) {
 		List<OrderListDto> orderList = saleService.getUncheckedOrderList();

@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface HistoryRepository extends JpaRepository<History, Integer> {
     Integer countByRecord(Record record);
+    List<History> findByRecord(Record record);
 }
