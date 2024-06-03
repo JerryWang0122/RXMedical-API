@@ -93,7 +93,7 @@ public class SaleService {
         if (!record.getStatus().equals("waiting")) {
             return "訂單狀態已轉移";
         }
-        
+
         // 檢查運送人員資訊
         if (dto.transporterId() == null) {
             return "請指派運送人員";
@@ -106,8 +106,6 @@ public class SaleService {
         if (!transporter.getAuthLevel().equals("admin")) {
             return "非管理員無法指定操作";
         }
-
-
 
         // 更新狀態
         record.setStatus("transporting");
@@ -230,6 +228,7 @@ public class SaleService {
                                                 r.getDemander().getTitle(),
                                                 r.getDemander().getName()
                                         ),
+                                        null,
                                         null))
                       .toList();
     }
@@ -250,6 +249,7 @@ public class SaleService {
                                 r.getDemander().getTitle(),
                                 r.getDemander().getName()
                         ),
+                        null,
                         null))
                 .toList();
     }
@@ -270,7 +270,29 @@ public class SaleService {
                                 r.getDemander().getTitle(),
                                 r.getDemander().getName()
                         ),
+                        null,
                         null))
+                .toList();
+    }
+
+    /**
+     * [後台] 取得所有運送中訂單概況
+     * @return List 運送中訂單列表
+     */
+    public synchronized List<OrderListDto> getTransportingOrderList() {
+        List<Record> records = recordRepository.findByStatus("transporting");
+        return records.stream()
+                .map(r -> new OrderListDto(
+                        r.getId(),
+                        r.getCode(),
+                        historyRepository.countByRecord(r),
+                        new OrderDemanderDto(
+                                r.getDemander().getDept(),
+                                r.getDemander().getTitle(),
+                                r.getDemander().getName()
+                        ),
+                        userRepository.findById(r.getTransporter().getId()).get().getName(),
+                        r.getUpdateDate()))
                 .toList();
     }
 
@@ -290,6 +312,7 @@ public class SaleService {
                                     r.getDemander().getTitle(),
                                     r.getDemander().getName()
                             ),
+                            null,
                             null))
                 .toList();
     }

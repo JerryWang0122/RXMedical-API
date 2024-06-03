@@ -73,6 +73,13 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
+	// 後台使用者，取得所有待出貨訂單清單
+	@PostMapping("/admin/order_list/transporting")
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getTransportingOrderList(@RequestBody CurrUserDto currUserDto) {
+		List<OrderListDto> orderList = saleService.getTransportingOrderList();
+		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
+	}
+
 	// 後台使用者，取得所有取消訂單清單
 	@PostMapping("/admin/order_list/rejected")
 	public ResponseEntity<ApiResponse<List<OrderListDto>>> getRejectedOrderList(@RequestBody CurrUserDto currUserDto) {
