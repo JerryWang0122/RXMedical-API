@@ -51,6 +51,17 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(false, errorMsg, null));
 	}
 
+	// 後台把"待確認"訂單狀態往"取消"狀態送
+	@DeleteMapping("/admin/order_list/unchecked")
+	public ResponseEntity<ApiResponse<String>> pushToRejected(@RequestBody RecordDto recordDto) {
+		String errorMsg = saleService.pushToRejected(recordDto.recordId());
+		if (errorMsg == null) {
+			return ResponseEntity.ok(new ApiResponse<>(true, "訂單狀態更改成功", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(false, errorMsg, null));
+	}
+
+
 	// ---------------------------- 產生訂單 --------------------------
 	// 前台使用者，申請，產生訂單
 	@PostMapping("/order_generate")

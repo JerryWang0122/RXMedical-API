@@ -55,6 +55,33 @@ public class SaleService {
     }
 
     /**
+     * [後台] 將訂單狀態從待確認往取消推送
+     * @param recordId 操作訂單ID
+     * @return 正常: null, 不正常: [errorMsg]
+     */
+    @Transactional
+    public synchronized String pushToRejected(Integer recordId) {
+        Optional<Record> optionalRecord = recordRepository.findById(recordId);
+        if (optionalRecord.isEmpty()) {
+            return "找不到訂單";
+        }
+        Record record = optionalRecord.get();
+        if (!record.getStatus().equals("unchecked")) {
+            return "訂單狀態已轉移";
+        }
+        record.setStatus("rejected");
+        recordRepository.save(record);
+        // 把該訂單的History quantity 還給 Product stock
+        List<History> recordDetails = historyRepository.findByRecord(record);
+        recordDetails.forEach(history -> {
+                         Product product = history.getProduct();
+                         product.setStock(product.getStock() + history.getQuantity());
+                         productRepository.save(product);
+                     });
+        return null;
+    }
+
+    /**
      * [後台] 取得訂單明細
      * @param recordId 訂單ID
      * @return (null 代表沒這個訂單)，List為明細資料
