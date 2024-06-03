@@ -97,6 +97,11 @@ public class SaleService {
                 .toList();
     }
 
+    /**
+     * [後台] 取得"待撿貨"訂單明細
+     * @param recordId 訂單ID
+     * @return (null 代表沒這個訂單貨狀態已經推移)，List為明細資料
+     */
     public synchronized List<HistoryProductDto> getHistoryProductList(Integer recordId) {
         Optional<Record> optionalRecord = recordRepository.findById(recordId);
         if (optionalRecord.isEmpty()) {
@@ -120,6 +125,26 @@ public class SaleService {
                                         history.getUser() == null ? null : history.getUser().getName()
                 ))
                 .toList();
+    }
+
+    public synchronized String pickUpItem(PickingHistoryDto pickingDto) {
+        Optional<History> optionalHistory = historyRepository.findById(pickingDto.historyId());
+        if (optionalHistory.isEmpty()) {
+            return "無此資料";
+        }
+        History history = optionalHistory.get();
+        if (history.getRecord() == null) {
+            return "錯誤狀態";
+        }
+        if (!history.getRecord().getStatus().equals("picking")) {
+            return "訂單狀態已經轉移，請重整";
+        }
+        if (history.getUser() != null) {
+            return "貨品已經拿過了";
+        }
+        history.setUser(userRepository.findById(pickingDto.userId()).get());
+        historyRepository.save(history);
+        return null;
     }
 
     /**

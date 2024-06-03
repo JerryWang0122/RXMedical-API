@@ -42,7 +42,16 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單明細", historyProductList));
 	}
 
-	// ---------------------------- [status] 的訂單清單 --------------------------------
+	@PatchMapping("/admin/order_list/picking")
+	public ResponseEntity<ApiResponse<String>> pickUpItem(@RequestBody PickingHistoryDto pickingHistoryDto) {
+		String errorMsg = saleService.pickUpItem(pickingHistoryDto);
+		if (errorMsg == null) {
+			return ResponseEntity.ok(new ApiResponse<>(true, "撿貨成功", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(false, errorMsg, null));
+	}
+
+	// ---------------------------- 取得 [status] 的訂單清單 --------------------------------
 	// 後台使用者，取得所有未確認訂單清單
 	@PostMapping("/admin/order_list/unchecked")
 	public ResponseEntity<ApiResponse<List<OrderListDto>>> getUncheckedOrderList(@RequestBody CurrUserDto currUserDto) {
