@@ -73,10 +73,17 @@ public class SaleController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
-	// 後台使用者，取得所有待出貨訂單清單
+	// 後台使用者，取得所有運送中訂單清單
 	@PostMapping("/admin/order_list/transporting")
 	public ResponseEntity<ApiResponse<List<OrderListDto>>> getTransportingOrderList(@RequestBody CurrUserDto currUserDto) {
 		List<OrderListDto> orderList = saleService.getTransportingOrderList();
+		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
+	}
+
+	// 後台使用者，取得所有已完成訂單清單
+	@PostMapping("/admin/order_list/finish")
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getFinishOrderList(@RequestBody CurrUserDto currUserDto) {
+		List<OrderListDto> orderList = saleService.getFinishOrderList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 

@@ -153,7 +153,8 @@ public class SaleService {
         }
         List<History> recordDetails = historyRepository.findByRecord(optionalRecord.get());
         return recordDetails.stream()
-                .map(history -> new OrderDetailDto(history.getProduct().getName(), history.getQuantity(), null))
+                .map(history -> new OrderDetailDto(history.getProduct().getName(), history.getQuantity(),
+                        history.getUser() == null ? null : history.getUser().getName()))
                 .toList();
     }
 
@@ -291,7 +292,28 @@ public class SaleService {
                                 r.getDemander().getTitle(),
                                 r.getDemander().getName()
                         ),
-                        userRepository.findById(r.getTransporter().getId()).get().getName(),
+                        r.getTransporter().getName(),
+                        r.getUpdateDate()))
+                .toList();
+    }
+
+    /**
+     * [後台] 取得所有已完成訂單概況
+     * @return List 已完成訂單列表
+     */
+    public synchronized List<OrderListDto> getFinishOrderList() {
+        List<Record> records = recordRepository.findByStatus("finish");
+        return records.stream()
+                .map(r -> new OrderListDto(
+                        r.getId(),
+                        r.getCode(),
+                        historyRepository.countByRecord(r),
+                        new OrderDemanderDto(
+                                r.getDemander().getDept(),
+                                r.getDemander().getTitle(),
+                                r.getDemander().getName()
+                        ),
+                        r.getTransporter().getName(),
                         r.getUpdateDate()))
                 .toList();
     }
