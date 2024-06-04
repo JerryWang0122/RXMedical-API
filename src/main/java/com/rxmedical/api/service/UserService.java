@@ -170,11 +170,11 @@ public class UserService {
 	}
 
 	/**
-	 * [後台] 取得訂單明細
+	 * [前台] 取得訂單明細
 	 * @param recordDto 查詢訂單資料，誰查詢、查哪筆
 	 * @return (null 代表發生錯誤)，List為明細資料
 	 */
-	public synchronized List<OrderDetailDto> getPurchaseDetails(RecordDto recordDto) {
+	public List<OrderDetailDto> getPurchaseDetails(RecordDto recordDto) {
 		Optional<Record> optionalRecord = recordRepository.findById(recordDto.recordId());
 		if (optionalRecord.isEmpty()){
 			return null;
@@ -190,6 +190,31 @@ public class UserService {
 		return recordDetails.stream()
 				.map(history -> new OrderDetailDto(history.getProduct().getName(), history.getQuantity(), null))
 				.toList();
+	}
+
+	/**
+	 * [前台 - 更新] 使用者確定訂單完成
+	 * @param recordDto 操作者和要完成的訂單
+	 * @return String 錯誤信息
+	 */
+	public String finishOrder(RecordDto recordDto) {
+		Optional<Record> optionalRecord = recordRepository.findById(recordDto.recordId());
+		if (optionalRecord.isEmpty()){
+			return "找不到訂單";
+		}
+		Record r = optionalRecord.get();
+		if (r.getStatus().equals("finish")) {
+			return "訂單已經完成";
+		}
+		if (!r.getStatus().equals("transporting")) {
+			return "錯誤訂單狀態";
+		}
+		if (!recordDto.userId().equals(r.getDemander().getId())) {
+			return "錯誤操作人員";
+		}
+		r.setStatus("finish");
+		recordRepository.save(r);
+		return null;
 	}
 
 	/**

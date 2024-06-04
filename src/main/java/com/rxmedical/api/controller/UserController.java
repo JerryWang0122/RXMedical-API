@@ -107,6 +107,16 @@ public class UserController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單明細", purchaseDetails));
 	}
 
+	// 前台使用者完成訂單流程
+	@PostMapping("/user/purchase/finish")
+	public ResponseEntity<ApiResponse<String>> finishOrder(@RequestBody RecordDto recordDto) {
+		String errorMsg = userService.finishOrder(recordDto);
+		if (errorMsg == null) {
+			return ResponseEntity.ok(new ApiResponse<>(true, "訂單完成", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(false, errorMsg, null));
+	}
+
 	// 後台查詢所有使用者
 	@PostMapping("/admin/member")
 	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList(@RequestBody CurrUserDto currUserDto) {
