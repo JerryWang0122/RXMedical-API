@@ -5,6 +5,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.po.History;
@@ -254,7 +256,10 @@ public class UserService {
 			User u = optionalUser.get();
 			if (u.getAuthLevel().equals("register")) {
 				// 寄一封通知信
-				EmailUtil.prepareAndSendEmail(u.getEmail());
+				ExecutorService executorService = Executors.newSingleThreadExecutor();
+				executorService.execute(() -> {
+					EmailUtil.prepareAndSendEmail(u.getEmail());
+				});
 			}
 			u.setAuthLevel(memberAuthDto.authLevel());
 			userRepository.save(u);
