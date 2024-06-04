@@ -29,6 +29,12 @@ public class CheckUserLoginAOP {
 	@Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.editUserInfo(..))")
 	public void editUserInfo() {}
 
+	@Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.getPurchaseHistoryList(..))")
+	public void getPurchaseHistoryList() {}
+
+	@Pointcut(value = "execution(* com.rxmedical.api.controller.UserController.getPurchaseDetails(..))")
+	public void getPurchaseDetails() {}
+
 	// ---------------- Product -------------------
 	@Pointcut(value = "execution(* com.rxmedical.api.controller.ProductController.getProductList(..))")
 	public void getProductList() {}
@@ -42,7 +48,7 @@ public class CheckUserLoginAOP {
 
 
 
-	@Around(value = "getUserInfo() || editUserInfo() ||" +
+	@Around(value = "getUserInfo() || editUserInfo() || getPurchaseHistoryList() || getPurchaseDetails()" +
 				"getProductList() || getProductItemInfo() ||" +
 				"orderGenerate()")
 	public Object aroundCheckLogin(ProceedingJoinPoint joinPoint) {
@@ -51,7 +57,7 @@ public class CheckUserLoginAOP {
 		Optional<User> optionalUser;
 
 		try {
-			System.out.println("測試前置");
+//			System.out.println("測試前置");
 			// 前置：檢查用戶登入狀態
 			Object[] args = joinPoint.getArgs();
 			if (args.length > 1) { // 非DTO，而是用多個參數傳入的，則 currUserId 為第一個參數

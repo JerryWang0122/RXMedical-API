@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.rxmedical.api.model.dto.*;
+import com.rxmedical.api.model.po.History;
+import com.rxmedical.api.model.po.Record;
+import com.rxmedical.api.repository.HistoryRepository;
+import com.rxmedical.api.repository.ProductRepository;
+import com.rxmedical.api.repository.RecordRepository;
 import com.rxmedical.api.util.KeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -20,9 +25,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+	@Autowired
+	private RecordRepository recordRepository;
+
+	@Autowired
+	private HistoryRepository historyRepository;
+
 	/**
-	 * [檢測] 檢驗使用者登入資料
-	 *
+	 * [前台 - 檢測] 檢驗使用者登入資料
 	 * @param userLoginDto 使用者登入資料
 	 * @return UserInfoDto 使用者資料
 	 * @throws NoSuchAlgorithmException
@@ -59,8 +69,7 @@ public class UserService {
 	}
 
     /**
-     * [增加] 使用者資料
-     * 
+     * [前台 - 增加] 使用者資料
      * @param userRegisterDto 註冊人註冊資料
      * @return Boolean 註冊是否成功
      */
@@ -95,7 +104,7 @@ public class UserService {
     }
 
 	/**
-	 * [搜索] 取得使用者個人帳戶資料
+	 * [前台 - 搜索] 取得使用者個人帳戶資料
 	 * @param userId 使用者id
 	 * @return UserInfoDto 個人帳戶資料
 	 */
@@ -111,7 +120,7 @@ public class UserService {
     }
 
 	/**
-	 * [更新] 更新使用者個人帳戶資料
+	 * [前台 - 更新] 更新使用者個人帳戶資料
 	 * @param userEditInfoDto 使用者更新後的個人資訊
 	 * @return UserInfoDto 更新後的個人資訊
 	 */
@@ -136,6 +145,51 @@ public class UserService {
 								   u.getAuthLevel());
 		}
 		return null;
+	}
+
+	/**
+	 * [前台 - 搜索] 取得使用者個人帳戶資料
+	 * @param userId 使用者id
+	 * @return List<PurchaseHistoryDto> 使用者歷史申請資料
+	 */
+	public List<PurchaseHistoryDto> getUserPurchaseHistoryList(Integer userId) {
+		Optional<User> optionalUser = userRepository.findById(userId);
+		if (optionalUser.isEmpty()) {
+			return null;
+		}
+		List<Record> recordList = recordRepository.findByDemander(optionalUser.get());
+		return recordList.stream()
+				.map(r -> new PurchaseHistoryDto(
+										r.getId(),
+										r.getCode(),
+										historyRepository.countByRecord(r),
+										r.getChineseStatus()
+										))
+				.toList();
+
+	}
+
+	/**
+	 * [後台] 取得訂單明細
+	 * @param recordDto 查詢訂單資料，誰查詢、查哪筆
+	 * @return (null 代表發生錯誤)，List為明細資料
+	 */
+	public synchronized List<OrderDetailDto> getPurchaseDetails(RecordDto recordDto) {
+		Optional<Record> optionalRecord = recordRepository.findById(recordDto.recordId());
+		if (optionalRecord.isEmpty()){
+			return null;
+		}
+
+		// 查詢人應該要跟訂購人一樣
+		Record r = optionalRecord.get();
+		if (!recordDto.userId().equals(r.getDemander().getId())) {
+			return null;
+		}
+		// 給資料
+		List<History> recordDetails = historyRepository.findByRecord(r);
+		return recordDetails.stream()
+				.map(history -> new OrderDetailDto(history.getProduct().getName(), history.getQuantity(), null))
+				.toList();
 	}
 
 	/**
@@ -183,6 +237,10 @@ public class UserService {
 		return false;
 	}
 
+	/**
+	 * [輔助、後台 - 搜索] 提供"待運送"清單狀態的運送人員
+	 * @return List 運送人員(admin)
+	 */
 	public List<TransporterDto> getTransporterList() {
 		return userRepository.findByAuthLevel("admin").stream()
 				.map(user -> new TransporterDto(user.getId(), user.getEmpCode(), user.getName()))

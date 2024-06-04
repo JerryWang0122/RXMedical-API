@@ -86,6 +86,27 @@ public class UserController {
 		// return ResponseEntity.ok(new ApiResponse<>(false, "信箱(帳號)重複", null));
 	}
 
+
+	// 取得個人衛材清單歷史
+	@PostMapping("/user/purchase")
+	public ResponseEntity<ApiResponse<List<PurchaseHistoryDto>>> getPurchaseHistoryList(@RequestBody CurrUserDto currUserDto) {
+		List<PurchaseHistoryDto> userPurchaseHistoryList = userService.getUserPurchaseHistoryList(currUserDto.userId());
+		if (userPurchaseHistoryList == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "無此人員", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "歷史衛材申請資料", userPurchaseHistoryList));
+	}
+
+	// 前台使用者，取得訂單明細
+	@PostMapping("/user/purchase/detail")
+	public ResponseEntity<ApiResponse<List<OrderDetailDto>>> getPurchaseDetails(@RequestBody RecordDto recordDto) {
+		List<OrderDetailDto> purchaseDetails = userService.getPurchaseDetails(recordDto);
+		if (purchaseDetails == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "存在問題", null));
+		}
+		return ResponseEntity.ok(new ApiResponse<>(true, "訂單明細", purchaseDetails));
+	}
+
 	// 後台查詢所有使用者
 	@PostMapping("/admin/member")
 	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList(@RequestBody CurrUserDto currUserDto) {
@@ -113,4 +134,5 @@ public class UserController {
 		List<TransporterDto> transporterList = userService.getTransporterList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "運送人員資訊", transporterList));
 	}
+
 }

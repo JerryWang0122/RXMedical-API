@@ -50,4 +50,22 @@ public class Record {
 	@Column
 	@UpdateTimestamp(source = SourceType.DB)
 	private Date updateDate;	// 更新日期
+
+	public String getChineseStatus() {
+		switch (status) {
+			case "unchecked":
+				return "待確認";
+			case "picking":
+				return "待撿貨";
+			case "waiting":
+				return "待出貨";
+			case "transporting":
+				return "運送中";
+			case "finish":
+				return "已完成";
+			case "rejected":
+				return "取消";
+		}
+		return null;
+	}
 }
