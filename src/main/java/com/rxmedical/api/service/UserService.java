@@ -12,6 +12,7 @@ import com.rxmedical.api.model.po.Record;
 import com.rxmedical.api.repository.HistoryRepository;
 import com.rxmedical.api.repository.ProductRepository;
 import com.rxmedical.api.repository.RecordRepository;
+import com.rxmedical.api.util.EmailUtil;
 import com.rxmedical.api.util.KeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -252,8 +253,8 @@ public class UserService {
 		if (optionalUser.isPresent()) {
 			User u = optionalUser.get();
 			if (u.getAuthLevel().equals("register")) {
-				// TODO
-				System.out.println("寄一封通知信");
+				// 寄一封通知信
+				EmailUtil.prepareAndSendEmail(u.getEmail());
 			}
 			u.setAuthLevel(memberAuthDto.authLevel());
 			userRepository.save(u);
