@@ -5,6 +5,7 @@ package com.rxmedical.api.model.dto;
  * @param userId  操作人
  * @param recordId  要操作的訂單
  * @param transporterId 運送人員
+ * @param verifyToken 驗證碼
  */
-public record PushToTransportingDto(Integer userId, Integer recordId, Integer transporterId) {
+public record PushToTransportingDto(Integer userId, Integer recordId, Integer transporterId, String verifyToken) {
 }

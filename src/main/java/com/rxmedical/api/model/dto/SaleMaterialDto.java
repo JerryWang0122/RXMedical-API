@@ -6,6 +6,8 @@ package com.rxmedical.api.model.dto;
  * @param materialId
  * @param quantity
  * @param price
+ * @param verifyToken
  */
-public record SaleMaterialDto(Integer userId, Integer materialId, Integer quantity, Integer price) {
+public record SaleMaterialDto(Integer userId, Integer materialId, Integer quantity, Integer price,
+                              String verifyToken) {
 }
