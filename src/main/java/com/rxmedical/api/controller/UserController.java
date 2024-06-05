@@ -3,6 +3,8 @@ package com.rxmedical.api.controller;
 import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +25,21 @@ public class UserController {
 	public String getTest() {
 		return "User API 連接成功";
 	}
-		
+
+	// 登入防止CSRF
+	@PostMapping("/user/CSRFToken")
+	public ResponseEntity<ApiResponse<String>> getUserToken(HttpServletRequest request) {
+		String loginToken = userService.getUserToken();
+		System.out.println(loginToken);
+		request.getServletContext().setAttribute(loginToken, true);
+		return ResponseEntity.ok(new ApiResponse<>(true, "使用者登入令牌", loginToken));
+	}
+
+
 	// 判斷使用者登入
 	@PostMapping("/user/login")
-	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto) throws NoSuchAlgorithmException {
-		
-		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto);
+	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException {
+		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto, request);
 		
 		ApiResponse<UserInfoDto> response = new ApiResponse<>();
 		if (userInfoDto == null) {
@@ -50,10 +61,13 @@ public class UserController {
 	
 	// 註冊
 	@PostMapping("/user/register")
-	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto) throws NoSuchAlgorithmException {
+	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto, HttpServletRequest request) throws NoSuchAlgorithmException {
 
-		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto);
-		
+		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto, request);
+
+		if (registerSuccess == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "CSRF驗證失敗", null));
+		}
 		if (!registerSuccess) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "註冊失敗", null));
 		}

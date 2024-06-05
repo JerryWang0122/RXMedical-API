@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,6 +17,8 @@ import com.rxmedical.api.repository.ProductRepository;
 import com.rxmedical.api.repository.RecordRepository;
 import com.rxmedical.api.util.EmailUtil;
 import com.rxmedical.api.util.KeyUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -35,16 +38,33 @@ public class UserService {
 	private HistoryRepository historyRepository;
 
 	/**
+	 * [前台 - 登入] 取得使用者登入token
+	 * @return String CSRF Token
+	 */
+	public String getUserToken() {
+		return UUID.randomUUID().toString();
+	}
+
+	/**
 	 * [前台 - 檢測] 檢驗使用者登入資料
 	 * @param userLoginDto 使用者登入資料
+	 * @param request 拿TOKEN用
 	 * @return UserInfoDto 使用者資料
 	 * @throws NoSuchAlgorithmException
 	 */
-	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto) throws NoSuchAlgorithmException {
+	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException {
 
 		if (userLoginDto.email() == null || userLoginDto.password() == null) {
 			return null;
 		}
+
+		// CSRF 驗證
+		Object tokenExist = request.getServletContext().getAttribute(userLoginDto.token());
+		if (tokenExist == null || !(Boolean)tokenExist) { // token 不存在
+			return null;
+		}
+		request.getServletContext().removeAttribute(userLoginDto.token());
+
 		// 查找email對應使用者
 		User u = new User();
 		u.setEmail(userLoginDto.email());
@@ -74,10 +94,18 @@ public class UserService {
     /**
      * [前台 - 增加] 使用者資料
      * @param userRegisterDto 註冊人註冊資料
+	 * @param request 拿TOKEN用
      * @return Boolean 註冊是否成功
      */
-    public Boolean registerUserInfo(UserRegisterDto userRegisterDto) throws NoSuchAlgorithmException {
-    	
+    public Boolean registerUserInfo(UserRegisterDto userRegisterDto, HttpServletRequest request) throws NoSuchAlgorithmException {
+		// CSRF 驗證
+		Object tokenExist = request.getServletContext().getAttribute(userRegisterDto.token());
+		if (tokenExist == null || !(Boolean)tokenExist) { // token 不存在
+			return null;
+		}
+		request.getServletContext().removeAttribute(userRegisterDto.token());
+
+		// Register User
     	User user = new User();
     	boolean result;
         
