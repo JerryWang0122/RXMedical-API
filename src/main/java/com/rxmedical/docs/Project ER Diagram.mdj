@@ -39,7 +39,7 @@
 									"font": "Arial;13;1",
 									"left": 144,
 									"top": 437,
-									"width": 203.13232421875,
+									"width": 211.80322265625,
 									"height": 13,
 									"text": "user"
 								},
@@ -66,7 +66,7 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 460,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
 											"height": 13
 										},
 										{
@@ -82,7 +82,7 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 475,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
 											"height": 13
 										},
 										{
@@ -98,7 +98,7 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 490,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
 											"height": 13
 										},
 										{
@@ -114,7 +114,7 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 505,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
 											"height": 13
 										},
 										{
@@ -130,7 +130,7 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 520,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
 											"height": 13
 										},
 										{
@@ -146,7 +146,7 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 535,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
 											"height": 13
 										},
 										{
@@ -162,7 +162,7 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 550,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
 											"height": 13
 										},
 										{
@@ -178,7 +178,7 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 565,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
 											"height": 13
 										},
 										{
@@ -194,7 +194,23 @@
 											"font": "Arial;13;0",
 											"left": 149,
 											"top": 580,
-											"width": 193.13232421875,
+											"width": 201.80322265625,
+											"height": 13
+										},
+										{
+											"_type": "ERDColumnView",
+											"_id": "AAAAAAGP6J5DjNF7h40=",
+											"_parent": {
+												"$ref": "AAAAAAGPJMIfJYzscGU="
+											},
+											"model": {
+												"$ref": "AAAAAAGP6J5DeNF4wUg="
+											},
+											"lineColor": "#622727",
+											"font": "Arial;13;0",
+											"left": 149,
+											"top": 595,
+											"width": 201.80322265625,
 											"height": 13
 										}
 									],
@@ -202,16 +218,16 @@
 									"font": "Arial;13;0",
 									"left": 144,
 									"top": 455,
-									"width": 203.13232421875,
-									"height": 143
+									"width": 211.80322265625,
+									"height": 158
 								}
 							],
 							"lineColor": "#622727",
 							"font": "Arial;13;0",
 							"left": 144,
 							"top": 432,
-							"width": 203.13232421875,
-							"height": 166,
+							"width": 211.80322265625,
+							"height": 181,
 							"nameLabel": {
 								"$ref": "AAAAAAGPJMIfJYzr3PU="
 							},
@@ -352,7 +368,7 @@
 										"$ref": "AAAAAAGPJOWv+Y2jyGE="
 									},
 									"font": "Arial;13;0",
-									"left": 372,
+									"left": 381,
 									"top": 479,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -387,7 +403,7 @@
 								"$ref": "AAAAAAGPJMIfJYzqqnE="
 							},
 							"lineStyle": 2,
-							"points": "347:500;448:500;448:272;488:272",
+							"points": "356:500;448:500;448:272;488:272",
 							"nameLabel": {
 								"$ref": "AAAAAAGPJOWv+Y2kFjo="
 							},
@@ -1150,7 +1166,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 287,
-									"top": 617,
+									"top": 632,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -1184,7 +1200,7 @@
 								"$ref": "AAAAAAGPJMIfJYzqqnE="
 							},
 							"lineStyle": 2,
-							"points": "272:598;272:696;496:696;496:872;552:872",
+							"points": "272:613;272:696;496:696;496:872;552:872",
 							"nameLabel": {
 								"$ref": "AAAAAAGPJRa0C4/A4aM="
 							},
@@ -1887,6 +1903,16 @@
 							"documentation": "權限分五級：\n1. off : 關閉權限\n2. register: 完成註冊\n3. staff: 一般員工\n4. admin: 管理人員\n5.  root: 最高管理者",
 							"type": "VARCHAR",
 							"length": "50"
+						},
+						{
+							"_type": "ERDColumn",
+							"_id": "AAAAAAGP6J5DeNF4wUg=",
+							"_parent": {
+								"$ref": "AAAAAAGPJMIfIozojhs="
+							},
+							"name": "verify_token",
+							"type": "VARCHAR",
+							"length": "20"
 						}
 					]
 				},

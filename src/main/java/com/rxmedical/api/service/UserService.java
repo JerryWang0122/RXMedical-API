@@ -37,6 +37,8 @@ public class UserService {
 	@Autowired
 	private HistoryRepository historyRepository;
 
+	private SecureRandom secureRandom = new SecureRandom();
+
 	/**
 	 * [前台 - 登入] 取得使用者登入token
 	 * @return String CSRF Token
@@ -71,24 +73,31 @@ public class UserService {
 		Example<User> example = Example.of(u);
 		Optional<User> optionalUser = userRepository.findOne(example);
 
-		// 帳號存在
-		if (optionalUser.isPresent()) {
-			u = optionalUser.get();
-
-			// hash 傳入的密碼
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-			messageDigest.update(KeyUtil.hexStringToByteArray(u.getSalt()));
-			byte[] hashedPassword = messageDigest.digest(userLoginDto.password().getBytes());
-
-			// 比對密碼
-			// 且密碼正確
-			if (u.getPassword().equals(KeyUtil.bytesToHex(hashedPassword))){
-				return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
-									   u.getDept(), u.getTitle(), u.getEmail(),
-									   u.getAuthLevel());
-			}
+		// 帳號不存在
+		if (optionalUser.isEmpty()) {
+			return null;
 		}
-		return null;
+
+		// 帳號存在
+		u = optionalUser.get();
+
+		// hash 傳入的密碼
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		messageDigest.update(KeyUtil.hexStringToByteArray(u.getSalt()));
+		byte[] hashedPassword = messageDigest.digest(userLoginDto.password().getBytes());
+
+		// 比對密碼
+		if (!u.getPassword().equals(KeyUtil.bytesToHex(hashedPassword))){
+			return null;
+		}
+
+		// 且密碼正確
+		u.setVerifyToken(generateOTP());
+		userRepository.save(u);
+		return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
+				u.getDept(), u.getTitle(), u.getEmail(),
+				u.getAuthLevel(), u.getVerifyToken());
+
 	}
 
     /**
@@ -145,7 +154,7 @@ public class UserService {
 			User u = optionalUser.get();
 			return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
 								   u.getDept(), u.getTitle(), u.getEmail(),
-								   u.getAuthLevel());
+								   u.getAuthLevel(), u.getVerifyToken());
 		}
 		return null;
     }
@@ -173,7 +182,7 @@ public class UserService {
 			userRepository.save(u);
 			return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
 								   u.getDept(), u.getTitle(), u.getEmail(),
-								   u.getAuthLevel());
+								   u.getAuthLevel(), u.getVerifyToken());
 		}
 		return null;
 	}
@@ -304,6 +313,15 @@ public class UserService {
 		return userRepository.findByAuthLevel("admin").stream()
 				.map(user -> new TransporterDto(user.getId(), user.getEmpCode(), user.getName()))
 				.toList();
+	}
+
+	/**
+	 * [工具] 產生一組OTP供之後使用者進行驗證
+	 * @return String -> 產生的OTP
+	 */
+	private String generateOTP() {
+		long number = secureRandom.nextLong(1000000000000000L);
+		return String.format("%015d", number);
 	}
 
 }

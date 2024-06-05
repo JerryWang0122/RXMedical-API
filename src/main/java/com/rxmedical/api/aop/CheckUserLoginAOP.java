@@ -59,6 +59,7 @@ public class CheckUserLoginAOP {
 
 		Object result = null;
 		Optional<User> optionalUser;
+		String verifyToken = null;
 
 		try {
 //			System.out.println("測試前置");
@@ -70,19 +71,22 @@ public class CheckUserLoginAOP {
 				// DTO 裡面應該包含 currUserId
 				// 使用反射取得 currUserId
 				Integer currUserId = (Integer) args[0].getClass().getDeclaredMethod("userId").invoke(args[0]);
+				verifyToken = (String) args[0].getClass().getDeclaredMethod("verifyToken").invoke(args[0]);
 				optionalUser = userRepository.findById(currUserId);
 			}
 
-			if (optionalUser.isPresent()){
+			if (optionalUser.isEmpty() || verifyToken == null) { // 若找不到使用者，或是根本沒有token
+				result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
+			} else {
 				User u = optionalUser.get();
-				if (u.getAuthLevel().equals("staff") || u.getAuthLevel().equals("admin") ||
+				if (!verifyToken.equals(u.getVerifyToken())) {
+					result = ResponseEntity.ok(new ApiResponse<>(false, "TokenError", null));
+				} else if (u.getAuthLevel().equals("staff") || u.getAuthLevel().equals("admin") ||
 						u.getAuthLevel().equals("root")){
 					result = joinPoint.proceed();
 				} else {
 					result = ResponseEntity.ok(new ApiResponse<>(false, "權限有誤", null));
 				}
-			} else {
-				result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();

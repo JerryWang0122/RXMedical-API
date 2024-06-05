@@ -9,8 +9,9 @@ package com.rxmedical.api.model.dto;
  * @param title 職稱
  * @param email 信箱
  * @param authLevel 權限級別
+ * @param verifyToken 驗證碼
  */
 public record UserInfoDto(Integer id, String empCode, String name, String dept,
-                          String title, String email, String authLevel) {
+                          String title, String email, String authLevel, String verifyToken) {
 
 }

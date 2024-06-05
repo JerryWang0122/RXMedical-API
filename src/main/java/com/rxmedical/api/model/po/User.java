@@ -55,6 +55,9 @@ public class User {
 	private String authLevel;  // 權限
 
 	@Column
+	private String verifyToken;  // 驗證碼
+
+	@Column
 	@CreationTimestamp(source = SourceType.DB)
 	private Date createDate;  // 建立日期
 

@@ -7,7 +7,9 @@ package com.rxmedical.api.model.dto;
  * @param dept 處室
  * @param title 職稱
  * @param email 信箱
+ * @param verifyToken 驗證碼
  */
-public record UserEditInfoDto(Integer userId, String name, String dept, String title, String email) {
+public record UserEditInfoDto(Integer userId, String name, String dept, String title, String email,
+                              String verifyToken) {
 
 }
