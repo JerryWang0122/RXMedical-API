@@ -12,9 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
  * @param quantity 第一次批貨數量
  * @param price 第一次批貨價格
  * @param userId 登錄資料的人
- * @param picture 產品圖片
+ * @param picture 產品圖片(Base64)
+ * @param verifyToken 驗證碼
  */
 public record MaterialFileUploadDto(String code, String name, String category, String storage, String description,
                                     Integer quantity, Integer price, Integer userId,
-                                    MultipartFile picture) {
+                                    String picture, String verifyToken) {
 }

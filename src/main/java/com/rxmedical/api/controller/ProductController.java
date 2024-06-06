@@ -49,14 +49,7 @@ public class ProductController {
 
 	// 後台新增商品
 	@PostMapping("/admin/material/create")
-	public ResponseEntity<ApiResponse<Object>> materialInfoUpload(
-			@RequestParam Integer userId, @RequestParam String code, @RequestParam String name, 
-			@RequestParam String category, @RequestParam String storage, @RequestParam String description, 
-			@RequestParam Integer quantity, @RequestParam Integer price, @RequestParam MultipartFile picture) {
-
-		// Param 轉換成 DTO
-		MaterialFileUploadDto materialInfoDto = new MaterialFileUploadDto(code, name, category, storage, description, quantity, price, userId, picture);
-		
+	public ResponseEntity<ApiResponse<Object>> materialInfoUpload(@RequestBody MaterialFileUploadDto materialInfoDto) {
 		Boolean success = productService.registerProduct(materialInfoDto);
 		if(!success) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "新增產品失敗", null));
@@ -79,13 +72,7 @@ public class ProductController {
 	}
 
 	@PutMapping("/admin/material/edit")
-	public ResponseEntity<ApiResponse<Object>> materialInfoUpdate(
-			@RequestParam Integer userId, @RequestParam Integer productId, @RequestParam String name, 
-			@RequestParam String category, @RequestParam String storage, @RequestParam String description, 
-			@RequestParam MultipartFile picture) {
-
-		MaterialUpdateInfoDto updateInfoDto = new MaterialUpdateInfoDto(productId, name, category, storage, description, picture);
-		
+	public ResponseEntity<ApiResponse<Object>> materialInfoUpdate(@RequestBody MaterialUpdateInfoDto updateInfoDto) {
 		Boolean success = productService.updateMaterialInfo(updateInfoDto);
 		if (success) {
 			return ResponseEntity.ok(new ApiResponse<>(true, "商品更新成功", null));

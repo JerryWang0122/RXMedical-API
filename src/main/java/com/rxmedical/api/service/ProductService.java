@@ -99,11 +99,7 @@ public class ProductService {
             p.setDescription(infoDto.description());
 
             if (infoDto.updatePicture() != null) {
-                String imgPath = uploadPicture(infoDto.updatePicture());
-                if (imgPath == null) {
-                    return false;
-                }
-                p.setPicture(imgPath);
+                p.setPicture(infoDto.updatePicture());
             }
 
             productRepository.save(p);
@@ -123,13 +119,6 @@ public class ProductService {
         // 因為經過aop，所以直接get
         User user = userRepository.findById(infoDto.userId()).get();
 
-        // 上傳檔案並取得檔案路徑
-        String imgPath = uploadPicture(infoDto.picture());
-        // 上傳的檔案有問題
-        if (imgPath == null) {
-            return false;
-        }
-
         // 產品資料寫入資料庫
         Product product = new Product();
         product.setCode(infoDto.code());
@@ -137,7 +126,7 @@ public class ProductService {
         product.setStock(0);
         product.setDescription(infoDto.description());
         product.setStorage(infoDto.storage());
-        product.setPicture(imgPath);
+        product.setPicture(infoDto.picture());
         product.setCategory(infoDto.category());
         Product result = productRepository.save(product);
 

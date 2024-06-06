@@ -36,7 +36,7 @@ public class Product {
     @Column
     private String storage;     // 儲存位置
 
-    @Column
+    @Column(columnDefinition = "LONGTEXT")
 	private String picture;     // 圖片儲存位置
 
     @Column

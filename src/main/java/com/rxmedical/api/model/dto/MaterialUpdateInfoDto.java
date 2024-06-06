@@ -10,8 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
  * @param category
  * @param storage
  * @param description
- * @param updatePicture
+ * @param updatePicture (Base64)
+ * @param userId
+ * @param verifyToken
  */
 public record MaterialUpdateInfoDto(Integer productId, String name, String category, String storage,
-                                    String description, MultipartFile updatePicture) {
+                                    String description, String updatePicture, Integer userId, String verifyToken) {
 }
