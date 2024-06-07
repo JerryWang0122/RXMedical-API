@@ -50,22 +50,22 @@ public class UserService {
 	/**
 	 * [前台 - 檢測] 檢驗使用者登入資料
 	 * @param userLoginDto 使用者登入資料
-	 * @param request 拿TOKEN用
+	 * @param session 拿TOKEN用
 	 * @return UserInfoDto 使用者資料
 	 * @throws NoSuchAlgorithmException
 	 */
-	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto, HttpServletRequest request, HttpSession session) throws NoSuchAlgorithmException {
+	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto, HttpSession session) throws NoSuchAlgorithmException {
 
 		if (userLoginDto.email() == null || userLoginDto.password() == null) {
 			return null;
 		}
 
 		// CSRF 驗證
-		Object tokenExist = request.getServletContext().getAttribute(userLoginDto.token());
-		if (tokenExist == null || !(Boolean)tokenExist) { // token 不存在
+		Object csrfToken = session.getAttribute("CSRFToken");
+		if (userLoginDto.token() == null || !userLoginDto.token().equals(csrfToken)) {
 			return null;
 		}
-		request.getServletContext().removeAttribute(userLoginDto.token());
+		session.removeAttribute("CSRFToken");
 
 		// 查找email對應使用者
 		User u = new User();
@@ -103,16 +103,16 @@ public class UserService {
     /**
      * [前台 - 增加] 使用者資料
      * @param userRegisterDto 註冊人註冊資料
-	 * @param request 拿TOKEN用
+	 * @param session 拿TOKEN用
      * @return Boolean 註冊是否成功
      */
-    public Boolean registerUserInfo(UserRegisterDto userRegisterDto, HttpServletRequest request) throws NoSuchAlgorithmException {
+    public Boolean registerUserInfo(UserRegisterDto userRegisterDto, HttpSession session) throws NoSuchAlgorithmException {
 		// CSRF 驗證
-		Object tokenExist = request.getServletContext().getAttribute(userRegisterDto.token());
-		if (tokenExist == null || !(Boolean)tokenExist) { // token 不存在
+		Object csrfToken = session.getAttribute("CSRFToken");
+		if (userRegisterDto.token() == null || !userRegisterDto.token().equals(csrfToken)) {
 			return null;
 		}
-		request.getServletContext().removeAttribute(userRegisterDto.token());
+		session.removeAttribute("CSRFToken");
 
 		// Register User
     	User user = new User();

@@ -3,7 +3,9 @@ package com.rxmedical.api.controller;
 import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.UserService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,10 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5501", "http://127.0.0.1:5501"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost", "http://127.0.0.1", "http://192.168.153.167"}, allowCredentials = "true")
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -35,16 +38,17 @@ public class UserController {
 		System.out.println(session.getId());
 		System.out.println(CSRFToken);
 		session.setAttribute("CSRFToken", CSRFToken);
+
 		return ResponseEntity.ok(new ApiResponse<>(true, "CSRF令牌", CSRFToken));
 	}
 
 
 	// 判斷使用者登入
 	@PostMapping("/user/login")
-	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request, HttpSession session) throws NoSuchAlgorithmException {
+	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpSession session) throws NoSuchAlgorithmException {
 		System.out.println(session.getId());
 		System.out.println(userLoginDto);
-		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto, request, session);
+		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto, session);
 		
 		ApiResponse<UserInfoDto> response = new ApiResponse<>();
 		if (userInfoDto == null) {
@@ -66,9 +70,9 @@ public class UserController {
 	
 	// 註冊
 	@PostMapping("/user/register")
-	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto, HttpServletRequest request) throws NoSuchAlgorithmException {
+	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto, HttpSession session) throws NoSuchAlgorithmException {
 
-		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto, request);
+		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto, session);
 
 		if (registerSuccess == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "CSRF驗證失敗", null));
