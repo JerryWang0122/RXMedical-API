@@ -54,7 +54,7 @@ public class UserService {
 	 * @return UserInfoDto 使用者資料
 	 * @throws NoSuchAlgorithmException
 	 */
-	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException {
+	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto, HttpServletRequest request, HttpSession session) throws NoSuchAlgorithmException {
 
 		if (userLoginDto.email() == null || userLoginDto.password() == null) {
 			return null;

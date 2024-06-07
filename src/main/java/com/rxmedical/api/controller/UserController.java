@@ -15,7 +15,7 @@ import java.security.SecureRandom;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:5501", "http://127.0.0.1:5501"}, allowCredentials = "true")
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -28,19 +28,23 @@ public class UserController {
 	}
 
 	// 登入防止CSRF
+
 	@PostMapping("/user/CSRFToken")
-	public ResponseEntity<ApiResponse<String>> getUserToken(HttpServletRequest request) {
-		String loginToken = userService.getUserToken();
-		System.out.println(loginToken);
-		request.getServletContext().setAttribute(loginToken, true);
-		return ResponseEntity.ok(new ApiResponse<>(true, "使用者登入令牌", loginToken));
+	public ResponseEntity<ApiResponse<String>> getUserToken(HttpSession session) {
+		String CSRFToken = userService.getUserToken();
+		System.out.println(session.getId());
+		System.out.println(CSRFToken);
+		session.setAttribute("CSRFToken", CSRFToken);
+		return ResponseEntity.ok(new ApiResponse<>(true, "CSRF令牌", CSRFToken));
 	}
 
 
 	// 判斷使用者登入
 	@PostMapping("/user/login")
-	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException {
-		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto, request);
+	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request, HttpSession session) throws NoSuchAlgorithmException {
+		System.out.println(session.getId());
+		System.out.println(userLoginDto);
+		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto, request, session);
 		
 		ApiResponse<UserInfoDto> response = new ApiResponse<>();
 		if (userInfoDto == null) {
