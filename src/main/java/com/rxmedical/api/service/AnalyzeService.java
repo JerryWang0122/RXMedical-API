@@ -1,13 +1,17 @@
 package com.rxmedical.api.service;
 
+import com.rxmedical.api.model.dto.SafetyRatioDto;
 import com.rxmedical.api.model.po.History;
+import com.rxmedical.api.model.po.Product;
 import com.rxmedical.api.model.po.Record;
 import com.rxmedical.api.repository.HistoryRepository;
+import com.rxmedical.api.repository.ProductRepository;
 import com.rxmedical.api.repository.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AnalyzeService {
@@ -16,7 +20,13 @@ public class AnalyzeService {
     private RecordRepository recordRepository;
     @Autowired
     private HistoryRepository historyRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
+    /**
+     * [後台 - 分析] 取得並計算勞動積分
+     * @return Map "WHO" has "HOW MUCH" LABOR SCORE
+     */
     public Map<String, Integer> getLaborScore() {
         // 分數加成，可自行調整
         final int TRANSPORTER_FACTOR = 2;
@@ -50,4 +60,17 @@ public class AnalyzeService {
         });
         return map;
     }
+
+    public List<SafetyRatioDto> getMaterialSafetyRatio() {
+        // 取出所有產品，並利用庫存量和safetyThreshold計算庫存比例，取出最低的前3名並回傳
+        List<Product> allMaterials = productRepository.findAll();
+
+        return allMaterials.stream()
+                .sorted(Comparator.comparingDouble(m -> (double) m.getStock() / m.getSafetyThreshold()))
+                .limit(3)
+                .map(m -> new SafetyRatioDto(m.getName(), m.getCode(),
+                        (float) m.getStock() / (m.getSafetyThreshold() * 4)))  // safetyThreshold * "4" 計算一個月的安全比率
+                .collect(Collectors.toList());
+    }
+
 }
