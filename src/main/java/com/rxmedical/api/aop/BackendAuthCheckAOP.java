@@ -89,6 +89,10 @@ public class BackendAuthCheckAOP {
     @Pointcut(value = "execution(* com.rxmedical.api.controller.SaleController.pushToTransporting(..))")
     public void pushToTransporting(){}
 
+    // ------------------- Analyze ------------------
+
+    @Pointcut(value = "execution(* com.rxmedical.api.controller.AnalyzeController.getLaborScore(..))")
+    public void getLaborScore(){}
 
 
     // ---------------- 開切 -------------------------
@@ -98,7 +102,8 @@ public class BackendAuthCheckAOP {
             "callMaterial() || destroyMaterial() || getOrderDetails() || getUncheckedOrderList() || pushToPicking() ||" +
             "pushToRejected() || getRejectedOrderList() || getPickingOrderList() || getHistoryProductList() ||" +
             "pickUpItem() || pushToWaiting() || getWaitingOrderList() || pushToTransporting() || getTransportingOrderList() ||" +
-            "getFinishOrderList()")
+            "getFinishOrderList() ||" +
+            "getLaborScore()")
     public Object aroundCheckAuth(ProceedingJoinPoint joinPoint) {
 
         Object result = null;
