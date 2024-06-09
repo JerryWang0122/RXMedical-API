@@ -627,7 +627,7 @@
 									"font": "Arial;13;1",
 									"left": 496,
 									"top": 429,
-									"width": 221.166015625,
+									"width": 239.244140625,
 									"height": 13,
 									"text": "product"
 								},
@@ -653,7 +653,7 @@
 											"font": "Arial;13;0",
 											"left": 501,
 											"top": 452,
-											"width": 211.166015625,
+											"width": 229.244140625,
 											"height": 13
 										},
 										{
@@ -668,7 +668,7 @@
 											"font": "Arial;13;0",
 											"left": 501,
 											"top": 467,
-											"width": 211.166015625,
+											"width": 229.244140625,
 											"height": 13
 										},
 										{
@@ -683,7 +683,7 @@
 											"font": "Arial;13;0",
 											"left": 501,
 											"top": 482,
-											"width": 211.166015625,
+											"width": 229.244140625,
 											"height": 13
 										},
 										{
@@ -698,7 +698,22 @@
 											"font": "Arial;13;0",
 											"left": 501,
 											"top": 497,
-											"width": 211.166015625,
+											"width": 229.244140625,
+											"height": 13
+										},
+										{
+											"_type": "ERDColumnView",
+											"_id": "AAAAAAGP+yhFBdGGaN0=",
+											"_parent": {
+												"$ref": "AAAAAAGPJPA2Lo6qeEE="
+											},
+											"model": {
+												"$ref": "AAAAAAGP+yhE9dGDeco="
+											},
+											"font": "Arial;13;0",
+											"left": 501,
+											"top": 512,
+											"width": 229.244140625,
 											"height": 13
 										},
 										{
@@ -712,8 +727,8 @@
 											},
 											"font": "Arial;13;0",
 											"left": 501,
-											"top": 512,
-											"width": 211.166015625,
+											"top": 527,
+											"width": 229.244140625,
 											"height": 13
 										},
 										{
@@ -727,8 +742,8 @@
 											},
 											"font": "Arial;13;0",
 											"left": 501,
-											"top": 527,
-											"width": 211.166015625,
+											"top": 542,
+											"width": 229.244140625,
 											"height": 13
 										},
 										{
@@ -742,8 +757,8 @@
 											},
 											"font": "Arial;13;0",
 											"left": 501,
-											"top": 542,
-											"width": 211.166015625,
+											"top": 557,
+											"width": 229.244140625,
 											"height": 13
 										},
 										{
@@ -757,23 +772,23 @@
 											},
 											"font": "Arial;13;0",
 											"left": 501,
-											"top": 557,
-											"width": 211.166015625,
+											"top": 572,
+											"width": 229.244140625,
 											"height": 13
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 496,
 									"top": 447,
-									"width": 221.166015625,
-									"height": 128
+									"width": 239.244140625,
+									"height": 143
 								}
 							],
 							"font": "Arial;13;0",
 							"left": 496,
 							"top": 424,
-							"width": 221.166015625,
-							"height": 151,
+							"width": 239.244140625,
+							"height": 166,
 							"nameLabel": {
 								"$ref": "AAAAAAGPJPA2Lo6pSF8="
 							},
@@ -1084,7 +1099,7 @@
 										"$ref": "AAAAAAGPJRLsKY+AvIA="
 									},
 									"font": "Arial;13;0",
-									"left": 742,
+									"left": 760,
 									"top": 435,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -1119,7 +1134,7 @@
 								"$ref": "AAAAAAGPJPA2Lo6oszo="
 							},
 							"lineStyle": 2,
-							"points": "717:456;792:456;792:856;760:856",
+							"points": "735:456;792:456;792:856;760:856",
 							"nameLabel": {
 								"$ref": "AAAAAAGPJRLsKY+Bg68="
 							},
@@ -1912,7 +1927,7 @@
 							},
 							"name": "verify_token",
 							"type": "VARCHAR",
-							"length": "20"
+							"length": "15"
 						}
 					]
 				},
@@ -2371,6 +2386,17 @@
 							},
 							"name": "stock",
 							"documentation": "目前存貨",
+							"type": "INTEGER",
+							"length": 0
+						},
+						{
+							"_type": "ERDColumn",
+							"_id": "AAAAAAGP+yhE9dGDeco=",
+							"_parent": {
+								"$ref": "AAAAAAGPJPA2LY6mANI="
+							},
+							"name": "safety_threshold",
+							"documentation": "安全庫存",
 							"type": "INTEGER",
 							"length": 0
 						},

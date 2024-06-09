@@ -31,6 +31,9 @@ public class Product {
 	private Integer stock;  // 庫存量
 
     @Column
+    private Integer safetyThreshold;  // 安全庫存
+
+    @Column
 	private String description;     // 產品描述
 
     @Column

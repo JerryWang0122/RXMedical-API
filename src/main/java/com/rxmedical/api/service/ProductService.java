@@ -78,7 +78,7 @@ public class ProductService {
         if (optionalProduct.isPresent()) {
             Product p = optionalProduct.get();
             return new MaterialInfoDto(p.getId(), p.getCode(), p.getName(),
-                    p.getCategory(), p.getStorage(), p.getDescription(),
+                    p.getCategory(), p.getSafetyThreshold(), p.getStorage(), p.getDescription(),
                     p.getPicture());
         }
         return null;
@@ -95,6 +95,7 @@ public class ProductService {
             Product p = optionalProduct.get();
             p.setName(infoDto.name());
             p.setCategory(infoDto.category());
+            p.setSafetyThreshold(infoDto.safetyThreshold());
             p.setStorage(infoDto.storage());
             p.setDescription(infoDto.description());
 
@@ -124,6 +125,7 @@ public class ProductService {
         product.setCode(infoDto.code());
         product.setName(infoDto.name());
         product.setStock(0);
+        product.setSafetyThreshold(infoDto.safetyThreshold());
         product.setDescription(infoDto.description());
         product.setStorage(infoDto.storage());
         product.setPicture(infoDto.picture());

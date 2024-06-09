@@ -8,12 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
  * @param productId
  * @param name
  * @param category
+ * @param safetyThreshold
  * @param storage
  * @param description
  * @param updatePicture (Base64)
  * @param userId
  * @param verifyToken
  */
-public record MaterialUpdateInfoDto(Integer productId, String name, String category, String storage,
+public record MaterialUpdateInfoDto(Integer productId, String name, String category, Integer safetyThreshold, String storage,
                                     String description, String updatePicture, Integer userId, String verifyToken) {
 }
