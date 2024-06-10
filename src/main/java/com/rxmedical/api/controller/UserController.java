@@ -1,5 +1,6 @@
 package com.rxmedical.api.controller;
 
+import com.nimbusds.jose.JOSEException;
 import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.UserService;
@@ -14,11 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost", "http://127.0.0.1", "http://192.168.153.167"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost", "http://127.0.0.1", "http://192.168.153.167"})
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -33,22 +35,20 @@ public class UserController {
 	// 登入防止CSRF
 
 	@PostMapping("/user/CSRFToken")
-	public ResponseEntity<ApiResponse<String>> getUserToken(HttpSession session) {
+	public ResponseEntity<ApiResponse<List<String>>> getUserToken() throws JOSEException {
 		String CSRFToken = userService.getUserToken();
-		System.out.println(session.getId());
-		System.out.println(CSRFToken);
-		session.setAttribute("CSRFToken", CSRFToken);
+		String jwtToken = userService.generateJWT_CSRFToken(CSRFToken);
+//		System.out.println(CSRFToken);
+//		System.out.println(jwtToken);
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "CSRF令牌", CSRFToken));
+		return ResponseEntity.ok(new ApiResponse<>(true, "CSRF令牌", List.of(CSRFToken, jwtToken)));
 	}
 
 
 	// 判斷使用者登入
 	@PostMapping("/user/login")
-	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpSession session) throws NoSuchAlgorithmException {
-		System.out.println(session.getId());
-		System.out.println(userLoginDto);
-		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto, session);
+	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException {
+		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto, request);
 		
 		ApiResponse<UserInfoDto> response = new ApiResponse<>();
 		if (userInfoDto == null) {
@@ -70,9 +70,9 @@ public class UserController {
 	
 	// 註冊
 	@PostMapping("/user/register")
-	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto, HttpSession session) throws NoSuchAlgorithmException {
+	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException {
 
-		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto, session);
+		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto, request);
 
 		if (registerSuccess == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "CSRF驗證失敗", null));

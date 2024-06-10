@@ -10,5 +10,5 @@ COPY target/RXMedical-API-0.0.1-SNAPSHOT.jar /app/RXMedical-API.jar
 # 容器啟動時執行的命令，啟動 Spring Boot 應用
 CMD ["java", "-jar", "/app/RXMedical-API.jar"]
 
-# 暴露 8085 端口，供外部訪問
+# 暴露 8080 端口，供外部訪問
 EXPOSE 8080

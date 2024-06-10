@@ -1,14 +1,21 @@
 package com.rxmedical.api.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Record;
@@ -39,6 +46,81 @@ public class UserService {
 
 	private SecureRandom secureRandom = new SecureRandom();
 
+	private final String SIGNING_SECURE_PATH = "src/main/java/com/rxmedical/api/service/signingSecure.txt";
+
+	/**
+	 * [工具] 輔助JWT產生
+	 * @return 取得JWT簽名專用密鑰
+	 */
+	public String getJWTSigningSecure() {
+		// 如果檔案存在，則直接取出內容，否則建立並寫入檔案
+		try {
+			if (new File(SIGNING_SECURE_PATH).exists()) {
+				return Files.readString(Path.of(SIGNING_SECURE_PATH));
+			} else {
+				String signingSecret = KeyUtil.generateSecret(32);
+				Files.writeString(Path.of(SIGNING_SECURE_PATH), signingSecret);
+				return signingSecret;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * [工具] 產生CSRF Token的JWT
+	 * @return JWT
+	 * @throws JOSEException
+	 */
+	public String generateJWT_CSRFToken(String CSRFToken) throws JOSEException {
+		String signingSecure = getJWTSigningSecure();
+		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+								.subject("CSRFToken")
+								.issuer("RXMedical")
+								.claim("CSRFToken", CSRFToken)
+								.build();
+		return KeyUtil.signJWT(claimsSet, signingSecure);
+	}
+
+	/**
+	 * [工具] 產生使用者登入後，使用功能通行用的jwt
+	 * @param authCode 驗證碼
+	 * @return 產生使用功能時，通行用的jwt
+	 * @throws JOSEException
+	 */
+	public String generateJWT_UserUsage(String authCode) throws JOSEException {
+		String signingSecure = getJWTSigningSecure();
+		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+				.subject("User usage")
+				.issuer("RXMedical")
+				.claim("AuthCode", authCode)
+				.build();
+		return KeyUtil.signJWT(claimsSet, signingSecure);
+	}
+
+	/**
+	 * [工具] 輔助檢查CSRF Token
+	 * @param token 表單內的 CSRF Token
+	 * @param request 在header裡面有放 jwt 的 CSRFToken
+	 * @return CSRF Token是否符合
+	 * @throws ParseException
+	 */
+	private boolean checkJWT_CSRFToken(String token, HttpServletRequest request) throws ParseException {
+		String authorizationHeader = request.getHeader("Authorization");
+		if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ") ) {
+			return false;
+		}
+
+		// CSRF 驗證
+		String jwt = authorizationHeader.substring(7);
+		if (!KeyUtil.verifyJWTSignature(jwt, getJWTSigningSecure())) {
+			return false;
+		}
+		JWTClaimsSet claims = KeyUtil.getClaimsFromToken(jwt);
+
+        return token.equals(claims.getClaim("CSRFToken"));
+    }
+
 	/**
 	 * [前台 - 登入] 取得使用者登入token
 	 * @return String CSRF Token
@@ -50,22 +132,20 @@ public class UserService {
 	/**
 	 * [前台 - 檢測] 檢驗使用者登入資料
 	 * @param userLoginDto 使用者登入資料
-	 * @param session 拿TOKEN用
+	 * @param request 從header拿TOKEN用
 	 * @return UserInfoDto 使用者資料
 	 * @throws NoSuchAlgorithmException
 	 */
-	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto, HttpSession session) throws NoSuchAlgorithmException {
+	public UserInfoDto checkUserLogin(UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException {
 
-		if (userLoginDto.email() == null || userLoginDto.password() == null) {
+		if (userLoginDto.email() == null || userLoginDto.password() == null || userLoginDto.token() == null) {
 			return null;
 		}
 
 		// CSRF 驗證
-		Object csrfToken = session.getAttribute("CSRFToken");
-		if (userLoginDto.token() == null || !userLoginDto.token().equals(csrfToken)) {
+		if (!checkJWT_CSRFToken(userLoginDto.token(), request)) {
 			return null;
 		}
-		session.removeAttribute("CSRFToken");
 
 		// 查找email對應使用者
 		User u = new User();
@@ -103,16 +183,14 @@ public class UserService {
     /**
      * [前台 - 增加] 使用者資料
      * @param userRegisterDto 註冊人註冊資料
-	 * @param session 拿TOKEN用
+	 * @param request 從header拿TOKEN用
      * @return Boolean 註冊是否成功
      */
-    public Boolean registerUserInfo(UserRegisterDto userRegisterDto, HttpSession session) throws NoSuchAlgorithmException {
+    public Boolean registerUserInfo(UserRegisterDto userRegisterDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException {
 		// CSRF 驗證
-		Object csrfToken = session.getAttribute("CSRFToken");
-		if (userRegisterDto.token() == null || !userRegisterDto.token().equals(csrfToken)) {
+		if (!checkJWT_CSRFToken(userRegisterDto.token(), request)) {
 			return null;
 		}
-		session.removeAttribute("CSRFToken");
 
 		// Register User
     	User user = new User();
@@ -323,5 +401,7 @@ public class UserService {
 		long number = secureRandom.nextLong(1000000000000000L);
 		return String.format("%015d", number);
 	}
+
+
 
 }
