@@ -1,6 +1,8 @@
 package com.rxmedical.api.controller;
 
+import com.rxmedical.api.model.dto.CallAdviceDto;
 import com.rxmedical.api.model.dto.CurrUserDto;
+import com.rxmedical.api.model.dto.GetMaterialInfoDto;
 import com.rxmedical.api.model.dto.SafetyRatioDto;
 import com.rxmedical.api.model.response.ApiResponse;
 import com.rxmedical.api.service.AnalyzeService;
@@ -35,5 +37,11 @@ public class AnalyzeController {
     @PostMapping("/materialSafetyRatio")
     public ResponseEntity<ApiResponse<List<SafetyRatioDto>>> getMaterialSafetyRatio(@RequestBody CurrUserDto user) {
         return ResponseEntity.ok(new ApiResponse<>(true, "庫存安全比例", analyzeService.getMaterialSafetyRatio()));
+    }
+
+    // 後台取得建議進貨量趨勢圖
+    @PostMapping("/callMaterialDiagram")
+    public ResponseEntity<ApiResponse<List<CallAdviceDto>>> getCallMaterialDiagram(@RequestBody GetMaterialInfoDto infoDto) {
+        return ResponseEntity.ok(new ApiResponse<>(true, "進貨建議圖表", analyzeService.getCallMaterialDiagram(infoDto.materialId())));
     }
 }
