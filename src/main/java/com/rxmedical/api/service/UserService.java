@@ -20,12 +20,10 @@ import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Record;
 import com.rxmedical.api.repository.HistoryRepository;
-import com.rxmedical.api.repository.ProductRepository;
 import com.rxmedical.api.repository.RecordRepository;
 import com.rxmedical.api.util.EmailUtil;
 import com.rxmedical.api.util.KeyUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -229,10 +227,10 @@ public class UserService {
     public UserInfoDto getUserInfo(Integer userId) {
 		Optional<User> optionalUser = userRepository.findById(userId);
 		if (optionalUser.isPresent()) {
-			User u = optionalUser.get();
-			return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
-								   u.getDept(), u.getTitle(), u.getEmail(),
-								   u.getAuthLevel(), u.getVerifyToken());
+			User user = optionalUser.get();
+			return new UserInfoDto(user.getId(), user.getEmpCode(), user.getName(),
+								   user.getDept(), user.getTitle(), user.getEmail(),
+								   user.getAuthLevel(), user.getVerifyToken());
 		}
 		return null;
     }
@@ -252,15 +250,15 @@ public class UserService {
 		// 更新資料
 		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.userId());
 		if (optionalUser.isPresent()) {
-			User u = optionalUser.get();
-			u.setName(userEditInfoDto.name());
-			u.setDept(userEditInfoDto.dept());
-			u.setTitle(userEditInfoDto.title());
-			u.setEmail(userEditInfoDto.email());
-			userRepository.save(u);
-			return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
-								   u.getDept(), u.getTitle(), u.getEmail(),
-								   u.getAuthLevel(), u.getVerifyToken());
+			User user = optionalUser.get();
+			user.setName(userEditInfoDto.name());
+			user.setDept(userEditInfoDto.dept());
+			user.setTitle(userEditInfoDto.title());
+			user.setEmail(userEditInfoDto.email());
+			userRepository.save(user);
+			return new UserInfoDto(user.getId(), user.getEmpCode(), user.getName(),
+								   user.getDept(), user.getTitle(), user.getEmail(),
+								   user.getAuthLevel(), user.getVerifyToken());
 		}
 		return null;
 	}
@@ -277,11 +275,11 @@ public class UserService {
 		}
 		List<Record> recordList = recordRepository.findByDemander(optionalUser.get());
 		return recordList.stream()
-				.map(r -> new PurchaseHistoryDto(
-										r.getId(),
-										r.getCode(),
-										historyRepository.countByRecord(r),
-										r.getChineseStatus()
+				.map(record -> new PurchaseHistoryDto(
+										record.getId(),
+										record.getCode(),
+										historyRepository.countByRecord(record),
+										record.getChineseStatus()
 										))
 				.toList();
 
@@ -299,12 +297,12 @@ public class UserService {
 		}
 
 		// 查詢人應該要跟訂購人一樣
-		Record r = optionalRecord.get();
-		if (!recordDto.userId().equals(r.getDemander().getId())) {
+		Record record = optionalRecord.get();
+		if (!recordDto.userId().equals(record.getDemander().getId())) {
 			return null;
 		}
 		// 給資料
-		List<History> recordDetails = historyRepository.findByRecord(r);
+		List<History> recordDetails = historyRepository.findByRecord(record);
 		return recordDetails.stream()
 				.map(history -> new OrderDetailDto(history.getProduct().getName(), history.getQuantity(), null))
 				.toList();
@@ -320,18 +318,18 @@ public class UserService {
 		if (optionalRecord.isEmpty()){
 			return "找不到訂單";
 		}
-		Record r = optionalRecord.get();
-		if (r.getStatus().equals("finish")) {
+		Record record = optionalRecord.get();
+		if (record.getStatus().equals("finish")) {
 			return "訂單已經完成";
 		}
-		if (!r.getStatus().equals("transporting")) {
+		if (!record.getStatus().equals("transporting")) {
 			return "錯誤訂單狀態";
 		}
-		if (!recordDto.userId().equals(r.getDemander().getId())) {
+		if (!recordDto.userId().equals(record.getDemander().getId())) {
 			return "錯誤操作人員";
 		}
-		r.setStatus("finish");
-		recordRepository.save(r);
+		record.setStatus("finish");
+		recordRepository.save(record);
 		return null;
 	}
 
