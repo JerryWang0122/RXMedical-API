@@ -220,14 +220,14 @@ public class SaleService {
     public synchronized List<OrderListDto> getUncheckedOrderList() {
         List<Record> records = recordRepository.findByStatus("unchecked");
         return records.stream()
-                      .map(r -> new OrderListDto(
-                                        r.getId(),
-                                        r.getCode(),
-                                        historyRepository.countByRecord(r),
+                      .map(record -> new OrderListDto(
+                                        record.getId(),
+                                        record.getCode(),
+                                        historyRepository.countByRecord(record),
                                         new OrderDemanderDto(
-                                                r.getDemander().getDept(),
-                                                r.getDemander().getTitle(),
-                                                r.getDemander().getName()
+                                                record.getDemander().getDept(),
+                                                record.getDemander().getTitle(),
+                                                record.getDemander().getName()
                                         ),
                                         null,
                                         null))
@@ -241,14 +241,14 @@ public class SaleService {
     public synchronized List<OrderListDto> getPickingOrderList() {
         List<Record> records = recordRepository.findByStatus("picking");
         return records.stream()
-                .map(r -> new OrderListDto(
-                        r.getId(),
-                        r.getCode(),
-                        historyRepository.countByRecord(r),
+                .map(record -> new OrderListDto(
+                        record.getId(),
+                        record.getCode(),
+                        historyRepository.countByRecord(record),
                         new OrderDemanderDto(
-                                r.getDemander().getDept(),
-                                r.getDemander().getTitle(),
-                                r.getDemander().getName()
+                                record.getDemander().getDept(),
+                                record.getDemander().getTitle(),
+                                record.getDemander().getName()
                         ),
                         null,
                         null))
@@ -262,14 +262,14 @@ public class SaleService {
     public synchronized List<OrderListDto> getWaitingOrderList() {
         List<Record> records = recordRepository.findByStatus("waiting");
         return records.stream()
-                .map(r -> new OrderListDto(
-                        r.getId(),
-                        r.getCode(),
-                        historyRepository.countByRecord(r),
+                .map(record -> new OrderListDto(
+                        record.getId(),
+                        record.getCode(),
+                        historyRepository.countByRecord(record),
                         new OrderDemanderDto(
-                                r.getDemander().getDept(),
-                                r.getDemander().getTitle(),
-                                r.getDemander().getName()
+                                record.getDemander().getDept(),
+                                record.getDemander().getTitle(),
+                                record.getDemander().getName()
                         ),
                         null,
                         null))
@@ -283,17 +283,17 @@ public class SaleService {
     public synchronized List<OrderListDto> getTransportingOrderList() {
         List<Record> records = recordRepository.findByStatus("transporting");
         return records.stream()
-                .map(r -> new OrderListDto(
-                        r.getId(),
-                        r.getCode(),
-                        historyRepository.countByRecord(r),
+                .map(record -> new OrderListDto(
+                        record.getId(),
+                        record.getCode(),
+                        historyRepository.countByRecord(record),
                         new OrderDemanderDto(
-                                r.getDemander().getDept(),
-                                r.getDemander().getTitle(),
-                                r.getDemander().getName()
+                                record.getDemander().getDept(),
+                                record.getDemander().getTitle(),
+                                record.getDemander().getName()
                         ),
-                        r.getTransporter().getName(),
-                        r.getUpdateDate()))
+                        record.getTransporter().getName(),
+                        record.getUpdateDate()))
                 .toList();
     }
 
@@ -304,17 +304,17 @@ public class SaleService {
     public synchronized List<OrderListDto> getFinishOrderList() {
         List<Record> records = recordRepository.findByStatus("finish");
         return records.stream()
-                .map(r -> new OrderListDto(
-                        r.getId(),
-                        r.getCode(),
-                        historyRepository.countByRecord(r),
+                .map(record -> new OrderListDto(
+                        record.getId(),
+                        record.getCode(),
+                        historyRepository.countByRecord(record),
                         new OrderDemanderDto(
-                                r.getDemander().getDept(),
-                                r.getDemander().getTitle(),
-                                r.getDemander().getName()
+                                record.getDemander().getDept(),
+                                record.getDemander().getTitle(),
+                                record.getDemander().getName()
                         ),
-                        r.getTransporter().getName(),
-                        r.getUpdateDate()))
+                        record.getTransporter().getName(),
+                        record.getUpdateDate()))
                 .toList();
     }
 
@@ -325,14 +325,14 @@ public class SaleService {
     public synchronized List<OrderListDto> getRejectedOrderList() {
         List<Record> records = recordRepository.findByStatus("rejected");
         return records.stream()
-                .map(r -> new OrderListDto(
-                            r.getId(),
-                            r.getCode(),
-                            historyRepository.countByRecord(r),
+                .map(record -> new OrderListDto(
+                            record.getId(),
+                            record.getCode(),
+                            historyRepository.countByRecord(record),
                             new OrderDemanderDto(
-                                    r.getDemander().getDept(),
-                                    r.getDemander().getTitle(),
-                                    r.getDemander().getName()
+                                    record.getDemander().getDept(),
+                                    record.getDemander().getTitle(),
+                                    record.getDemander().getName()
                             ),
                             null,
                             null))
@@ -359,10 +359,10 @@ public class SaleService {
             if (optionalProduct.isEmpty()) {
                 return "貨號不存在";
             } else {
-                Product p = optionalProduct.get();
+                Product product = optionalProduct.get();
                 // 如果貨不夠
-                if (p.getStock() < item.applyQty()) {
-                    errorList.add("[" + p.getName() + "]庫存: " + p.getStock());
+                if (product.getStock() < item.applyQty()) {
+                    errorList.add("[" + product.getName() + "]庫存: " + product.getStock());
                 }
             }
         }
@@ -379,22 +379,22 @@ public class SaleService {
         record.setStatus("unchecked");
         record.setDemander(demander);
 
-        Record r = recordRepository.save(record);
+        Record recordWithID = recordRepository.save(record);
 
         recordDto.applyItems().stream().forEach(item -> {
             // 因為上面檢查過了，直接拿
-            Product p = productRepository.findById(item.productId()).get();
+            Product product = productRepository.findById(item.productId()).get();
             // 更新庫存
-            p.setStock(p.getStock() - item.applyQty());
-            productRepository.save(p);
+            product.setStock(product.getStock() - item.applyQty());
+            productRepository.save(product);
 
             // 產生歷史紀錄
             History history = new History();
             history.setQuantity(item.applyQty());
             history.setPrice(0);
             history.setFlow("售");
-            history.setProduct(p);
-            history.setRecord(r);
+            history.setProduct(product);
+            history.setRecord(recordWithID);
             historyRepository.save(history);
         });
 
@@ -419,20 +419,20 @@ public class SaleService {
             return null;
         }
 
-        Product p = optionalProduct.get();
+        Product product = optionalProduct.get();
 
         History history = new History();
         history.setQuantity(callDto.quantity());
         history.setPrice(callDto.price());
         history.setFlow("進");
-        history.setProduct(p);
+        history.setProduct(product);
         history.setUser(user);
         historyRepository.save(history);
 
         // 更新庫存
-        p.setStock(p.getStock() + callDto.quantity());
-        productRepository.save(p);
-        return p.getStock();
+        product.setStock(product.getStock() + callDto.quantity());
+        productRepository.save(product);
+        return product.getStock();
     }
 
     /**
@@ -451,25 +451,25 @@ public class SaleService {
             return null;
         }
 
-        Product p = optionalProduct.get();
+        Product product = optionalProduct.get();
 
         // 檢查存貨量
-        if (p.getStock() < destroyDto.quantity()) {
-            return -p.getStock();
+        if (product.getStock() < destroyDto.quantity()) {
+            return -product.getStock();
         }
 
         History history = new History();
         history.setQuantity(destroyDto.quantity());
         history.setPrice(destroyDto.price());
         history.setFlow("銷");
-        history.setProduct(p);
+        history.setProduct(product);
         history.setUser(user);
         historyRepository.save(history);
 
         // 更新庫存
-        p.setStock(p.getStock() - destroyDto.quantity());
-        productRepository.save(p);
-        return p.getStock();
+        product.setStock(product.getStock() - destroyDto.quantity());
+        productRepository.save(product);
+        return product.getStock();
     }
 
 

@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 public class ProductService {
 
@@ -39,7 +37,8 @@ public class ProductService {
      */
     public List<ShowProductsDto> getProductList() {
         return productRepository.findAll().stream()
-                .map(p -> new ShowProductsDto(p.getId(), p.getName(), p.getStock(), p.getCategory(), p.getPicture()))
+                .map(product -> new ShowProductsDto(product.getId(), product.getName(), product.getStock(),
+                        product.getCategory(), product.getPicture()))
                 .toList();
     }
 
@@ -51,9 +50,9 @@ public class ProductService {
     public ProductItemInfoDto getProductItemInfo(Integer productId) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isPresent()) {
-            Product p = optionalProduct.get();
-            return new ProductItemInfoDto(p.getId(), p.getName(), p.getCategory(), p.getStock(),
-                        p.getDescription(), p.getPicture());
+            Product product = optionalProduct.get();
+            return new ProductItemInfoDto(product.getId(), product.getName(), product.getCategory(), product.getStock(),
+                        product.getDescription(), product.getPicture());
         }
         return null;
     }
@@ -64,8 +63,8 @@ public class ProductService {
      */
     public List<ShowMaterialsDto> getMaterialList() {
         return productRepository.findAll().stream()
-                .map(p -> new ShowMaterialsDto(p.getId(), p.getCode(), p.getName(), p.getStock(),
-                                                p.getStorage(), p.getCategory()))
+                .map(product -> new ShowMaterialsDto(product.getId(), product.getCode(), product.getName(), product.getStock(),
+                                                product.getStorage(), product.getCategory()))
                 .toList();
     }
 
@@ -76,10 +75,10 @@ public class ProductService {
     public MaterialInfoDto getMaterialInfo(Integer id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
-            Product p = optionalProduct.get();
-            return new MaterialInfoDto(p.getId(), p.getCode(), p.getName(),
-                    p.getCategory(), p.getSafetyThreshold(), p.getStorage(), p.getDescription(),
-                    p.getPicture());
+            Product product = optionalProduct.get();
+            return new MaterialInfoDto(product.getId(), product.getCode(), product.getName(),
+                    product.getCategory(), product.getSafetyThreshold(), product.getStorage(), product.getDescription(),
+                    product.getPicture());
         }
         return null;
     }
@@ -92,18 +91,18 @@ public class ProductService {
     public Boolean updateMaterialInfo(MaterialUpdateInfoDto infoDto) {
         Optional<Product> optionalProduct = productRepository.findById(infoDto.productId());
         if (optionalProduct.isPresent()) {
-            Product p = optionalProduct.get();
-            p.setName(infoDto.name());
-            p.setCategory(infoDto.category());
-            p.setSafetyThreshold(infoDto.safetyThreshold());
-            p.setStorage(infoDto.storage());
-            p.setDescription(infoDto.description());
+            Product product = optionalProduct.get();
+            product.setName(infoDto.name());
+            product.setCategory(infoDto.category());
+            product.setSafetyThreshold(infoDto.safetyThreshold());
+            product.setStorage(infoDto.storage());
+            product.setDescription(infoDto.description());
 
             if (infoDto.updatePicture() != null) {
-                p.setPicture(infoDto.updatePicture());
+                product.setPicture(infoDto.updatePicture());
             }
 
-            productRepository.save(p);
+            productRepository.save(product);
             return true;
         }
         return false;

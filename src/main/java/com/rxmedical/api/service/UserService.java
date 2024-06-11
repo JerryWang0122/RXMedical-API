@@ -146,9 +146,9 @@ public class UserService {
 		}
 
 		// 查找email對應使用者
-		User u = new User();
-		u.setEmail(userLoginDto.email());
-		Example<User> example = Example.of(u);
+		User user = new User();
+		user.setEmail(userLoginDto.email());
+		Example<User> example = Example.of(user);
 		Optional<User> optionalUser = userRepository.findOne(example);
 
 		// 帳號不存在
@@ -157,24 +157,24 @@ public class UserService {
 		}
 
 		// 帳號存在
-		u = optionalUser.get();
+		user = optionalUser.get();
 
 		// hash 傳入的密碼
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-		messageDigest.update(KeyUtil.hexStringToByteArray(u.getSalt()));
+		messageDigest.update(KeyUtil.hexStringToByteArray(user.getSalt()));
 		byte[] hashedPassword = messageDigest.digest(userLoginDto.password().getBytes());
 
 		// 比對密碼
-		if (!u.getPassword().equals(KeyUtil.bytesToHex(hashedPassword))){
+		if (!user.getPassword().equals(KeyUtil.bytesToHex(hashedPassword))){
 			return null;
 		}
 
 		// 且密碼正確
-		u.setVerifyToken(generateOTP());
-		userRepository.save(u);
-		return new UserInfoDto(u.getId(), u.getEmpCode(), u.getName(),
-				u.getDept(), u.getTitle(), u.getEmail(),
-				u.getAuthLevel(), u.getVerifyToken());
+		user.setVerifyToken(generateOTP());
+		userRepository.save(user);
+		return new UserInfoDto(user.getId(), user.getEmpCode(), user.getName(),
+				user.getDept(), user.getTitle(), user.getEmail(),
+				user.getAuthLevel(), user.getVerifyToken());
 
 	}
 

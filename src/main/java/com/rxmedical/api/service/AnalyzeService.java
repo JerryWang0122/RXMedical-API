@@ -73,10 +73,10 @@ public class AnalyzeService {
         List<Product> allMaterials = productRepository.findAll();
 
         return allMaterials.stream()
-                .sorted(Comparator.comparingDouble(m -> (double) m.getStock() / m.getSafetyThreshold()))
+                .sorted(Comparator.comparingDouble(material -> (double) material.getStock() / material.getSafetyThreshold()))
                 .limit(3)
-                .map(m -> new SafetyRatioDto(m.getName(), m.getCode(),
-                        (float) m.getStock() / (m.getSafetyThreshold() * 4)))  // safetyThreshold * "4" 計算一個月的安全比率
+                .map(material -> new SafetyRatioDto(material.getName(), material.getCode(),
+                        (float) material.getStock() / (material.getSafetyThreshold() * 4)))  // safetyThreshold * "4" 計算一個月的安全比率
                 .collect(Collectors.toList());
     }
 
@@ -91,14 +91,14 @@ public class AnalyzeService {
             return null;
         }
 
-        Product p = optionalProduct.get();
+        Product product = optionalProduct.get();
 
         // 取得當週的週日，以及八週前的日期
         Date startDateOfWeek = DateUtil.getStartOfWeek(new Date());
         Date eightWeeksAgo = DateUtil.getDateWeeksAgo(startDateOfWeek, 7);  // 7 是因為上面已經包含一週了
 
         // 取得該商品八週內所有紀錄
-        List<History> historyList = historyRepository.findByProductAndUpdateDateAfter(p, eightWeeksAgo);
+        List<History> historyList = historyRepository.findByProductAndUpdateDateAfter(product, eightWeeksAgo);
         historyList = historyList.stream()
                 // 進貨和銷毀都是由管理員執行的，要考慮
                 .filter(history -> "進".equals(history.getFlow()) || "銷".equals(history.getFlow()) ||
@@ -108,8 +108,8 @@ public class AnalyzeService {
 
 
         // ---------------- 資料分析 -----------------
-        Integer currStock = p.getStock();
-        int maxStock = p.getSafetyThreshold() * 6;
+        Integer currStock = product.getStock();
+        int maxStock = product.getSafetyThreshold() * 6;
 
         // 建立一個結構來儲存每週的庫存資料
         // index 0 代表當前週，index 7 代表八週前，以此類推
