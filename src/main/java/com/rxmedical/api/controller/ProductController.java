@@ -25,7 +25,7 @@ public class ProductController {
 
 	// 前台查詢所有產品
 	@PostMapping("/product")
-	public ResponseEntity<ApiResponse<List<ShowProductsDto>>> getProductList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<ShowProductsDto>>> getProductList() {
 		return ResponseEntity.ok(new ApiResponse<>(true, "產品資訊列表", productService.getProductList()));
 	}
 

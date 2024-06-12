@@ -131,7 +131,7 @@ public class BackendAuthCheckAOP {
                 result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
             } else {
                 User u = optionalUser.get();
-                if (!verifyToken.equals(u.getVerifyToken())) {
+                if (!verifyToken.equals(null)) {
                     result = ResponseEntity.ok(new ApiResponse<>(false, "TokenError", null));
                 } else if (u.getAuthLevel().equals("admin") || u.getAuthLevel().equals("root")){
                     result = joinPoint.proceed();
@@ -171,7 +171,7 @@ public class BackendAuthCheckAOP {
                 result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
             } else {
                 User u = optionalUser.get();
-                if (!verifyToken.equals(u.getVerifyToken())) {
+                if (!verifyToken.equals(null)) {
                     result = ResponseEntity.ok(new ApiResponse<>(false, "TokenError", null));
                 } else if (u.getAuthLevel().equals("root")){
                     result = joinPoint.proceed();

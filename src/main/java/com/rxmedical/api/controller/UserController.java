@@ -3,6 +3,7 @@ package com.rxmedical.api.controller;
 import com.nimbusds.jose.JOSEException;
 import com.rxmedical.api.model.dto.*;
 import com.rxmedical.api.model.response.ApiResponse;
+import com.rxmedical.api.service.JWTService;
 import com.rxmedical.api.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,14 +19,18 @@ import java.security.SecureRandom;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost", "http://127.0.0.1", "http://192.168.153.167"})
+@CrossOrigin
 @RequestMapping("/api/users")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private JWTService jwtService;
 	
 	@GetMapping("/test")
 	public String getTest() {
@@ -36,31 +41,24 @@ public class UserController {
 
 	@PostMapping("/user/CSRFToken")
 	public ResponseEntity<ApiResponse<List<String>>> getUserToken() throws JOSEException {
-		String CSRFToken = userService.getUserToken();
-		String jwtToken = userService.generateJWT_CSRFToken(CSRFToken);
-//		System.out.println(CSRFToken);
-//		System.out.println(jwtToken);
-
-		return ResponseEntity.ok(new ApiResponse<>(true, "CSRF令牌", List.of(CSRFToken, jwtToken)));
+		return ResponseEntity.ok(new ApiResponse<>(true, "CSRF令牌", jwtService.getCSRFTokenJWT()));
 	}
 
 
 	// 判斷使用者登入
 	@PostMapping("/user/login")
-	public ResponseEntity<ApiResponse<UserInfoDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException {
-		UserInfoDto userInfoDto = userService.checkUserLogin(userLoginDto, request);
-		
-		ApiResponse<UserInfoDto> response = new ApiResponse<>();
-		if (userInfoDto == null) {
-			response.setState(false);
-			response.setMessage("帳號或密碼不正確!");
-		} else {
-			response.setState(true);
-			response.setMessage("使用者存在");
-			response.setData(userInfoDto);
+	public ResponseEntity<ApiResponse<Map<String,String>>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException, JOSEException {
+		if (!jwtService.checkCSRFTokenJWT(userLoginDto.token(), request)) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "CSRF驗證失敗", null));
+		}
+
+		Map<String,String> userInfo = userService.checkUserLogin(userLoginDto);
+
+		if (userInfo == null) {
+			return ResponseEntity.ok(new ApiResponse<>(false, "帳號或密碼不正確!", null));
 		}
 		
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", userInfo));
 	}
 	
 	// 登出
@@ -72,11 +70,11 @@ public class UserController {
 	@PostMapping("/user/register")
 	public ResponseEntity<ApiResponse<Object>> registerUserInfo(@RequestBody UserRegisterDto userRegisterDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException {
 
-		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto, request);
-
-		if (registerSuccess == null) {
+		if (!jwtService.checkCSRFTokenJWT(userRegisterDto.token(), request)) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "CSRF驗證失敗", null));
 		}
+		Boolean registerSuccess = userService.registerUserInfo(userRegisterDto);
+
 		if (!registerSuccess) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "註冊失敗", null));
 		}
