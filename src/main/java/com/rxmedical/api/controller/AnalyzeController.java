@@ -42,6 +42,6 @@ public class AnalyzeController {
     // 後台取得建議進貨量趨勢圖
     @PostMapping("/callMaterialDiagram")
     public ResponseEntity<ApiResponse<List<CallAdviceDto>>> getCallMaterialDiagram(@RequestBody GetMaterialInfoDto infoDto) {
-        return ResponseEntity.ok(new ApiResponse<>(true, "進貨建議圖表", analyzeService.getCallMaterialDiagram(infoDto.materialId())));
+        return ResponseEntity.ok(new ApiResponse<>(true, "進貨建議圖表", analyzeService.getCallMaterialDiagram(infoDto.getMaterialId())));
     }
 }

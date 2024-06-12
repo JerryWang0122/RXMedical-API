@@ -47,12 +47,12 @@ public class UserController {
 
 	// 判斷使用者登入
 	@PostMapping("/user/login")
-	public ResponseEntity<ApiResponse<Map<String,String>>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException, JOSEException {
+	public ResponseEntity<ApiResponse<UserUsageDto>> postUserLogin(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request) throws NoSuchAlgorithmException, ParseException, JOSEException {
 		if (!jwtService.checkCSRFTokenJWT(userLoginDto.token(), request)) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "CSRF驗證失敗", null));
 		}
 
-		Map<String,String> userInfo = userService.checkUserLogin(userLoginDto);
+		UserUsageDto userInfo = userService.checkUserLogin(userLoginDto);
 
 		if (userInfo == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "帳號或密碼不正確!", null));
@@ -83,9 +83,9 @@ public class UserController {
 	
 	// 取得個人資訊
 	@PostMapping("/user/profile")
-	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(CurrUserDto currUserDto) {
 		
-		UserInfoDto info = userService.getUserInfo(currUserDto.userId());
+		UserInfoDto info = userService.getUserInfo(currUserDto.getUserId());
 		
 		if (info == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊不存在", null));
@@ -95,14 +95,14 @@ public class UserController {
 	
 	// 修改個人資料
 	@PutMapping("/user/profile")
-	public ResponseEntity<ApiResponse<UserInfoDto>> editUserInfo(@RequestBody UserEditInfoDto userEditInfoDto) {
-		
-		UserInfoDto updateInfo = userService.updateUserInfo(userEditInfoDto);
-		
-		if (updateInfo == null) {
+	public ResponseEntity<ApiResponse<UserUsageDto>> editUserInfo(@RequestBody UserEditInfoDto userEditInfoDto) {
+
+		UserUsageDto userInfo = userService.updateUserInfo(userEditInfoDto);
+
+		if (userInfo == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊更新失敗", null));
 		}
-		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", updateInfo));
+		return ResponseEntity.ok(new ApiResponse<>(true, "使用者資訊", userInfo));
 		// DataIntegrityViolationException 問題 (先不要處理這個 Error)
 		// return ResponseEntity.ok(new ApiResponse<>(false, "信箱(帳號)重複", null));
 	}
@@ -110,8 +110,9 @@ public class UserController {
 
 	// 取得個人衛材清單歷史
 	@PostMapping("/user/purchase")
-	public ResponseEntity<ApiResponse<List<PurchaseHistoryDto>>> getPurchaseHistoryList(@RequestBody CurrUserDto currUserDto) {
-		List<PurchaseHistoryDto> userPurchaseHistoryList = userService.getUserPurchaseHistoryList(currUserDto.userId());
+	public ResponseEntity<ApiResponse<List<PurchaseHistoryDto>>> getPurchaseHistoryList(CurrUserDto currUserDto) {
+		List<PurchaseHistoryDto> userPurchaseHistoryList = userService.getUserPurchaseHistoryList(currUserDto.getUserId());
+
 		if (userPurchaseHistoryList == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "無此人員", null));
 		}
@@ -161,7 +162,7 @@ public class UserController {
 
 	// 取得運送人員清單
 	@PostMapping("/admin/transporter")
-	public ResponseEntity<ApiResponse<List<TransporterDto>>> getTransporterList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<TransporterDto>>> getTransporterList(CurrUserDto currUserDto) {
 		List<TransporterDto> transporterList = userService.getTransporterList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "運送人員資訊", transporterList));
 	}

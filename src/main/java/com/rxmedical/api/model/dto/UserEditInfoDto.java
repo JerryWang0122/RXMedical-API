@@ -1,15 +1,20 @@
 package com.rxmedical.api.model.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * [INPUT] 使用者個人帳戶資訊的DTO
- * @param userId
- * @param name 姓名
- * @param dept 處室
- * @param title 職稱
- * @param email 信箱
- * @param verifyToken 驗證碼
  */
-public record UserEditInfoDto(Integer userId, String name, String dept, String title, String email,
-                              String verifyToken) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserEditInfoDto {
+    private Integer userId;
+    private String name;
+    private String dept;
+    private String title;
+    private String email;
 
 }

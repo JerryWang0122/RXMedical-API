@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
 
@@ -81,37 +83,14 @@ public class CheckUserLoginAOP {
 				result = ResponseEntity.ok(new ApiResponse<>(false, "權限錯誤", null));
 			} else {  // 驗證成功
 				Object[] args = joinPoint.getArgs();
-				if (args.length == 0){
-					result = joinPoint.proceed();
-				} else {
-
+				if (args.length != 0){
+					System.out.println(args[0]);
+					Method setUserId = args[0].getClass().getDeclaredMethod("setUserId", Integer.class);
+					setUserId.invoke(args[0], userInfoMap.get("userId"));
 				}
+
+				result = joinPoint.proceed();
 			}
-
-
-//			if (args.length > 1) { // 非DTO，而是用多個參數傳入的，則 currUserId 為第一個參數
-//				optionalUser = userRepository.findById((Integer) args[0]);
-//			} else {
-//				// DTO 裡面應該包含 currUserId
-//				// 使用反射取得 currUserId
-//				Integer currUserId = (Integer) args[0].getClass().getDeclaredMethod("userId").invoke(args[0]);
-//				verifyToken = (String) args[0].getClass().getDeclaredMethod("verifyToken").invoke(args[0]);
-//				optionalUser = userRepository.findById(currUserId);
-//			}
-//
-//			if (optionalUser.isEmpty() || verifyToken == null) { // 若找不到使用者，或是根本沒有token
-//				result = ResponseEntity.ok(new ApiResponse<>(false, "LoginFirst", null));
-//			} else {
-//				User u = optionalUser.get();
-//				if (!verifyToken.equals(null)) {
-//					result = ResponseEntity.ok(new ApiResponse<>(false, "TokenError", null));
-//				} else if (u.getAuthLevel().equals("staff") || u.getAuthLevel().equals("admin") ||
-//						u.getAuthLevel().equals("root")){
-//					result = joinPoint.proceed();
-//				} else {
-//					result = ResponseEntity.ok(new ApiResponse<>(false, "權限有誤", null));
-//				}
-//			}
 
 		} catch (Throwable e) {
 			e.printStackTrace();

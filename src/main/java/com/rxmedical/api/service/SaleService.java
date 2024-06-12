@@ -346,7 +346,7 @@ public class SaleService {
      */
     @Transactional
     public synchronized String checkOrder(ApplyRecordDto recordDto) {
-        if (recordDto.applyItems().isEmpty()) {
+        if (recordDto.getApplyItems().isEmpty()) {
             return "沒有申請項目";
         }
 
@@ -354,7 +354,7 @@ public class SaleService {
         List<String> errorList = new ArrayList<>();
 
         // 先檢查有沒有不存在的貨號
-        for (ApplyItemDto item : recordDto.applyItems()) {
+        for (ApplyItemDto item : recordDto.getApplyItems()) {
             Optional<Product> optionalProduct = productRepository.findById(item.productId());
             if (optionalProduct.isEmpty()) {
                 return "貨號不存在";
@@ -372,7 +372,7 @@ public class SaleService {
         }
         //---------------- 檢查完成，生成訂單 ---------------
         // 已經通過aop檢查了，直接拿
-        User demander = userRepository.findById(recordDto.userId()).get();
+        User demander = userRepository.findById(recordDto.getUserId()).get();
 
         Record record = new Record();
         record.setCode(generateCode());
@@ -381,7 +381,7 @@ public class SaleService {
 
         Record recordWithID = recordRepository.save(record);
 
-        recordDto.applyItems().stream().forEach(item -> {
+        recordDto.getApplyItems().stream().forEach(item -> {
             // 因為上面檢查過了，直接拿
             Product product = productRepository.findById(item.productId()).get();
             // 更新庫存

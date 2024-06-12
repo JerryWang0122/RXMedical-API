@@ -55,7 +55,7 @@ public class JWTService {
         }
         JWTClaimsSet claims = KeyUtil.getClaimsFromToken(jwt);
         return Map.of(
-                "userId", claims.getClaim("id"),
+                "userId", claims.getIntegerClaim("id"),
                 "authLevel", claims.getClaim("authLevel")
         );
     }
