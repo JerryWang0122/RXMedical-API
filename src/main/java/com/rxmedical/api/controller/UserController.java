@@ -141,7 +141,7 @@ public class UserController {
 
 	// 後台查詢所有使用者
 	@PostMapping("/admin/member")
-	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<MemberInfoDto>>> getMemberList() {
 		
 		List<MemberInfoDto> memberList = userService.getMemberList();
 		

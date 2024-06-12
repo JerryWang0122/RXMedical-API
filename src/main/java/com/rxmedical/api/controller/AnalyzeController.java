@@ -29,13 +29,13 @@ public class AnalyzeController {
 
     // 後台取得勞動積分
     @PostMapping("/laborScore")
-    public ResponseEntity<ApiResponse<Map<String, Integer>>> getLaborScore(@RequestBody CurrUserDto user) {
+    public ResponseEntity<ApiResponse<Map<String, Integer>>> getLaborScore() {
         return ResponseEntity.ok(new ApiResponse<>(true, "勞動積分", analyzeService.getLaborScore()));
     }
 
     // 後台取得庫存safety threshold ratio
     @PostMapping("/materialSafetyRatio")
-    public ResponseEntity<ApiResponse<List<SafetyRatioDto>>> getMaterialSafetyRatio(@RequestBody CurrUserDto user) {
+    public ResponseEntity<ApiResponse<List<SafetyRatioDto>>> getMaterialSafetyRatio() {
         return ResponseEntity.ok(new ApiResponse<>(true, "庫存安全比例", analyzeService.getMaterialSafetyRatio()));
     }
 

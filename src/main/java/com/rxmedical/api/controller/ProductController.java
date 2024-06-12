@@ -40,7 +40,7 @@ public class ProductController {
 
 	// 後台查詢所有產品
 	@PostMapping("/admin/material")
-	public ResponseEntity<ApiResponse<List<ShowMaterialsDto>>> getMaterialList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<ShowMaterialsDto>>> getMaterialList() {
 		
 		List<ShowMaterialsDto> materialList = productService.getMaterialList();
 		

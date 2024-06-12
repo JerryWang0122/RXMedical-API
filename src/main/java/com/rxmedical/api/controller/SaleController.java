@@ -54,42 +54,42 @@ public class SaleController {
 	// ---------------------------- 取得 [status] 的訂單清單 --------------------------------
 	// 後台使用者，取得所有未確認訂單清單
 	@PostMapping("/admin/order_list/unchecked")
-	public ResponseEntity<ApiResponse<List<OrderListDto>>> getUncheckedOrderList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getUncheckedOrderList() {
 		List<OrderListDto> orderList = saleService.getUncheckedOrderList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
 	// 後台使用者，取得所有待撿貨訂單清單
 	@PostMapping("/admin/order_list/picking")
-	public ResponseEntity<ApiResponse<List<OrderListDto>>> getPickingOrderList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getPickingOrderList() {
 		List<OrderListDto> orderList = saleService.getPickingOrderList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
 	// 後台使用者，取得所有待出貨訂單清單
 	@PostMapping("/admin/order_list/waiting")
-	public ResponseEntity<ApiResponse<List<OrderListDto>>> getWaitingOrderList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getWaitingOrderList() {
 		List<OrderListDto> orderList = saleService.getWaitingOrderList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
 	// 後台使用者，取得所有運送中訂單清單
 	@PostMapping("/admin/order_list/transporting")
-	public ResponseEntity<ApiResponse<List<OrderListDto>>> getTransportingOrderList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getTransportingOrderList() {
 		List<OrderListDto> orderList = saleService.getTransportingOrderList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
 	// 後台使用者，取得所有已完成訂單清單
 	@PostMapping("/admin/order_list/finish")
-	public ResponseEntity<ApiResponse<List<OrderListDto>>> getFinishOrderList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getFinishOrderList() {
 		List<OrderListDto> orderList = saleService.getFinishOrderList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}
 
 	// 後台使用者，取得所有取消訂單清單
 	@PostMapping("/admin/order_list/rejected")
-	public ResponseEntity<ApiResponse<List<OrderListDto>>> getRejectedOrderList(@RequestBody CurrUserDto currUserDto) {
+	public ResponseEntity<ApiResponse<List<OrderListDto>>> getRejectedOrderList() {
 		List<OrderListDto> orderList = saleService.getRejectedOrderList();
 		return ResponseEntity.ok(new ApiResponse<>(true, "訂單資訊", orderList));
 	}

@@ -1,11 +1,17 @@
 package com.rxmedical.api.model.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * [INPUT] 更改會員權限的 DTO
- * @param userId 執行人的id
- * @param memberId 要被修改權限的會員id
- * @param authLevel 被修改的權限
- * @param verifyToken 驗證碼
  */
-public record ChangeMemberAuthDto(Integer userId, Integer memberId, String authLevel, String verifyToken) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChangeMemberAuthDto {
+    private Integer userId;
+    private Integer memberId;
+    private String authLevel;
 }

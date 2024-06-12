@@ -256,30 +256,28 @@ public class UserService {
 	 */
 	public Boolean updateMemberAuthLevel(ChangeMemberAuthDto memberAuthDto) {
 		// 不能修改root權限
-		if (memberAuthDto.memberId().equals(1)) {
+		if (memberAuthDto.getMemberId().equals(1)) {
 			return false;
 		}
 		// 修改權限不可為空
-		if (memberAuthDto.authLevel() == null) {
+		if (memberAuthDto.getAuthLevel() == null) {
 			return false;
 		}
 		// 不能將任何人調成root權限，或是主動調成註冊狀態
-		if (memberAuthDto.authLevel().equals("root") || memberAuthDto.authLevel().equals("register")) {
+		if (memberAuthDto.getAuthLevel().equals("root") || memberAuthDto.getAuthLevel().equals("register")) {
 			return false;
 		}
 
 		// 更新資料
-		Optional<User> optionalUser = userRepository.findById(memberAuthDto.memberId());
+		Optional<User> optionalUser = userRepository.findById(memberAuthDto.getMemberId());
 		if (optionalUser.isPresent()) {
 			User u = optionalUser.get();
 			if (u.getAuthLevel().equals("register")) {
 				// 寄一封通知信
 				ExecutorService executorService = Executors.newSingleThreadExecutor();
-				executorService.execute(() -> {
-					EmailUtil.prepareAndSendEmail(u.getEmail());
-				});
+				executorService.execute(() -> EmailUtil.prepareAndSendEmail(u.getEmail()));
 			}
-			u.setAuthLevel(memberAuthDto.authLevel());
+			u.setAuthLevel(memberAuthDto.getAuthLevel());
 			userRepository.save(u);
 			return true;
 		}

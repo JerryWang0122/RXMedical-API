@@ -117,12 +117,14 @@ public class AnalyzeService {
         weeklyData[0] = currStock;
         int weekAgo = 0;
 
+        System.out.println(startDateOfWeek);
         // 將資料分配到對應的週
         for (History history : historyList) {
             Date historyDate = history.getUpdateDate();
 
             // 交易紀錄發生在更早之前，需要調整 weekAgo(index) 數值
             while (historyDate.before(DateUtil.getDateWeeksAgo(startDateOfWeek, weekAgo))) {
+                System.out.println(history .getUpdateDate()+ " " + weekAgo);
                 // 當週庫存往前一週推
                 weeklyData[weekAgo + 1] = weeklyData[weekAgo];
                 // 計算當週建議進貨量
@@ -140,6 +142,12 @@ public class AnalyzeService {
         }
 
         // 如果有好幾週沒進銷資料，建議庫存要往後遞延
+        if(weekAgo == 0) {
+            weeklyData[0] = maxStock;
+            weekAgo++;
+        }
+
+
         while (weekAgo < 8) {
             weeklyData[weekAgo] = weeklyData[weekAgo - 1];
             System.out.println(weekAgo + " " + weeklyData[weekAgo]);

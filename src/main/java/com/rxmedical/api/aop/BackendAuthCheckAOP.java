@@ -131,7 +131,7 @@ public class BackendAuthCheckAOP {
             Map<String, Object> userInfoMap = jwtService.verifyUserUsageJWT(request);
             if (userInfoMap == null) {  // 驗證失敗
                 result = ResponseEntity.ok(new ApiResponse<>(false, "JWT Verify Error", null));
-            } else if ("admin".equals(userInfoMap.get("authLevel")) || "root".equals(userInfoMap.get("authLevel"))) { // 權限不足
+            } else if (!("admin".equals(userInfoMap.get("authLevel")) || "root".equals(userInfoMap.get("authLevel")))) { // 權限不足
                 result = ResponseEntity.ok(new ApiResponse<>(false, "權限錯誤", null));
             } else {  // 驗證成功
                 Object[] args = joinPoint.getArgs();

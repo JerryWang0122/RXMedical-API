@@ -89,17 +89,17 @@ public class ProductService {
      * @return Boolean 是否成功
      */
     public Boolean updateMaterialInfo(MaterialUpdateInfoDto infoDto) {
-        Optional<Product> optionalProduct = productRepository.findById(infoDto.productId());
+        Optional<Product> optionalProduct = productRepository.findById(infoDto.getProductId());
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            product.setName(infoDto.name());
-            product.setCategory(infoDto.category());
-            product.setSafetyThreshold(infoDto.safetyThreshold());
-            product.setStorage(infoDto.storage());
-            product.setDescription(infoDto.description());
+            product.setName(infoDto.getName());
+            product.setCategory(infoDto.getCategory());
+            product.setSafetyThreshold(infoDto.getSafetyThreshold());
+            product.setStorage(infoDto.getStorage());
+            product.setDescription(infoDto.getDescription());
 
-            if (infoDto.updatePicture() != null) {
-                product.setPicture(infoDto.updatePicture());
+            if (infoDto.getUpdatePicture() != null) {
+                product.setPicture(infoDto.getUpdatePicture());
             }
 
             productRepository.save(product);
@@ -117,24 +117,24 @@ public class ProductService {
     public Boolean registerProduct(MaterialFileUploadDto infoDto) {
 
         // 因為經過aop，所以直接get
-        User user = userRepository.findById(infoDto.userId()).get();
+        User user = userRepository.findById(infoDto.getUserId()).get();
 
         // 產品資料寫入資料庫
         Product product = new Product();
-        product.setCode(infoDto.code());
-        product.setName(infoDto.name());
+        product.setCode(infoDto.getCode());
+        product.setName(infoDto.getName());
         product.setStock(0);
-        product.setSafetyThreshold(infoDto.safetyThreshold());
-        product.setDescription(infoDto.description());
-        product.setStorage(infoDto.storage());
-        product.setPicture(infoDto.picture());
-        product.setCategory(infoDto.category());
+        product.setSafetyThreshold(infoDto.getSafetyThreshold());
+        product.setDescription(infoDto.getDescription());
+        product.setStorage(infoDto.getStorage());
+        product.setPicture(infoDto.getPicture());
+        product.setCategory(infoDto.getCategory());
         Product result = productRepository.save(product);
 
         // 產品資料寫入歷史紀錄
         History history = new History();
-        history.setQuantity(infoDto.quantity());
-        history.setPrice(infoDto.price());
+        history.setQuantity(infoDto.getQuantity());
+        history.setPrice(infoDto.getPrice());
         history.setFlow("進");
         history.setProduct(result);
         history.setRecord(null);
@@ -142,7 +142,7 @@ public class ProductService {
         historyRepository.save(history);
 
         // 加入第一筆產品庫存
-        result.setStock(infoDto.quantity());
+        result.setStock(infoDto.getQuantity());
         productRepository.save(result);
         return true;
     }
