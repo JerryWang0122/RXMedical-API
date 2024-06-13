@@ -1,21 +1,27 @@
 package com.rxmedical.api.service;
 
-import com.rxmedical.api.model.dto.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.rxmedical.api.model.dto.MaterialFileUploadDto;
+import com.rxmedical.api.model.dto.MaterialInfoDto;
+import com.rxmedical.api.model.dto.MaterialUpdateInfoDto;
+import com.rxmedical.api.model.dto.ProductItemInfoDto;
+import com.rxmedical.api.model.dto.ShowMaterialsDto;
+import com.rxmedical.api.model.dto.ShowProductsDto;
 import com.rxmedical.api.model.po.History;
 import com.rxmedical.api.model.po.Product;
 import com.rxmedical.api.model.po.User;
 import com.rxmedical.api.repository.HistoryRepository;
 import com.rxmedical.api.repository.ProductRepository;
 import com.rxmedical.api.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -89,17 +95,17 @@ public class ProductService {
      * @return Boolean 是否成功
      */
     public Boolean updateMaterialInfo(MaterialUpdateInfoDto infoDto) {
-        Optional<Product> optionalProduct = productRepository.findById(infoDto.getProductId());
+        Optional<Product> optionalProduct = productRepository.findById(infoDto.productId());
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            product.setName(infoDto.getName());
-            product.setCategory(infoDto.getCategory());
-            product.setSafetyThreshold(infoDto.getSafetyThreshold());
-            product.setStorage(infoDto.getStorage());
-            product.setDescription(infoDto.getDescription());
+            product.setName(infoDto.name());
+            product.setCategory(infoDto.category());
+            product.setSafetyThreshold(infoDto.safetyThreshold());
+            product.setStorage(infoDto.storage());
+            product.setDescription(infoDto.description());
 
-            if (infoDto.getUpdatePicture() != null) {
-                product.setPicture(infoDto.getUpdatePicture());
+            if (infoDto.updatePicture() != null) {
+                product.setPicture(infoDto.updatePicture());
             }
 
             productRepository.save(product);
@@ -117,24 +123,24 @@ public class ProductService {
     public Boolean registerProduct(MaterialFileUploadDto infoDto) {
 
         // 因為經過aop，所以直接get
-        User user = userRepository.findById(infoDto.getUserId()).get();
+        User user = userRepository.findById(infoDto.userId()).get();
 
         // 產品資料寫入資料庫
         Product product = new Product();
-        product.setCode(infoDto.getCode());
-        product.setName(infoDto.getName());
+        product.setCode(infoDto.code());
+        product.setName(infoDto.name());
         product.setStock(0);
-        product.setSafetyThreshold(infoDto.getSafetyThreshold());
-        product.setDescription(infoDto.getDescription());
-        product.setStorage(infoDto.getStorage());
-        product.setPicture(infoDto.getPicture());
-        product.setCategory(infoDto.getCategory());
+        product.setSafetyThreshold(infoDto.safetyThreshold());
+        product.setDescription(infoDto.description());
+        product.setStorage(infoDto.storage());
+        product.setPicture(infoDto.picture());
+        product.setCategory(infoDto.category());
         Product result = productRepository.save(product);
 
         // 產品資料寫入歷史紀錄
         History history = new History();
-        history.setQuantity(infoDto.getQuantity());
-        history.setPrice(infoDto.getPrice());
+        history.setQuantity(infoDto.quantity());
+        history.setPrice(infoDto.price());
         history.setFlow("進");
         history.setProduct(result);
         history.setRecord(null);
@@ -142,7 +148,7 @@ public class ProductService {
         historyRepository.save(history);
 
         // 加入第一筆產品庫存
-        result.setStock(infoDto.getQuantity());
+        result.setStock(infoDto.quantity());
         productRepository.save(result);
         return true;
     }

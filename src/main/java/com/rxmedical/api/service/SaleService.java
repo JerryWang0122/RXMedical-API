@@ -85,7 +85,7 @@ public class SaleService {
     public synchronized String pushToTransporting(PushToTransportingDto dto) {
 
         // 檢查訂單
-        Optional<Record> optionalRecord = recordRepository.findById(dto.getRecordId());
+        Optional<Record> optionalRecord = recordRepository.findById(dto.recordId());
         if (optionalRecord.isEmpty()) {
             return "找不到訂單";
         }
@@ -95,10 +95,10 @@ public class SaleService {
         }
 
         // 檢查運送人員資訊
-        if (dto.getTransporterId() == null) {
+        if (dto.transporterId() == null) {
             return "請指派運送人員";
         }
-        Optional<User> optionalUser = userRepository.findById(dto.getTransporterId());
+        Optional<User> optionalUser = userRepository.findById(dto.transporterId());
         if (optionalUser.isEmpty()) {
             return "無此操作人員";
         }
@@ -194,7 +194,7 @@ public class SaleService {
      * @return String errMsg
      */
     public synchronized String pickUpItem(PickingHistoryDto pickingDto) {
-        Optional<History> optionalHistory = historyRepository.findById(pickingDto.getHistoryId());
+        Optional<History> optionalHistory = historyRepository.findById(pickingDto.historyId());
         if (optionalHistory.isEmpty()) {
             return "無此資料";
         }
@@ -208,7 +208,7 @@ public class SaleService {
         if (history.getUser() != null) {
             return "貨品已經拿過了";
         }
-        history.setUser(userRepository.findById(pickingDto.getUserId()).get());
+        history.setUser(userRepository.findById(pickingDto.userId()).get());
         historyRepository.save(history);
         return null;
     }
@@ -346,7 +346,7 @@ public class SaleService {
      */
     @Transactional
     public synchronized String checkOrder(ApplyRecordDto recordDto) {
-        if (recordDto.getApplyItems().isEmpty()) {
+        if (recordDto.applyItems().isEmpty()) {
             return "沒有申請項目";
         }
 
@@ -354,7 +354,7 @@ public class SaleService {
         List<String> errorList = new ArrayList<>();
 
         // 先檢查有沒有不存在的貨號
-        for (ApplyItemDto item : recordDto.getApplyItems()) {
+        for (ApplyItemDto item : recordDto.applyItems()) {
             Optional<Product> optionalProduct = productRepository.findById(item.productId());
             if (optionalProduct.isEmpty()) {
                 return "貨號不存在";
@@ -372,7 +372,7 @@ public class SaleService {
         }
         //---------------- 檢查完成，生成訂單 ---------------
         // 已經通過aop檢查了，直接拿
-        User demander = userRepository.findById(recordDto.getUserId()).get();
+        User demander = userRepository.findById(recordDto.userId()).get();
 
         Record record = new Record();
         record.setCode(generateCode());
@@ -381,7 +381,7 @@ public class SaleService {
 
         Record recordWithID = recordRepository.save(record);
 
-        recordDto.getApplyItems().stream().forEach(item -> {
+        recordDto.applyItems().stream().forEach(item -> {
             // 因為上面檢查過了，直接拿
             Product product = productRepository.findById(item.productId()).get();
             // 更新庫存
@@ -410,9 +410,9 @@ public class SaleService {
     @Transactional
     public synchronized Integer callMaterial(SaleMaterialDto callDto) {
 
-        Optional<Product> optionalProduct = productRepository.findById(callDto.getMaterialId());
+        Optional<Product> optionalProduct = productRepository.findById(callDto.materialId());
         // 因為有過aop了，所以直接拿
-        User user = userRepository.findById(callDto.getUserId()).get();
+        User user = userRepository.findById(callDto.userId()).get();
 
         // 商品不存在則直接退回
         if (optionalProduct.isEmpty()) {
@@ -422,15 +422,15 @@ public class SaleService {
         Product product = optionalProduct.get();
 
         History history = new History();
-        history.setQuantity(callDto.getQuantity());
-        history.setPrice(callDto.getPrice());
+        history.setQuantity(callDto.quantity());
+        history.setPrice(callDto.price());
         history.setFlow("進");
         history.setProduct(product);
         history.setUser(user);
         historyRepository.save(history);
 
         // 更新庫存
-        product.setStock(product.getStock() + callDto.getQuantity());
+        product.setStock(product.getStock() + callDto.quantity());
         productRepository.save(product);
         return product.getStock();
     }
@@ -442,9 +442,9 @@ public class SaleService {
      */
     @Transactional
     public synchronized Integer destroyMaterial(SaleMaterialDto destroyDto) {
-        Optional<Product> optionalProduct = productRepository.findById(destroyDto.getMaterialId());
+        Optional<Product> optionalProduct = productRepository.findById(destroyDto.materialId());
         // 因為有過aop了，所以直接拿
-        User user = userRepository.findById(destroyDto.getUserId()).get();
+        User user = userRepository.findById(destroyDto.userId()).get();
 
         // 商品不存在則直接退回
         if (optionalProduct.isEmpty()) {
@@ -454,20 +454,20 @@ public class SaleService {
         Product product = optionalProduct.get();
 
         // 檢查存貨量
-        if (product.getStock() < destroyDto.getQuantity()) {
+        if (product.getStock() < destroyDto.quantity()) {
             return -product.getStock();
         }
 
         History history = new History();
-        history.setQuantity(destroyDto.getQuantity());
-        history.setPrice(destroyDto.getPrice());
+        history.setQuantity(destroyDto.quantity());
+        history.setPrice(destroyDto.price());
         history.setFlow("銷");
         history.setProduct(product);
         history.setUser(user);
         historyRepository.save(history);
 
         // 更新庫存
-        product.setStock(product.getStock() - destroyDto.getQuantity());
+        product.setStock(product.getStock() - destroyDto.quantity());
         productRepository.save(product);
         return product.getStock();
     }

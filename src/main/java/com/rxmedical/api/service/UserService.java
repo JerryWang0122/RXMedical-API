@@ -1,36 +1,37 @@
 package com.rxmedical.api.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.rxmedical.api.model.dto.*;
-import com.rxmedical.api.model.po.History;
-import com.rxmedical.api.model.po.Record;
-import com.rxmedical.api.repository.HistoryRepository;
-import com.rxmedical.api.repository.RecordRepository;
-import com.rxmedical.api.util.EmailUtil;
-import com.rxmedical.api.util.KeyUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import com.nimbusds.jose.JOSEException;
+import com.rxmedical.api.model.dto.ChangeMemberAuthDto;
+import com.rxmedical.api.model.dto.MemberInfoDto;
+import com.rxmedical.api.model.dto.OrderDetailDto;
+import com.rxmedical.api.model.dto.PurchaseHistoryDto;
+import com.rxmedical.api.model.dto.RecordDto;
+import com.rxmedical.api.model.dto.TransporterDto;
+import com.rxmedical.api.model.dto.UserEditInfoDto;
+import com.rxmedical.api.model.dto.UserInfoDto;
+import com.rxmedical.api.model.dto.UserLoginDto;
+import com.rxmedical.api.model.dto.UserRegisterDto;
+import com.rxmedical.api.model.dto.UserUsageDto;
+import com.rxmedical.api.model.po.History;
+import com.rxmedical.api.model.po.Record;
 import com.rxmedical.api.model.po.User;
+import com.rxmedical.api.repository.HistoryRepository;
+import com.rxmedical.api.repository.RecordRepository;
 import com.rxmedical.api.repository.UserRepository;
+import com.rxmedical.api.util.EmailUtil;
+import com.rxmedical.api.util.KeyUtil;
 
 @Service
 public class UserService {
@@ -149,18 +150,18 @@ public class UserService {
 	public UserUsageDto updateUserInfo(UserEditInfoDto userEditInfoDto) {
 
 		// root 的資料不可被更改
-		if (userEditInfoDto == null || userEditInfoDto.getUserId().equals(0)) {
+		if (userEditInfoDto == null || userEditInfoDto.userId().equals(0)) {
 			return null;
 		}
 
 		// 更新資料
-		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.getUserId());
+		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.userId());
 		if (optionalUser.isPresent()) {
 			User user = optionalUser.get();
-			user.setName(userEditInfoDto.getName());
-			user.setDept(userEditInfoDto.getDept());
-			user.setTitle(userEditInfoDto.getTitle());
-			user.setEmail(userEditInfoDto.getEmail());
+			user.setName(userEditInfoDto.name());
+			user.setDept(userEditInfoDto.dept());
+			user.setTitle(userEditInfoDto.title());
+			user.setEmail(userEditInfoDto.email());
 			userRepository.save(user);
 			return new UserUsageDto(user.getDept(), user.getName(), user.getAuthLevel(), null);
 		}
@@ -195,14 +196,14 @@ public class UserService {
 	 * @return (null 代表發生錯誤)，List為明細資料
 	 */
 	public List<OrderDetailDto> getPurchaseDetails(RecordDto recordDto) {
-		Optional<Record> optionalRecord = recordRepository.findById(recordDto.getRecordId());
+		Optional<Record> optionalRecord = recordRepository.findById(recordDto.recordId());
 		if (optionalRecord.isEmpty()){
 			return null;
 		}
 
 		// 查詢人應該要跟訂購人一樣
 		Record record = optionalRecord.get();
-		if (!recordDto.getUserId().equals(record.getDemander().getId())) {
+		if (!recordDto.userId().equals(record.getDemander().getId())) {
 			return null;
 		}
 		// 給資料
@@ -218,7 +219,7 @@ public class UserService {
 	 * @return String 錯誤信息
 	 */
 	public String finishOrder(RecordDto recordDto) {
-		Optional<Record> optionalRecord = recordRepository.findById(recordDto.getRecordId());
+		Optional<Record> optionalRecord = recordRepository.findById(recordDto.recordId());
 		if (optionalRecord.isEmpty()){
 			return "找不到訂單";
 		}
@@ -229,7 +230,7 @@ public class UserService {
 		if (!record.getStatus().equals("transporting")) {
 			return "錯誤訂單狀態";
 		}
-		if (!recordDto.getUserId().equals(record.getDemander().getId())) {
+		if (!recordDto.userId().equals(record.getDemander().getId())) {
 			return "錯誤操作人員";
 		}
 		record.setStatus("finish");
@@ -255,20 +256,20 @@ public class UserService {
 	 */
 	public Boolean updateMemberAuthLevel(ChangeMemberAuthDto memberAuthDto) {
 		// 不能修改root權限
-		if (memberAuthDto.getMemberId().equals(1)) {
+		if (memberAuthDto.memberId().equals(1)) {
 			return false;
 		}
 		// 修改權限不可為空
-		if (memberAuthDto.getAuthLevel() == null) {
+		if (memberAuthDto.authLevel() == null) {
 			return false;
 		}
 		// 不能將任何人調成root權限，或是主動調成註冊狀態
-		if (memberAuthDto.getAuthLevel().equals("root") || memberAuthDto.getAuthLevel().equals("register")) {
+		if (memberAuthDto.authLevel().equals("root") || memberAuthDto.authLevel().equals("register")) {
 			return false;
 		}
 
 		// 更新資料
-		Optional<User> optionalUser = userRepository.findById(memberAuthDto.getMemberId());
+		Optional<User> optionalUser = userRepository.findById(memberAuthDto.memberId());
 		if (optionalUser.isPresent()) {
 			User u = optionalUser.get();
 			if (u.getAuthLevel().equals("register")) {
@@ -276,7 +277,7 @@ public class UserService {
 				ExecutorService executorService = Executors.newSingleThreadExecutor();
 				executorService.execute(() -> EmailUtil.prepareAndSendEmail(u.getEmail()));
 			}
-			u.setAuthLevel(memberAuthDto.getAuthLevel());
+			u.setAuthLevel(memberAuthDto.authLevel());
 			userRepository.save(u);
 			return true;
 		}

@@ -25,7 +25,7 @@ public class SaleController {
 	// 後台使用者，取得訂單明細
 	@PostMapping("/admin/order_list/detail")
 	public ResponseEntity<ApiResponse<List<OrderDetailDto>>> getOrderDetails(@RequestBody RecordDto recordDto) {
-		List<OrderDetailDto> orderDetails = saleService.getOrderDetails(recordDto.getRecordId());
+		List<OrderDetailDto> orderDetails = saleService.getOrderDetails(recordDto.recordId());
 		if (orderDetails == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "訂單資訊不存在", null));
 		}
@@ -35,7 +35,7 @@ public class SaleController {
 	// 後台使用者，取得"待撿貨"訂單明細
 	@PostMapping("/admin/order_list/picking/detail")
 	public ResponseEntity<ApiResponse<List<HistoryProductDto>>> getHistoryProductList(@RequestBody RecordDto recordDto) {
-		List<HistoryProductDto> historyProductList = saleService.getHistoryProductList(recordDto.getRecordId());
+		List<HistoryProductDto> historyProductList = saleService.getHistoryProductList(recordDto.recordId());
 		if (historyProductList == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "訂單錯誤", null));
 		}
@@ -100,7 +100,7 @@ public class SaleController {
 	// 後台把"待確認"訂單狀態往"待撿貨"狀態送
 	@PutMapping("/admin/order_list/unchecked")
 	public ResponseEntity<ApiResponse<String>> pushToPicking(@RequestBody RecordDto recordDto) {
-		String errorMsg = saleService.pushToPicking(recordDto.getRecordId());
+		String errorMsg = saleService.pushToPicking(recordDto.recordId());
 		if (errorMsg == null) {
 			return ResponseEntity.ok(new ApiResponse<>(true, "訂單狀態更改成功", null));
 		}
@@ -110,7 +110,7 @@ public class SaleController {
 	// 後台把"待撿貨"訂單狀態往"待出貨"狀態送
 	@PutMapping("/admin/order_list/picking")
 	public ResponseEntity<ApiResponse<String>> pushToWaiting(@RequestBody RecordDto recordDto) {
-		String errorMsg = saleService.pushToWaiting(recordDto.getRecordId());
+		String errorMsg = saleService.pushToWaiting(recordDto.recordId());
 		if (errorMsg == null) {
 			return ResponseEntity.ok(new ApiResponse<>(true, "訂單狀態更改成功", null));
 		}
@@ -120,7 +120,7 @@ public class SaleController {
 	// 後台把"待確認"訂單狀態往"取消"狀態送
 	@DeleteMapping("/admin/order_list/unchecked")
 	public ResponseEntity<ApiResponse<String>> pushToRejected(@RequestBody RecordDto recordDto) {
-		String errorMsg = saleService.pushToRejected(recordDto.getRecordId());
+		String errorMsg = saleService.pushToRejected(recordDto.recordId());
 		if (errorMsg == null) {
 			return ResponseEntity.ok(new ApiResponse<>(true, "訂單狀態更改成功", null));
 		}

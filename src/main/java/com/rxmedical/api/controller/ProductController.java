@@ -43,7 +43,7 @@ public class ProductController {
 
 	@PostMapping("/product/item")
 	public ResponseEntity<ApiResponse<ProductItemInfoDto>> getProductItemInfo(@RequestBody GetMaterialInfoDto getInfoDto) {
-		ProductItemInfoDto info = productService.getProductItemInfo(getInfoDto.getMaterialId());
+		ProductItemInfoDto info = productService.getProductItemInfo(getInfoDto.materialId());
 		if (info == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "產品資訊不存在", null));
 		}
@@ -75,7 +75,7 @@ public class ProductController {
 	@PostMapping("/admin/material/edit")
 	public ResponseEntity<ApiResponse<MaterialInfoDto>> getMaterialInfo(@RequestBody GetMaterialInfoDto searchDto) {
 		
-		MaterialInfoDto materialInfo = productService.getMaterialInfo(searchDto.getMaterialId());
+		MaterialInfoDto materialInfo = productService.getMaterialInfo(searchDto.materialId());
 		
 		if (materialInfo == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "產品資訊不存在", null));
