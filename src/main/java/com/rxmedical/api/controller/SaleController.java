@@ -176,6 +176,4 @@ public class SaleController {
 		}
 		return ResponseEntity.ok(new ApiResponse<>(true, "最新庫存", currStock));
 	}
-
-
 }
