@@ -7,6 +7,9 @@ package com.rxmedical.api.model.dto;
  * @param orderQty 申請品項數量
  * @param status  狀態
  */
-public record PurchaseHistoryDto(Integer id, String code, Integer orderQty, String status) {
-
+public record PurchaseHistoryDto(
+							Integer id, 
+							String code, 
+							Integer orderQty, 
+							String status) {
 }

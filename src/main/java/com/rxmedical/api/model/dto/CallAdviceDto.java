@@ -9,6 +9,7 @@ import java.util.Date;
  * @param startOfWeek
  * @param suggestQuantity
  */
-public record CallAdviceDto(@JsonFormat(pattern = "MM-dd", timezone = "GMT+8")Date startOfWeek,
-                            Integer suggestQuantity) {
+public record CallAdviceDto(
+						@JsonFormat(pattern = "MM-dd", timezone = "GMT+8") Date startOfWeek, 
+						Integer suggestQuantity) {
 }

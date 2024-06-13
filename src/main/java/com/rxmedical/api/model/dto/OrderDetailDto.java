@@ -7,5 +7,8 @@ package com.rxmedical.api.model.dto;
  * @param quantity 需要數量
  * @param takerName 撿貨的人
  */
-public record OrderDetailDto(String productName, Integer quantity, String takerName) {
+public record OrderDetailDto(
+						String productName, 
+						Integer quantity, 
+						String takerName) {
 }

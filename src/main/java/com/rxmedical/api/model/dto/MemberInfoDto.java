@@ -15,6 +15,12 @@ import java.util.Date;
  * @param authLevel 權限
  * @param createDate 註冊時間
  */
-public record MemberInfoDto(Integer id, String empCode, String name, String dept, String title, String authLevel,
-                            @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") Date createDate) {
+public record MemberInfoDto(
+						Integer id, 
+						String empCode, 
+						String name, 
+						String dept, 
+						String title, 
+						String authLevel, 
+						@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8") Date createDate) {
 }

@@ -5,5 +5,7 @@ package com.rxmedical.api.model.dto;
  * @param productId 欲申請商品的id
  * @param applyQty 申請數量
  */
-public record ApplyItemDto(Integer productId, Integer applyQty) {
+public record ApplyItemDto(
+						Integer productId, 
+						Integer applyQty) {
 }

@@ -6,6 +6,8 @@ package com.rxmedical.api.model.dto;
  * @param password 密碼
  * @param token CSRF TOKEN
  */
-public record UserLoginDto(String email, String password, String token) {
-
+public record UserLoginDto(
+					String email, 
+					String password, 
+					String token) {
 }

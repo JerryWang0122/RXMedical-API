@@ -9,6 +9,11 @@ package com.rxmedical.api.model.dto;
  * @param description  商品描述
  * @param picture  商品圖片
  */
-public record ProductItemInfoDto(Integer id, String name, String category, Integer stock, String description,
-                                 String picture) {
+public record ProductItemInfoDto(
+							Integer id, 
+							String name, 
+							String category, 
+							Integer stock, 
+							String description, 
+							String picture) {
 }

@@ -7,5 +7,9 @@ package com.rxmedical.api.model.dto;
  * @param storage  產品儲存位置
  * @param picture  產品圖片
  */
-public record ProductDetailDto(String code, String name, String storage, String picture) {
+public record ProductDetailDto(
+						String code, 
+						String name, 
+						String storage, 
+						String picture) {
 }

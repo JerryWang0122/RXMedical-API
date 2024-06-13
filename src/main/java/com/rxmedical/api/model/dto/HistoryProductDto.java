@@ -7,5 +7,9 @@ package com.rxmedical.api.model.dto;
  * @param product 產品資訊
  * @param takerName 撿貨人
  */
-public record HistoryProductDto(Integer id, Integer quantity, ProductDetailDto product, String takerName) {
+public record HistoryProductDto(
+							Integer id, 
+							Integer quantity, 
+							ProductDetailDto product, 
+							String takerName) {
 }

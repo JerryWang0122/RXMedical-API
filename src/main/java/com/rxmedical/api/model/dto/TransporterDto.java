@@ -6,5 +6,8 @@ package com.rxmedical.api.model.dto;
  * @param empCode
  * @param name
  */
-public record TransporterDto(Integer id, String empCode, String name) {
+public record TransporterDto(
+						Integer id, 
+						String empCode, 
+						String name) {
 }

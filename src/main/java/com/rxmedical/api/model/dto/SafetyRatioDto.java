@@ -6,5 +6,8 @@ package com.rxmedical.api.model.dto;
  * @param code 產品編號
  * @param ratio 安全庫存比率
  */
-public record SafetyRatioDto(String name, String code, Float ratio) {
+public record SafetyRatioDto(
+						String name, 
+						String code, 
+						Float ratio) {
 }

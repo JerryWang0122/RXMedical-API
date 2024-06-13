@@ -6,5 +6,8 @@ package com.rxmedical.api.model.dto;
  * @param title 申請人職稱
  * @param name 申請人姓名
  */
-public record OrderDemanderDto(String dept, String title, String name) {
+public record OrderDemanderDto(
+							String dept, 
+							String title, 
+							String name) {
 }

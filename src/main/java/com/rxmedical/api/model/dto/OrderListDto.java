@@ -13,7 +13,11 @@ import java.util.Date;
  * @param transporterName 運送人員
  * @param updateDate 更新時間
  */
-public record OrderListDto(Integer id, String code, Integer applyAmount, OrderDemanderDto demander,
-                           String transporterName,
-                           @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8") Date updateDate) {
+public record OrderListDto(
+					Integer id, 
+					String code, 
+					Integer applyAmount, 
+					OrderDemanderDto demander, 
+					String transporterName, 
+					@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8") Date updateDate) {
 }
