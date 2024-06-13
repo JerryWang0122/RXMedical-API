@@ -85,7 +85,6 @@ public class UserService {
 
 		// 且密碼正確
 		String usageJWT = jwtService.getUserUsageJWT(user);
-		System.out.println(user.getDept() +" "+ user.getAuthLevel() + " "+ user.getName());
 		return new UserUsageDto(user.getDept(), user.getName(), user.getAuthLevel(), usageJWT);
 
 	}

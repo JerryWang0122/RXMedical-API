@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 public class JWTService {
 
-    private final static String SIGNING_SECURE_PATH = "src/main/java/com/rxmedical/api/service/signingSecure.txt";
+    private final static String SIGNING_SECURE_PATH = "./signingSecure.txt";
     private final static String SIGNING_SECURE = getJWTSigningSecure();
 
     /**

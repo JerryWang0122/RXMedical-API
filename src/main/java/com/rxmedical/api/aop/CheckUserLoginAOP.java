@@ -1,8 +1,6 @@
 package com.rxmedical.api.aop;
 
-import com.rxmedical.api.model.po.User;
 import com.rxmedical.api.model.response.ApiResponse;
-import com.rxmedical.api.repository.UserRepository;
 import com.rxmedical.api.service.JWTService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -15,18 +13,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Optional;
 
 // 檢查前台使用者登入狀態
 @Component
 @Aspect
 public class CheckUserLoginAOP {
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Autowired
 	private JWTService jwtService;
@@ -68,8 +61,6 @@ public class CheckUserLoginAOP {
 	public Object aroundCheckLogin(ProceedingJoinPoint joinPoint) {
 
 		Object result = null;
-		Optional<User> optionalUser;
-		String verifyToken = null;
 
 		try {
 			System.out.println("測試前置");

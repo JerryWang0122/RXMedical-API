@@ -2,7 +2,6 @@ package com.rxmedical.api.aop;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Optional;
 
 import com.rxmedical.api.service.JWTService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.rxmedical.api.model.po.User;
 import com.rxmedical.api.model.response.ApiResponse;
-import com.rxmedical.api.repository.UserRepository;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -24,9 +21,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 @Aspect
 public class BackendAuthCheckAOP {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private JWTService jwtService;
@@ -120,8 +114,6 @@ public class BackendAuthCheckAOP {
     public Object aroundCheckAuth(ProceedingJoinPoint joinPoint) {
 
         Object result = null;
-        Optional<User> optionalUser;
-        String verifyToken = null;
 
         try {
             System.out.println("測試前置");
@@ -156,8 +148,6 @@ public class BackendAuthCheckAOP {
     public Object changeMemberAuthLevel(ProceedingJoinPoint joinPoint) {
 
         Object result = null;
-        Optional<User> optionalUser;
-        String verifyToken = null;
 
         try {
             System.out.println("測試前置");
