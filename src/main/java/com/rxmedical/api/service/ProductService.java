@@ -43,7 +43,7 @@ public class ProductService {
      * @return List 商品列表
      */
     public List<ShowProductsDto> getProductList() {
-        return productRepository.findAll().stream()
+        return findAllProducts().stream()
             .map(product -> new ShowProductsDto(
                     product.getId(),
                     product.getName(),
@@ -79,7 +79,7 @@ public class ProductService {
      * @return List 商品列表
      */
     public List<ShowMaterialsDto> getMaterialList() {
-        return productRepository.findAll().stream()
+        return findAllProducts().stream()
                 .map(product -> new ShowMaterialsDto(
                         product.getId(),
                         product.getCode(),
@@ -177,6 +177,10 @@ public class ProductService {
     public Product findProductById(Integer id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         return optionalProduct.orElse(null);
+    }
+
+    public List<Product> findAllProducts() {
+        return productRepository.findAll();
     }
 
     /**

@@ -26,8 +26,6 @@ public class AnalyzeService {
     private RecordRepository recordRepository;
     @Autowired
     private HistoryRepository historyRepository;
-    @Autowired
-    private ProductRepository productRepository;
 
     /**
      * [後台 - 分析] 取得並計算勞動積分
@@ -73,7 +71,7 @@ public class AnalyzeService {
      */
     public List<SafetyRatioDto> getMaterialSafetyRatio() {
         // 取出所有產品，並利用庫存量和safetyThreshold計算庫存比例，取出最低的前3名並回傳
-        List<Product> allMaterials = productRepository.findAll();
+        List<Product> allMaterials = productService.findAllProducts();
 
         return allMaterials.stream()
                 .sorted(Comparator.comparingDouble(material -> (double) material.getStock() / material.getSafetyThreshold()))
