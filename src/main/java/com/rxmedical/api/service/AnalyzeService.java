@@ -20,6 +20,9 @@ import java.util.stream.IntStream;
 public class AnalyzeService {
 
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private RecordRepository recordRepository;
     @Autowired
     private HistoryRepository historyRepository;
@@ -86,12 +89,10 @@ public class AnalyzeService {
      * @return
      */
     public List<CallAdviceDto> getCallMaterialDiagram(Integer productId) {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        if (optionalProduct.isEmpty()) {
+        Product product = productService.findProductById(productId);
+        if (product == null) {
             return null;
         }
-
-        Product product = optionalProduct.get();
 
         // 取得當週的週日，以及八週前的日期
         Date startDateOfWeek = DateUtil.getStartOfWeek(new Date());
@@ -117,14 +118,12 @@ public class AnalyzeService {
         weeklyData[0] = currStock;
         int weekAgo = 0;
 
-        System.out.println(startDateOfWeek);
         // 將資料分配到對應的週
         for (History history : historyList) {
             Date historyDate = history.getUpdateDate();
 
             // 交易紀錄發生在更早之前，需要調整 weekAgo(index) 數值
             while (historyDate.before(DateUtil.getDateWeeksAgo(startDateOfWeek, weekAgo))) {
-                System.out.println(history .getUpdateDate()+ " " + weekAgo);
                 // 當週庫存往前一週推
                 weeklyData[weekAgo + 1] = weeklyData[weekAgo];
                 // 計算當週建議進貨量
@@ -150,7 +149,6 @@ public class AnalyzeService {
 
         while (weekAgo < 8) {
             weeklyData[weekAgo] = weeklyData[weekAgo - 1];
-            System.out.println(weekAgo + " " + weeklyData[weekAgo]);
             weekAgo++;
         }
 

@@ -24,16 +24,18 @@ import java.util.Random;
 public class SaleService {
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private HistoryRepository historyRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
     @Autowired
     private RecordRepository recordRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private ProductService productService;
+
 
     /**
      * [後台] 將訂單狀態從待確認往待撿貨推送
@@ -41,11 +43,10 @@ public class SaleService {
      * @return 正常: null, 不正常: [errorMsg]
      */
     public synchronized String pushToPicking(Integer recordId) {
-        Optional<Record> optionalRecord = recordRepository.findById(recordId);
-        if (optionalRecord.isEmpty()) {
+        Record record = findRecordById(recordId);
+        if (record == null) {
             return "找不到訂單";
         }
-        Record record = optionalRecord.get();
         if (!record.getStatus().equals("unchecked")) {
             return "訂單狀態已轉移";
         }
@@ -60,11 +61,10 @@ public class SaleService {
      * @return 正常: null, 不正常: [errorMsg]
      */
     public synchronized String pushToWaiting(Integer recordId) {
-        Optional<Record> optionalRecord = recordRepository.findById(recordId);
-        if (optionalRecord.isEmpty()) {
+        Record record = findRecordById(recordId);
+        if (record == null) {
             return "找不到訂單";
         }
-        Record record = optionalRecord.get();
         if (!record.getStatus().equals("picking")) {
             return "訂單狀態已轉移";
         }
@@ -85,11 +85,10 @@ public class SaleService {
     public synchronized String pushToTransporting(PushToTransportingDto dto) {
 
         // 檢查訂單
-        Optional<Record> optionalRecord = recordRepository.findById(dto.getRecordId());
-        if (optionalRecord.isEmpty()) {
+        Record record = findRecordById(dto.getRecordId());
+        if (record == null) {
             return "找不到訂單";
         }
-        Record record = optionalRecord.get();
         if (!record.getStatus().equals("waiting")) {
             return "訂單狀態已轉移";
         }
@@ -98,11 +97,10 @@ public class SaleService {
         if (dto.getTransporterId() == null) {
             return "請指派運送人員";
         }
-        Optional<User> optionalUser = userRepository.findById(dto.getTransporterId());
-        if (optionalUser.isEmpty()) {
+        User transporter = userService.findUserById(dto.getTransporterId());
+        if (transporter == null) {
             return "無此操作人員";
         }
-        User transporter = optionalUser.get();
         if (!transporter.getAuthLevel().equals("admin")) {
             return "非管理員無法指定操作";
         }
@@ -121,11 +119,10 @@ public class SaleService {
      */
     @Transactional
     public synchronized String pushToRejected(Integer recordId) {
-        Optional<Record> optionalRecord = recordRepository.findById(recordId);
-        if (optionalRecord.isEmpty()) {
+        Record record = findRecordById(recordId);
+        if (record == null) {
             return "找不到訂單";
         }
-        Record record = optionalRecord.get();
         if (!record.getStatus().equals("unchecked")) {
             return "訂單狀態已轉移";
         }
@@ -147,14 +144,17 @@ public class SaleService {
      * @return (null 代表沒這個訂單)，List為明細資料
      */
     public synchronized List<OrderDetailDto> getOrderDetails(Integer recordId) {
-        Optional<Record> optionalRecord = recordRepository.findById(recordId);
-        if (optionalRecord.isEmpty()){ // 因為有檢查過，所以訂單內不可能為空，回傳null代表沒有這一個訂單編號
+        Record record = findRecordById(recordId);
+        if (record == null){ // 因為有檢查過，所以訂單內不可能為空，回傳null代表沒有這一個訂單編號
             return null;
         }
-        List<History> recordDetails = historyRepository.findByRecord(optionalRecord.get());
+        List<History> recordDetails = historyRepository.findByRecord(record);
         return recordDetails.stream()
-                .map(history -> new OrderDetailDto(history.getProduct().getName(), history.getQuantity(),
-                        history.getUser() == null ? null : history.getUser().getName()))
+                .map(history -> new OrderDetailDto(
+                        history.getProduct().getName(),
+                        history.getQuantity(),
+                        history.getUser() == null ? null : history.getUser().getName())
+                )
                 .toList();
     }
 
@@ -164,11 +164,10 @@ public class SaleService {
      * @return (null 代表沒這個訂單貨狀態已經推移)，List為明細資料
      */
     public synchronized List<HistoryProductDto> getHistoryProductList(Integer recordId) {
-        Optional<Record> optionalRecord = recordRepository.findById(recordId);
-        if (optionalRecord.isEmpty()) {
+        Record record = findRecordById(recordId);
+        if (record == null) {
             return null;
         }
-        Record record = optionalRecord.get();
         if (!record.getStatus().equals("picking")) {
             return null;
         }
@@ -183,8 +182,8 @@ public class SaleService {
                                                 history.getProduct().getStorage(),
                                                 history.getProduct().getPicture()
                                         ),
-                                        history.getUser() == null ? null : history.getUser().getName()
-                ))
+                                        history.getUser() == null ? null : history.getUser().getName())
+                )
                 .toList();
     }
 
@@ -194,11 +193,10 @@ public class SaleService {
      * @return String errMsg
      */
     public synchronized String pickUpItem(PickingHistoryDto pickingDto) {
-        Optional<History> optionalHistory = historyRepository.findById(pickingDto.getHistoryId());
-        if (optionalHistory.isEmpty()) {
+        History history = findHistoryById(pickingDto.getHistoryId());
+        if (history == null) {
             return "無此資料";
         }
-        History history = optionalHistory.get();
         if (history.getRecord() == null) {
             return "錯誤狀態";
         }
@@ -208,7 +206,7 @@ public class SaleService {
         if (history.getUser() != null) {
             return "貨品已經拿過了";
         }
-        history.setUser(userRepository.findById(pickingDto.getUserId()).get());
+        history.setUser(userService.findUserById(pickingDto.getUserId()));
         historyRepository.save(history);
         return null;
     }
@@ -355,11 +353,10 @@ public class SaleService {
 
         // 先檢查有沒有不存在的貨號
         for (ApplyItemDto item : recordDto.getApplyItems()) {
-            Optional<Product> optionalProduct = productRepository.findById(item.productId());
-            if (optionalProduct.isEmpty()) {
+            Product product = productService.findProductById(item.productId());
+            if (product == null) {
                 return "貨號不存在";
             } else {
-                Product product = optionalProduct.get();
                 // 如果貨不夠
                 if (product.getStock() < item.applyQty()) {
                     errorList.add("[" + product.getName() + "]庫存: " + product.getStock());
@@ -372,7 +369,7 @@ public class SaleService {
         }
         //---------------- 檢查完成，生成訂單 ---------------
         // 已經通過aop檢查了，直接拿
-        User demander = userRepository.findById(recordDto.getUserId()).get();
+        User demander = userService.findUserById(recordDto.getUserId());
 
         Record record = new Record();
         record.setCode(generateCode());
@@ -383,7 +380,7 @@ public class SaleService {
 
         recordDto.getApplyItems().stream().forEach(item -> {
             // 因為上面檢查過了，直接拿
-            Product product = productRepository.findById(item.productId()).get();
+            Product product = productService.findProductById(item.productId());
             // 更新庫存
             product.setStock(product.getStock() - item.applyQty());
             productRepository.save(product);
@@ -409,17 +406,14 @@ public class SaleService {
      */
     @Transactional
     public synchronized Integer callMaterial(SaleMaterialDto callDto) {
-
-        Optional<Product> optionalProduct = productRepository.findById(callDto.getMaterialId());
+        Product product = productService.findProductById(callDto.getMaterialId());
         // 因為有過aop了，所以直接拿
-        User user = userRepository.findById(callDto.getUserId()).get();
+        User user = userService.findUserById(callDto.getUserId());
 
         // 商品不存在則直接退回
-        if (optionalProduct.isEmpty()) {
+        if (product == null) {
             return null;
         }
-
-        Product product = optionalProduct.get();
 
         History history = new History();
         history.setQuantity(callDto.getQuantity());
@@ -442,16 +436,14 @@ public class SaleService {
      */
     @Transactional
     public synchronized Integer destroyMaterial(SaleMaterialDto destroyDto) {
-        Optional<Product> optionalProduct = productRepository.findById(destroyDto.getMaterialId());
+        Product product = productService.findProductById(destroyDto.getMaterialId());
         // 因為有過aop了，所以直接拿
-        User user = userRepository.findById(destroyDto.getUserId()).get();
+        User user = userService.findUserById(destroyDto.getUserId());
 
         // 商品不存在則直接退回
-        if (optionalProduct.isEmpty()) {
+        if (product == null) {
             return null;
         }
-
-        Product product = optionalProduct.get();
 
         // 檢查存貨量
         if (product.getStock() < destroyDto.getQuantity()) {
@@ -493,6 +485,18 @@ public class SaleService {
         return code;
     }
 
+    // --------------------------- 輔助 方法 ------------------------------
+    public Record findRecordById(Integer recordId) {
+        Optional<Record> optionalRecord = recordRepository.findById(recordId);
+        return optionalRecord.orElse(null);
+    }
+
+    public History findHistoryById(Integer historyId) {
+        Optional<History> optionalHistory = historyRepository.findById(historyId);
+        return optionalHistory.orElse(null);
+    }
+
+    // -------------------------------------------------------------------
     /**
      * [工具] 輔助generateCode()方法，生成四位的大寫英文和数字的组合乱数
      * @param length 產成數字的位數

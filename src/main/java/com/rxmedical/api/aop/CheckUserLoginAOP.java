@@ -63,7 +63,7 @@ public class CheckUserLoginAOP {
 		Object result = null;
 
 		try {
-			System.out.println("測試前置");
+//			System.out.println("測試前置");
 
 			// 驗證JWT
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -75,7 +75,6 @@ public class CheckUserLoginAOP {
 			} else {  // 驗證成功
 				Object[] args = joinPoint.getArgs();
 				if (args.length != 0){
-					System.out.println(args[0]);
 					Method setUserId = args[0].getClass().getDeclaredMethod("setUserId", Integer.class);
 					setUserId.invoke(args[0], userInfoMap.get("userId"));
 				}

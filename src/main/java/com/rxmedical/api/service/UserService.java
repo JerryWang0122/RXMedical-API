@@ -132,12 +132,17 @@ public class UserService {
 	 * @return UserInfoDto 個人帳戶資料
 	 */
     public UserInfoDto getUserInfo(Integer userId) {
-		Optional<User> optionalUser = userRepository.findById(userId);
-		if (optionalUser.isPresent()) {
-			User user = optionalUser.get();
-			return new UserInfoDto(user.getId(), user.getEmpCode(), user.getName(),
-								   user.getDept(), user.getTitle(), user.getEmail(),
-								   user.getAuthLevel());
+		User user = findUserById(userId);
+		if (user != null) {
+			return new UserInfoDto(
+					user.getId(),
+					user.getEmpCode(),
+					user.getName(),
+				    user.getDept(),
+					user.getTitle(),
+					user.getEmail(),
+				    user.getAuthLevel()
+			);
 		}
 		return null;
     }
@@ -155,9 +160,8 @@ public class UserService {
 		}
 
 		// 更新資料
-		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.getUserId());
-		if (optionalUser.isPresent()) {
-			User user = optionalUser.get();
+		User user = findUserById(userEditInfoDto.getUserId());
+		if (user != null) {
 			user.setName(userEditInfoDto.getName());
 			user.setDept(userEditInfoDto.getDept());
 			user.setTitle(userEditInfoDto.getTitle());
@@ -174,11 +178,12 @@ public class UserService {
 	 * @return List<PurchaseHistoryDto> 使用者歷史申請資料
 	 */
 	public List<PurchaseHistoryDto> getUserPurchaseHistoryList(Integer userId) {
-		Optional<User> optionalUser = userRepository.findById(userId);
-		if (optionalUser.isEmpty()) {
+		User user = findUserById(userId);
+		if (user == null) {
 			return null;
 		}
-		List<Record> recordList = recordRepository.findByDemander(optionalUser.get());
+
+		List<Record> recordList = recordRepository.findByDemander(user);
 		return recordList.stream()
 				.map(record -> new PurchaseHistoryDto(
 										record.getId(),
@@ -267,18 +272,16 @@ public class UserService {
 		if (memberAuthDto.getAuthLevel().equals("root") || memberAuthDto.getAuthLevel().equals("register")) {
 			return false;
 		}
+		User user = findUserById(memberAuthDto.getMemberId());
 
-		// 更新資料
-		Optional<User> optionalUser = userRepository.findById(memberAuthDto.getMemberId());
-		if (optionalUser.isPresent()) {
-			User u = optionalUser.get();
-			if (u.getAuthLevel().equals("register")) {
+		if (user != null) {
+			if (user.getAuthLevel().equals("register")) {
 				// 寄一封通知信
 				ExecutorService executorService = Executors.newSingleThreadExecutor();
-				executorService.execute(() -> EmailUtil.prepareAndSendEmail(u.getEmail()));
+				executorService.execute(() -> EmailUtil.prepareAndSendEmail(user.getEmail()));
 			}
-			u.setAuthLevel(memberAuthDto.getAuthLevel());
-			userRepository.save(u);
+			user.setAuthLevel(memberAuthDto.getAuthLevel());
+			userRepository.save(user);
 			return true;
 		}
 		return false;
@@ -293,5 +296,15 @@ public class UserService {
 				.map(user -> new TransporterDto(user.getId(), user.getEmpCode(), user.getName()))
 				.toList();
 	}
+
+	/**
+	 * [輔助] 利用id找到使用者
+	 * @param id userId
+	 * @return 使用者資料PO
+	 */
+	public User findUserById(Integer id) {
+		Optional<User> optionalUser = userRepository.findById(id);
+        return optionalUser.orElse(null);
+    }
 
 }

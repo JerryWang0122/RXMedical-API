@@ -27,9 +27,10 @@ import com.rxmedical.api.repository.UserRepository;
 public class ProductService {
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private UserService userService;
     @Autowired
     private HistoryRepository historyRepository;
 
@@ -43,9 +44,14 @@ public class ProductService {
      */
     public List<ShowProductsDto> getProductList() {
         return productRepository.findAll().stream()
-                .map(product -> new ShowProductsDto(product.getId(), product.getName(), product.getStock(),
-                        product.getCategory(), product.getPicture()))
-                .toList();
+            .map(product -> new ShowProductsDto(
+                    product.getId(),
+                    product.getName(),
+                    product.getStock(),
+                    product.getCategory(),
+                    product.getPicture())
+            )
+            .toList();
     }
 
     /**
@@ -54,11 +60,16 @@ public class ProductService {
      * @return ProductItemInfoDto 商品資料
      */
     public ProductItemInfoDto getProductItemInfo(Integer productId) {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            return new ProductItemInfoDto(product.getId(), product.getName(), product.getCategory(), product.getStock(),
-                        product.getDescription(), product.getPicture());
+        Product product = findProductById(productId);
+        if (product != null) {
+            return new ProductItemInfoDto(
+                    product.getId(),
+                    product.getName(),
+                    product.getCategory(),
+                    product.getStock(),
+                    product.getDescription(),
+                    product.getPicture()
+            );
         }
         return null;
     }
@@ -69,8 +80,14 @@ public class ProductService {
      */
     public List<ShowMaterialsDto> getMaterialList() {
         return productRepository.findAll().stream()
-                .map(product -> new ShowMaterialsDto(product.getId(), product.getCode(), product.getName(), product.getStock(),
-                                                product.getStorage(), product.getCategory()))
+                .map(product -> new ShowMaterialsDto(
+                        product.getId(),
+                        product.getCode(),
+                        product.getName(),
+                        product.getStock(),
+                        product.getStorage(),
+                        product.getCategory())
+                )
                 .toList();
     }
 
@@ -79,11 +96,16 @@ public class ProductService {
      * @return MaterialInfoDto 單一商品詳細資料
      */
     public MaterialInfoDto getMaterialInfo(Integer id) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            return new MaterialInfoDto(product.getId(), product.getCode(), product.getName(),
-                    product.getCategory(), product.getSafetyThreshold(), product.getStorage(), product.getDescription(),
+        Product product = findProductById(id);
+        if (product != null) {
+            return new MaterialInfoDto(
+                    product.getId(),
+                    product.getCode(),
+                    product.getName(),
+                    product.getCategory(),
+                    product.getSafetyThreshold(),
+                    product.getStorage(),
+                    product.getDescription(),
                     product.getPicture());
         }
         return null;
@@ -95,9 +117,8 @@ public class ProductService {
      * @return Boolean 是否成功
      */
     public Boolean updateMaterialInfo(MaterialUpdateInfoDto infoDto) {
-        Optional<Product> optionalProduct = productRepository.findById(infoDto.getProductId());
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
+        Product product = findProductById(infoDto.getProductId());
+        if (product != null) {
             product.setName(infoDto.getName());
             product.setCategory(infoDto.getCategory());
             product.setSafetyThreshold(infoDto.getSafetyThreshold());
@@ -123,7 +144,7 @@ public class ProductService {
     public Boolean registerProduct(MaterialFileUploadDto infoDto) {
 
         // 因為經過aop，所以直接get
-        User user = userRepository.findById(infoDto.getUserId()).get();
+        User user = userService.findUserById(infoDto.getUserId());
 
         // 產品資料寫入資料庫
         Product product = new Product();
@@ -151,6 +172,11 @@ public class ProductService {
         result.setStock(infoDto.getQuantity());
         productRepository.save(result);
         return true;
+    }
+
+    public Product findProductById(Integer id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        return optionalProduct.orElse(null);
     }
 
     /**

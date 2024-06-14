@@ -116,7 +116,7 @@ public class BackendAuthCheckAOP {
         Object result = null;
 
         try {
-            System.out.println("測試前置");
+//            System.out.println("測試前置");
 
             // 驗證JWT
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -150,7 +150,7 @@ public class BackendAuthCheckAOP {
         Object result = null;
 
         try {
-            System.out.println("測試前置");
+//            System.out.println("測試前置");
 
             // 驗證JWT
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
