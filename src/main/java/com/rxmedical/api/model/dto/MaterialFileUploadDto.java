@@ -1,17 +1,24 @@
 package com.rxmedical.api.model.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * [INPUT] 首次上架商品時，上傳的資訊
  */
-public record MaterialFileUploadDto(
-							    String code,
-							    String name,
-							    String category,
-							    String storage,
-							    Integer safetyThreshold,
-							    String description,
-							    Integer quantity,
-							    Integer price,
-							    Integer userId,
-							    String picture) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MaterialFileUploadDto {
+	private String code;
+	private String name;
+	private String category;
+	private String storage;
+	private Integer safetyThreshold;
+	private String description;
+	private Integer quantity;
+	private Integer price;
+	private Integer userId;
+	private String picture;
 }

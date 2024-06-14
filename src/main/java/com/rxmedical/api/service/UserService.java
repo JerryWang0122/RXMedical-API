@@ -150,18 +150,18 @@ public class UserService {
 	public UserUsageDto updateUserInfo(UserEditInfoDto userEditInfoDto) {
 
 		// root 的資料不可被更改
-		if (userEditInfoDto == null || userEditInfoDto.userId().equals(0)) {
+		if (userEditInfoDto == null || userEditInfoDto.getUserId().equals(0)) {
 			return null;
 		}
 
 		// 更新資料
-		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.userId());
+		Optional<User> optionalUser = userRepository.findById(userEditInfoDto.getUserId());
 		if (optionalUser.isPresent()) {
 			User user = optionalUser.get();
-			user.setName(userEditInfoDto.name());
-			user.setDept(userEditInfoDto.dept());
-			user.setTitle(userEditInfoDto.title());
-			user.setEmail(userEditInfoDto.email());
+			user.setName(userEditInfoDto.getName());
+			user.setDept(userEditInfoDto.getDept());
+			user.setTitle(userEditInfoDto.getTitle());
+			user.setEmail(userEditInfoDto.getEmail());
 			userRepository.save(user);
 			return new UserUsageDto(user.getDept(), user.getName(), user.getAuthLevel(), null);
 		}
@@ -196,14 +196,14 @@ public class UserService {
 	 * @return (null 代表發生錯誤)，List為明細資料
 	 */
 	public List<OrderDetailDto> getPurchaseDetails(RecordDto recordDto) {
-		Optional<Record> optionalRecord = recordRepository.findById(recordDto.recordId());
+		Optional<Record> optionalRecord = recordRepository.findById(recordDto.getRecordId());
 		if (optionalRecord.isEmpty()){
 			return null;
 		}
 
 		// 查詢人應該要跟訂購人一樣
 		Record record = optionalRecord.get();
-		if (!recordDto.userId().equals(record.getDemander().getId())) {
+		if (!recordDto.getUserId().equals(record.getDemander().getId())) {
 			return null;
 		}
 		// 給資料
@@ -219,7 +219,7 @@ public class UserService {
 	 * @return String 錯誤信息
 	 */
 	public String finishOrder(RecordDto recordDto) {
-		Optional<Record> optionalRecord = recordRepository.findById(recordDto.recordId());
+		Optional<Record> optionalRecord = recordRepository.findById(recordDto.getRecordId());
 		if (optionalRecord.isEmpty()){
 			return "找不到訂單";
 		}
@@ -230,7 +230,7 @@ public class UserService {
 		if (!record.getStatus().equals("transporting")) {
 			return "錯誤訂單狀態";
 		}
-		if (!recordDto.userId().equals(record.getDemander().getId())) {
+		if (!recordDto.getUserId().equals(record.getDemander().getId())) {
 			return "錯誤操作人員";
 		}
 		record.setStatus("finish");
@@ -256,20 +256,20 @@ public class UserService {
 	 */
 	public Boolean updateMemberAuthLevel(ChangeMemberAuthDto memberAuthDto) {
 		// 不能修改root權限
-		if (memberAuthDto.memberId().equals(1)) {
+		if (memberAuthDto.getMemberId().equals(1)) {
 			return false;
 		}
 		// 修改權限不可為空
-		if (memberAuthDto.authLevel() == null) {
+		if (memberAuthDto.getAuthLevel() == null) {
 			return false;
 		}
 		// 不能將任何人調成root權限，或是主動調成註冊狀態
-		if (memberAuthDto.authLevel().equals("root") || memberAuthDto.authLevel().equals("register")) {
+		if (memberAuthDto.getAuthLevel().equals("root") || memberAuthDto.getAuthLevel().equals("register")) {
 			return false;
 		}
 
 		// 更新資料
-		Optional<User> optionalUser = userRepository.findById(memberAuthDto.memberId());
+		Optional<User> optionalUser = userRepository.findById(memberAuthDto.getMemberId());
 		if (optionalUser.isPresent()) {
 			User u = optionalUser.get();
 			if (u.getAuthLevel().equals("register")) {
@@ -277,7 +277,7 @@ public class UserService {
 				ExecutorService executorService = Executors.newSingleThreadExecutor();
 				executorService.execute(() -> EmailUtil.prepareAndSendEmail(u.getEmail()));
 			}
-			u.setAuthLevel(memberAuthDto.authLevel());
+			u.setAuthLevel(memberAuthDto.getAuthLevel());
 			userRepository.save(u);
 			return true;
 		}

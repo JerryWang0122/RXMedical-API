@@ -97,7 +97,7 @@ public class UserController {
 	@PostMapping("/user/profile")
 	public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(CurrUserDto currUserDto) {
 		
-		UserInfoDto info = userService.getUserInfo(currUserDto.userId());
+		UserInfoDto info = userService.getUserInfo(currUserDto.getUserId());
 		
 		if (info == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "使用者資訊不存在", null));
@@ -123,7 +123,7 @@ public class UserController {
 	// 取得個人衛材清單歷史
 	@PostMapping("/user/purchase")
 	public ResponseEntity<ApiResponse<List<PurchaseHistoryDto>>> getPurchaseHistoryList(CurrUserDto currUserDto) {
-		List<PurchaseHistoryDto> userPurchaseHistoryList = userService.getUserPurchaseHistoryList(currUserDto.userId());
+		List<PurchaseHistoryDto> userPurchaseHistoryList = userService.getUserPurchaseHistoryList(currUserDto.getUserId());
 
 		if (userPurchaseHistoryList == null) {
 			return ResponseEntity.ok(new ApiResponse<>(false, "無此人員", null));
